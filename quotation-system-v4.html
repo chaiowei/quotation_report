@@ -407,7 +407,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
   <div class="mbox" style="max-width:520px">
     <h3>系統設定</h3>
     <div class="srow">
-      <div><div class="slbl">Apps Script 後端網址</div><div class="ssub">貼上部署後的 Web App URL（設定後即可連線 Google Drive）</div></div>
+      <div><div class="slbl">Apps Script 後端網址</div><div class="ssub">寫死在 HTML 第一行 CONFIG.BACKEND_URL，修改後重新上傳 GitHub</div></div>
       <div style="display:flex;gap:.5rem;align-items:center">
         <span class="sval" id="urlStat">未設定</span>
         <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="setUrl()">設定</button>
@@ -435,10 +435,15 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════
-//  ★ 唯一需要填的東西：Apps Script 部署網址
-// ═══════════════════════════════════════════
-const DEFAULT_BACKEND = localStorage.getItem('backendUrl') || '';
+// ╔═══════════════════════════════════════════════════════════╗
+// ║  ★ 部署設定 — 只需修改這裡，改完上傳 GitHub 即生效       ║
+// ╚═══════════════════════════════════════════════════════════╝
+const CONFIG = {
+  BACKEND_URL:   'https://script.google.com/macros/s/AKfycbyanNPk5DMGSFmfQqBnMKo2tI75xgWzQ40R5S-WJETe9wcCKVTsW7k-DBJAYRcbd7Mytw/exec',  // 貼上 Apps Script 部署網址
+  ADMIN_USER:    'AAA',                  // 管理員帳號
+  ADMIN_PW:      '123',            // 管理員密碼
+};
+// ════════════════════════════════════════════════════════════
 
 // ═══════════════════════════════════════════
 //  STATE
@@ -449,13 +454,13 @@ let laborItems  = [];
 let curFile     = null;
 let curRptId    = '';
 let authToken   = '';
-let backendUrl  = DEFAULT_BACKEND;
+const backendUrl = CONFIG.BACKEND_URL;
 
 // ═══════════════════════════════════════════
 //  API CALL
 // ═══════════════════════════════════════════
 async function api(action, extra = {}) {
-  if (!backendUrl) throw new Error('尚未設定 Apps Script 網址，請至 ⚙ 設定');
+  if (!backendUrl || backendUrl === 'YOUR_APPS_SCRIPT_URL') throw new Error('請在 HTML 第一行 CONFIG.BACKEND_URL 填入 Apps Script 網址後重新上傳 GitHub');
   const body = { action, token: authToken, ...extra };
   let res;
   try {
@@ -501,9 +506,9 @@ async function doLogin() {
   const u = document.getElementById('lu').value.trim();
   const p = document.getElementById('lp').value;
   if (!u || !p) { document.getElementById('le').textContent = '請填入帳號與密碼'; return; }
-  if (!backendUrl) {
-    // 無後端：本地管理員模式
-    if (u === 'admin' && p === 'procure2024') {
+  if (!backendUrl || backendUrl === 'YOUR_APPS_SCRIPT_URL') {
+    // 無後端：本地管理員模式（用 CONFIG 裡的帳密）
+    if (u === CONFIG.ADMIN_USER && p === CONFIG.ADMIN_PW) {
       authToken = 'local-admin';
       sessionStorage.setItem('tok', authToken);
       closeLogin();
@@ -643,7 +648,7 @@ function resetAll() {
 // ═══════════════════════════════════════════
 async function doAnalyze() {
   if (!curFile) return;
-  if (!backendUrl) { toast('請至 ⚙ 設定填入 Apps Script 後端網址', 'err'); return; }
+  if (!backendUrl || backendUrl === 'YOUR_APPS_SCRIPT_URL') { toast('請在 HTML CONFIG.BACKEND_URL 填入 Apps Script 網址後重新上傳 GitHub', 'err'); return; }
 
   document.getElementById('pnl-up').style.display = 'none';
   document.getElementById('pnl-ld').style.display = '';
@@ -1017,7 +1022,7 @@ function updSettUI(){
 function setUrl(){
   const u=prompt('請貼上 Apps Script 部署網址：\n（格式：https://script.google.com/macros/s/...）');
   if(!u)return;
-  backendUrl=u.trim();localStorage.setItem('backendUrl',backendUrl);
+  backendUrl=u.trim();
   updSettUI();toast('網址已儲存','ok');
 }
 
