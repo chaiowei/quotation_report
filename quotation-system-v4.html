@@ -414,11 +414,8 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
       </div>
     </div>
     <div class="srow">
-      <div><div class="slbl">Gemini API Key</div><div class="ssub">儲存於 Apps Script（伺服器端），不存在瀏覽器</div></div>
-      <div style="display:flex;gap:.5rem;align-items:center">
-        <span class="sval" id="keyStat">—</span>
-        <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="setKey()">設定</button>
-      </div>
+      <div><div class="slbl">Gemini API Key</div><div class="ssub">直接寫在 Apps Script CONFIG.GEMINI_API_KEY，團隊成員無需設定</div></div>
+      <span class="sval" style="color:var(--gn)">由後端統一管理 ✓</span>
     </div>
     <div class="srow">
       <div><div class="slbl">Google Drive 連線狀態</div><div class="ssub">透過 Apps Script 操作 Drive，無需 OAuth popup</div></div>
@@ -646,13 +643,7 @@ function resetAll() {
 // ═══════════════════════════════════════════
 async function doAnalyze() {
   if (!curFile) return;
-  // Get Gemini key from backend
-  let geminiKey;
-  try {
-    const kd = await api('getGeminiKey', {});
-    geminiKey = kd.key;
-    if (!geminiKey) { toast('請至 ⚙ 設定填入 Gemini API Key', 'err'); return; }
-  } catch(e) { toast('無法取得 API Key：' + e.message, 'err'); return; }
+  if (!backendUrl) { toast('請至 ⚙ 設定填入 Apps Script 後端網址', 'err'); return; }
 
   document.getElementById('pnl-up').style.display = 'none';
   document.getElementById('pnl-ld').style.display = '';
@@ -704,17 +695,13 @@ Return ONLY a single valid JSON (no markdown):
 }
 FLAG: normal=±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis=no match, labor_package=labor/package category`;
 
-    let parts;
-    if (isMedia) parts = [{ text: prompt }, { inline_data: { mime_type: mime, data: b64 } }];
-    else parts = [{ text: prompt + '\n\n[' + ext + ' file]' }];
-
-    const res  = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ contents: [{ parts }] })
+    // ★ 透過 Apps Script 後端呼叫 Gemini，Key 不會暴露在前端
+    const geminiResp = await api('callGemini', {
+      prompt,
+      base64Data: isMedia ? b64 : null,
+      mimeType:   isMedia ? mime : null
     });
-    if (!res.ok) throw new Error('Gemini API ' + res.status);
-    const rd    = await res.json();
-    const raw   = rd.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const raw   = geminiResp.text || '';
     const clean = raw.replace(/```json|```/g,'').trim();
     const parsed = JSON.parse(clean);
 
@@ -1017,26 +1004,24 @@ function dl(content,name,type){const blob=new Blob([content],{type});const a=doc
 // ═══════════════════════════════════════════
 //  SETTINGS
 // ═══════════════════════════════════════════
-function openSett(){document.getElementById('settM').classList.remove('h');updSettUI();}
+function openSett(){
+  if(!authToken){ openLogin(); return; }
+  document.getElementById('settM').classList.remove('h');
+  updSettUI();
+}
 function closeSett(){document.getElementById('settM').classList.add('h');}
 function updSettUI(){
   document.getElementById('urlStat').textContent = backendUrl ? '已設定 ✓' : '未設定';
 }
+
 function setUrl(){
   const u=prompt('請貼上 Apps Script 部署網址：\n（格式：https://script.google.com/macros/s/...）');
   if(!u)return;
   backendUrl=u.trim();localStorage.setItem('backendUrl',backendUrl);
   updSettUI();toast('網址已儲存','ok');
 }
-async function setKey(){
-  const k=prompt('請輸入 Gemini API Key（AIzaSy...）：');
-  if(!k)return;
-  try{await api('setGeminiKey',{key:k.trim()});document.getElementById('keyStat').textContent='已設定 ✓';toast('Gemini Key 已加密儲存至 Apps Script','ok');}
-  catch(e){toast('儲存失敗：'+e.message,'err');}
-}
-async function fetchKeyStatus(){
-  try{const d=await api('getGeminiKey',{});document.getElementById('keyStat').textContent=d.key?'已設定 ✓':'未設定';}catch(_){}
-}
+
+
 function chgPw(){
   const np=prompt('請輸入新密碼（最少 8 碼）：');
   if(!np||np.length<8){toast('密碼太短','err');return;}
@@ -1056,7 +1041,7 @@ async function testConn(){
 window.addEventListener('DOMContentLoaded', () => {
   // 訪客直接進入，載入主檔（唯讀）
   const tok = sessionStorage.getItem('tok');
-  if (tok) { authToken = tok; showAdminUI(true); fetchKeyStatus(); }
+  if (tok) { authToken = tok; showAdminUI(true); }
   loadMaster();
   updSettUI();
 });
