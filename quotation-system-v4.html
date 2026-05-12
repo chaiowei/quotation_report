@@ -460,12 +460,25 @@ let backendUrl  = DEFAULT_BACKEND;
 async function api(action, extra = {}) {
   if (!backendUrl) throw new Error('尚未設定 Apps Script 網址，請至 ⚙ 設定');
   const body = { action, token: authToken, ...extra };
-  const res  = await fetch(backendUrl, {
-    method: 'POST', redirect: 'follow',
-    headers: { 'Content-Type': 'text/plain' }, // Apps Script CORS requirement
-    body: JSON.stringify(body)
-  });
-  const data = await res.json();
+  let res;
+  try {
+    res = await fetch(backendUrl, {
+      method: 'POST',
+      redirect: 'follow',
+      // Content-Type 必須是 text/plain，Apps Script 才不會觸發 CORS preflight
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(body)
+    });
+  } catch(fetchErr) {
+    // CORS 或網路錯誤
+    if (fetchErr.message.includes('CORS') || fetchErr.message.includes('fetch')) {
+      throw new Error('CORS 錯誤：請確認 Apps Script 部署設定「存取權 → 所有人（包含匿名使用者）」，並重新部署');
+    }
+    throw fetchErr;
+  }
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  let data;
+  try { data = await res.json(); } catch(_) { throw new Error('回應格式錯誤，請確認 Apps Script 部署正確'); }
   if (!data.ok) throw new Error(data.error || 'API 錯誤');
   return data;
 }
