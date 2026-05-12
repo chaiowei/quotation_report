@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ProcureAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Noto+Sans+TC:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080C;--bg2:#0E1017;--bg3:#141720;--bg4:#1C2030;
+  --rim:rgba(255,255,255,0.07);--rim2:rgba(255,255,255,0.13);--rim3:rgba(255,255,255,0.22);
+  --t1:#F2F3FF;--t2:#9B9EC8;--t3:#5C5F84;
+  --cy:#00E5FF;--cyf:rgba(0,229,255,0.10);--cyb:rgba(0,229,255,0.20);
+  --mg:#FF2D78;--mgf:rgba(255,45,120,0.10);
+  --gn:#00FF94;--gnf:rgba(0,255,148,0.10);
+  --pu:#BD93F9;--puf:rgba(189,147,249,0.10);
+  --am:#FFB300;--amf:rgba(255,179,0,0.10);
+  --rd:#FF5555;--rdf:rgba(255,85,85,0.10);
+  --yw:#F1FA8C;--ywf:rgba(241,250,140,0.10);
+  --r:8px;--r2:14px;--r3:20px;
+  --mono:'JetBrains Mono',monospace;--head:'Syne','Noto Sans TC',sans-serif;--body:'Noto Sans TC',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:var(--body);font-weight:300;min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.02) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0}
+.blob{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;animation:drift 18s ease-in-out infinite alternate}
+.b1{width:600px;height:600px;background:rgba(0,229,255,0.04);top:-200px;right:-150px}
+.b2{width:500px;height:500px;background:rgba(255,45,120,0.04);bottom:-150px;left:-100px;animation-delay:-8s}
+.b3{width:280px;height:280px;background:rgba(189,147,249,0.05);top:35%;left:38%;animation-delay:-14s}
+@keyframes drift{from{transform:translate(0,0)}to{transform:translate(28px,18px)}}
+
+/* ── ADMIN LOGIN DRAWER ── */
+.ldrawer-bg{position:fixed;inset:0;background:rgba(7,8,12,0.7);z-index:600;display:none;align-items:flex-start;justify-content:flex-end;backdrop-filter:blur(6px)}
+.ldrawer-bg.on{display:flex}
+.ldrawer{background:var(--bg2);border-left:1px solid var(--rim2);padding:2.5rem 2rem;width:100%;max-width:360px;height:100%;position:relative;overflow-y:auto;animation:slideIn .25s ease}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.ldrawer::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cy),var(--pu))}
+.ldrawer-close{position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;color:var(--t3);font-size:20px;cursor:pointer;padding:4px;transition:color .2s;line-height:1}
+.ldrawer-close:hover{color:var(--t1)}
+.lico{font-size:36px;margin-bottom:1rem;display:block}
+.ltitle{font-family:var(--head);font-size:20px;font-weight:800;margin-bottom:.25rem;background:linear-gradient(135deg,var(--cy),var(--pu));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.lsub{font-size:12px;color:var(--t3);margin-bottom:2rem;line-height:1.5}
+.lerr{font-size:12px;color:var(--rd);min-height:16px;margin-bottom:.6rem}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;border-bottom:1px solid var(--rim);background:rgba(7,8,12,0.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.navi{max-width:1200px;margin:0 auto;padding:0 1.5rem;height:60px;display:flex;align-items:center;gap:1.25rem}
+.logo{font-family:var(--head);font-size:18px;font-weight:800;background:linear-gradient(135deg,var(--cy),var(--pu));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex-shrink:0;letter-spacing:-.01em}
+.ntabs{display:flex;gap:3px;flex:1}
+.ntab{padding:6px 16px;border-radius:var(--r);font-size:13px;color:var(--t3);cursor:pointer;border:none;background:transparent;transition:all .2s;font-family:var(--body)}
+.ntab:hover{color:var(--t2);background:var(--rim)}
+.ntab.on{color:var(--cy);background:var(--cyf);border:1px solid var(--cyb)}
+.nr{display:flex;align-items:center;gap:.6rem;margin-left:auto;flex-shrink:0;flex-wrap:wrap}
+.nbadge{font-family:var(--mono);font-size:10px;color:var(--t3);border:1px solid var(--rim2);padding:3px 9px;border-radius:4px;letter-spacing:.05em;white-space:nowrap}
+.nbadge.ok{color:var(--gn);border-color:rgba(0,255,148,.3)}
+.nbadge.warn{color:var(--am);border-color:rgba(255,179,0,.3)}
+.nbtn{padding:6px 13px;border-radius:var(--r);font-size:12px;font-family:var(--body);cursor:pointer;border:1px solid var(--rim2);background:transparent;color:var(--t2);transition:all .2s}
+.nbtn:hover{border-color:var(--cy);color:var(--cy)}
+
+/* ── LAYOUT ── */
+.pg{display:none;max-width:1200px;margin:0 auto;padding:2rem 1.5rem 6rem;position:relative;z-index:1}
+.pg.on{display:block}
+
+/* ── HERO ── */
+.hero{padding:2.5rem 0 2rem;text-align:center}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--cy);margin-bottom:1.25rem;text-transform:uppercase;opacity:.8}
+.h1{font-family:var(--head);font-size:clamp(30px,5.5vw,56px);font-weight:800;line-height:1.1;letter-spacing:-.03em;margin-bottom:1rem}
+.hl{background:linear-gradient(135deg,var(--cy),var(--mg));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hsub{font-size:15px;color:var(--t2);max-width:500px;margin:0 auto;line-height:1.7}
+
+/* ── STEPS ── */
+.steps{display:flex;align-items:center;max-width:500px;margin:2rem auto 2.5rem}
+.si{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.05em}
+.si.on{color:var(--cy)}
+.si.done{color:var(--t3)}
+.snum{width:26px;height:26px;border-radius:50%;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;transition:all .3s}
+.si.on .snum{background:var(--cy);color:var(--bg);border-color:var(--cy);box-shadow:0 0 14px rgba(0,229,255,.4)}
+.si.done .snum{background:var(--bg4);border-color:var(--rim2)}
+.sline{flex:1;height:1px;background:var(--rim);margin:0 10px;min-width:24px}
+
+/* ── CARD ── */
+.card{background:var(--bg2);border:1px solid var(--rim);border-radius:var(--r2);padding:1.5rem;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,229,255,0.025),transparent 60%);pointer-events:none}
+.card+.card{margin-top:1rem}
+.clabel{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--t3);text-transform:uppercase;padding-bottom:.75rem;border-bottom:1px solid var(--rim);margin-bottom:1rem}
+
+/* ── DROP ZONE ── */
+.dz{border:1.5px dashed var(--rim2);border-radius:var(--r2);padding:2.5rem 1.5rem;text-align:center;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.dz::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,var(--cyf),transparent 70%);opacity:0;transition:opacity .3s}
+.dz:hover::before,.dz.drag::before{opacity:1}
+.dz:hover,.dz.drag{border-color:var(--cy);box-shadow:0 0 28px rgba(0,229,255,.07)}
+.dz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.dz-ico{font-size:36px;margin-bottom:1rem;line-height:1;position:relative;z-index:1}
+.dz-t{font-family:var(--head);font-size:16px;font-weight:700;margin-bottom:.3rem;position:relative;z-index:1}
+.dz-s{font-size:12px;color:var(--t2);position:relative;z-index:1}
+.dz-tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:1.25rem;position:relative;z-index:1}
+.dtag{font-family:var(--mono);font-size:10px;padding:3px 9px;border:1px solid var(--rim2);border-radius:4px;color:var(--t3)}
+
+/* ── FILE PILL ── */
+.fpill{display:none;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--rim2);border-radius:var(--r);padding:.7rem 1rem;margin-top:.75rem}
+.fpill.on{display:flex}
+.fpill-ico{font-size:20px;flex-shrink:0}
+.fpill-name{font-family:var(--mono);font-size:11px;color:var(--cy);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fpill-sz{font-family:var(--mono);font-size:10px;color:var(--t3);white-space:nowrap}
+.fpill-rm{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;padding:0 2px;flex-shrink:0;transition:color .2s;line-height:1}
+.fpill-rm:hover{color:var(--rd)}
+
+/* ── FIELDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+@media(max-width:640px){.g2,.g3{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--t3);text-transform:uppercase}
+.field input,.field select{background:var(--bg3);border:1px solid var(--rim);border-radius:var(--r);padding:10px 13px;color:var(--t1);font-family:var(--body);font-size:13px;outline:none;transition:border-color .2s;width:100%}
+.field input:focus,.field select:focus{border-color:var(--cy);box-shadow:0 0 0 3px rgba(0,229,255,.06)}
+.field input::placeholder{color:var(--t3)}
+.field select option{background:var(--bg3)}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:var(--r);font-size:13px;font-weight:500;font-family:var(--body);cursor:pointer;border:none;transition:all .18s;white-space:nowrap}
+.btn-c{background:linear-gradient(135deg,var(--cy),#00B8D9);color:var(--bg);font-weight:700}
+.btn-c:hover{box-shadow:0 0 22px rgba(0,229,255,.35);transform:translateY(-1px)}
+.btn-c:disabled{background:var(--bg4);color:var(--t3);cursor:not-allowed;transform:none;box-shadow:none}
+.btn-g{background:transparent;color:var(--t2);border:1px solid var(--rim2)}
+.btn-g:hover{border-color:var(--cy);color:var(--cy)}
+.btn-r{background:var(--rdf);color:var(--rd);border:1px solid rgba(255,85,85,.25)}
+.btn-r:hover{background:rgba(255,85,85,.2)}
+.btn-row{display:flex;justify-content:flex-end;gap:.75rem;margin-top:1.5rem;flex-wrap:wrap}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:5rem 0}
+.spin{width:44px;height:44px;border:2px solid var(--rim);border-top-color:var(--cy);border-right-color:var(--mg);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 1.5rem;box-shadow:0 0 20px rgba(0,229,255,.15)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-t{font-family:var(--mono);font-size:13px;color:var(--t2)}
+.load-s{font-size:12px;color:var(--t3);margin-top:.4rem}
+
+/* ── STAT STRIP ── */
+.ss{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px;margin-bottom:1.25rem}
+.sbox{background:var(--bg3);border:1px solid var(--rim);border-radius:var(--r);padding:.8rem;text-align:center;position:relative;overflow:hidden}
+.sbox::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.sg::after{background:var(--gn)}.sr::after{background:var(--rd)}.sp::after{background:var(--pu)}.sa::after{background:var(--am)}.sgr::after{background:var(--t3)}.sy::after{background:var(--yw)}
+.sn{font-family:var(--mono);font-size:24px;font-weight:500;line-height:1}
+.sl{font-size:10px;color:var(--t3);margin-top:5px}
+
+/* ── TABLE ── */
+.tc{background:var(--bg2);border:1px solid var(--rim);border-radius:var(--r2);overflow:hidden;margin-bottom:1rem}
+.tsc{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead th{background:var(--bg3);padding:9px 10px;font-family:var(--mono);font-size:10px;font-weight:400;color:var(--t3);letter-spacing:.07em;text-align:right;white-space:nowrap;border-bottom:1px solid var(--rim2)}
+thead th:first-child{text-align:left;min-width:200px;padding-left:16px}
+thead th:nth-child(2){text-align:center;min-width:50px}
+thead th:last-child{text-align:center;min-width:110px;padding-right:16px}
+tbody td{padding:9px 10px;border-bottom:1px solid var(--rim);color:var(--t1);text-align:right;vertical-align:middle}
+tbody td:first-child{text-align:left;padding-left:16px}
+tbody td:nth-child(2){text-align:center}
+tbody td:last-child{text-align:center;padding-right:16px}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(0,229,255,.02)}
+.tsec td{background:var(--bg3);font-family:var(--mono);font-size:10px;color:var(--t3);padding:5px 10px 5px 16px;letter-spacing:.07em;text-align:left!important;border-bottom:1px solid var(--rim);border-top:1px solid var(--rim)}
+.ttot td{border-top:1px solid var(--rim2)!important;background:var(--bg3);font-weight:500}
+.cup{color:var(--rd)}.cok{color:var(--gn)}.cdn{color:var(--pu)}.cna{color:var(--t3)}.cam{color:var(--am)}
+
+/* ── PILLS ── */
+.pill{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;white-space:nowrap;letter-spacing:.02em}
+.pg{background:var(--gnf);color:var(--gn);border:1px solid rgba(0,255,148,.22)}
+.pr{background:var(--rdf);color:var(--rd);border:1px solid rgba(255,85,85,.22)}
+.pp{background:var(--puf);color:var(--pu);border:1px solid rgba(189,147,249,.22)}
+.pa{background:var(--amf);color:var(--am);border:1px solid rgba(255,179,0,.22)}
+.pgr{background:rgba(92,95,132,.12);color:var(--t3);border:1px solid var(--rim)}
+.py{background:var(--ywf);color:var(--yw);border:1px solid rgba(241,250,140,.22)}
+
+/* ── TOTALS ── */
+.totals{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rim);border-radius:var(--r2);overflow:hidden;margin-bottom:1rem}
+.tcell{background:var(--bg2);padding:1.5rem;text-align:center;position:relative}
+.tcell::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.tcell:nth-child(1)::before{background:var(--t3)}
+.tcell:nth-child(2)::before{background:var(--gn)}
+.tcell:nth-child(3)::before{background:var(--mg)}
+.tcell label{display:block;font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.1em;margin-bottom:.6rem;text-transform:uppercase}
+.tamt{font-family:var(--mono);font-size:22px;font-weight:500;line-height:1}
+.tnote{font-family:var(--mono);font-size:10px;margin-top:.4rem}
+@media(max-width:520px){.totals{grid-template-columns:1fr}}
+
+/* ── LABOR ── */
+.lcard{background:var(--bg2);border:1px solid rgba(255,179,0,.18);border-radius:var(--r2);padding:1.25rem 1.5rem;margin-bottom:.75rem;position:relative;overflow:hidden}
+.lcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--am),transparent)}
+.lhd{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.lbadge{font-family:var(--mono);font-size:10px;padding:3px 9px;background:var(--amf);border:1px solid rgba(255,179,0,.25);border-radius:20px;color:var(--am);flex-shrink:0}
+.lname{font-size:14px;font-weight:500;flex:1;font-family:var(--head)}
+.lquoted{font-family:var(--mono);font-size:12px;color:var(--t2);white-space:nowrap}
+.lres{background:var(--bg3);border:1px solid var(--rim);border-radius:var(--r);padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:.75rem}
+.lest{font-size:13px;color:var(--t2)}
+.lest strong{font-family:var(--mono);font-weight:500;color:var(--t1)}
+.lflag{font-family:var(--mono);font-size:11px}
+
+/* ── ADVICE ── */
+.adv{border-left:2px solid;border-radius:0 var(--r) var(--r) 0;padding:.75rem 1rem;margin-bottom:.6rem;background:rgba(255,255,255,.02)}
+.adv-t{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:3px;font-family:var(--head)}
+.adv-b{font-size:12px;color:var(--t2);line-height:1.55}
+
+/* ── MASTER ── */
+.mtool{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.msearch{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--rim2);border-radius:var(--r);padding:9px 13px;color:var(--t1);font-family:var(--body);font-size:13px;outline:none;transition:border-color .2s}
+.msearch:focus{border-color:var(--cy)}
+.msearch::placeholder{color:var(--t3)}
+.mcnt{font-family:var(--mono);font-size:11px;color:var(--t3);white-space:nowrap}
+tbody td[contenteditable]{cursor:text;transition:background .15s}
+tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;background:rgba(0,229,255,.04)}
+.rn td{background:rgba(0,255,148,.04)!important}
+.rd td{background:rgba(255,179,0,.04)!important}
+
+/* ── MODAL ── */
+.mbg{position:fixed;inset:0;background:rgba(7,8,12,.85);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(6px)}
+.mbg.h{display:none}
+.mbox{background:var(--bg2);border:1px solid var(--rim2);border-radius:var(--r2);padding:2rem;width:100%;max-width:500px;position:relative}
+.mbox::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cy),var(--pu));border-radius:var(--r2) var(--r2) 0 0}
+.mbox h3{font-family:var(--head);font-size:18px;font-weight:800;margin-bottom:1.25rem;padding-top:.25rem}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--rim)}
+.srow:last-child{border-bottom:none}
+.slbl{font-size:13px;color:var(--t1)}
+.ssub{font-size:11px;color:var(--t3);margin-top:2px}
+.sval{font-family:var(--mono);font-size:11px;color:var(--cy)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--rim2);border-radius:var(--r);padding:.8rem 1.25rem;font-size:13px;font-family:var(--mono);z-index:700;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;max-width:340px;line-height:1.5}
+.toast.on{opacity:1;transform:translateY(0)}
+.toast.ok{border-color:rgba(0,255,148,.3);color:var(--gn)}
+.toast.err{border-color:rgba(255,85,85,.3);color:var(--rd)}
+.toast.info{border-color:rgba(0,229,255,.3);color:var(--cy)}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--rim2);border-radius:3px}
+
+@media(max-width:640px){.navi{padding:0 1rem}.pg{padding:1.5rem 1rem 4rem}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<!-- ══ ADMIN LOGIN DRAWER ══ -->
+<div class="ldrawer-bg" id="lo">
+  <div class="ldrawer" onclick="event.stopPropagation()">
+    <button class="ldrawer-close" onclick="closeLogin()">✕</button>
+    <span class="lico">🔐</span>
+    <div class="ltitle">管理員登入</div>
+    <div class="lsub">登入後可修改主檔材料清單<br>一般比價功能無需登入</div>
+    <div class="field" style="margin-bottom:.75rem">
+      <label>使用者名稱</label>
+      <input id="lu" type="text" autocomplete="username" placeholder="admin">
+    </div>
+    <div class="field" style="margin-bottom:1rem">
+      <label>密碼</label>
+      <input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="lerr" id="le"></div>
+    <button class="btn btn-c" style="width:100%;justify-content:center;padding:12px" onclick="doLogin()">登入</button>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="navi">
+    <div class="logo">ProcureAI</div>
+    <div class="ntabs">
+      <button class="ntab on" id="tab-analyze" onclick="showPg('analyze')">比價分析</button>
+      <button class="ntab" id="tab-master" onclick="goMaster()">主檔管理</button>
+    </div>
+    <div class="nr">
+      <span class="nbadge" id="mBadge">主檔 — 筆</span>
+      <span class="nbadge" id="driveBadge" title="Apps Script 後端連線狀態">後端 —</span>
+      <button class="nbtn" onclick="openSett()">⚙ 設定</button>
+      <span id="adminBar" style="display:none;align-items:center;gap:.5rem">
+        <span class="nbadge ok">管理員</span>
+        <button class="nbtn" onclick="logout()">登出</button>
+      </span>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ PAGE: ANALYZE ══ -->
+<div class="pg on" id="pg-analyze">
+  <!-- UPLOAD -->
+  <div id="pnl-up">
+    <div class="hero">
+      <div class="eyebrow">AI-Powered Procurement · v4</div>
+      <h1 class="h1">比價報告<br><span class="hl">秒速生成</span></h1>
+      <p class="hsub">PDF、Excel、Word、照片全支援。AI 自動比對主檔最低價，輸出完整燈號報告並備份至 Google Drive。</p>
+    </div>
+    <div class="steps" id="stBar">
+      <div class="si on" id="si1"><div class="snum">1</div><span>上傳</span></div>
+      <div class="sline"></div>
+      <div class="si" id="si2"><div class="snum">2</div><span>工費</span></div>
+      <div class="sline"></div>
+      <div class="si" id="si3"><div class="snum">3</div><span>報告</span></div>
+    </div>
+    <div class="card">
+      <div class="clabel">上傳報價單</div>
+      <div class="dz" id="dz">
+        <input type="file" id="fi" accept=".pdf,.xlsx,.xls,.docx,.doc,.jpg,.jpeg,.png,.heic,.webp">
+        <div class="dz-ico">⬆</div>
+        <div class="dz-t">拖曳或點選上傳</div>
+        <div class="dz-s">手機支援相機直拍</div>
+        <div class="dz-tags">
+          <span class="dtag">PDF</span><span class="dtag">Excel</span><span class="dtag">Word</span>
+          <span class="dtag">JPG · PNG</span><span class="dtag">HEIC</span>
+        </div>
+      </div>
+      <div class="fpill" id="fp">
+        <span class="fpill-ico" id="pico">📄</span>
+        <span class="fpill-name" id="pnm"></span>
+        <span class="fpill-sz" id="psz"></span>
+        <button class="fpill-rm" onclick="clrF()">✕</button>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-c" id="aBtn" onclick="doAnalyze()" disabled>開始 AI 分析 →</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="pnl-ld" style="display:none">
+    <div class="loading">
+      <div class="spin"></div>
+      <div class="load-t" id="ldT">Gemini 解析報價單中…</div>
+      <div class="load-s" id="ldS">辨識品項規格與廠商資訊</div>
+    </div>
+  </div>
+
+  <!-- LABOR -->
+  <div id="pnl-lb" style="display:none">
+    <div class="hero" style="padding:1.5rem 0 1rem">
+      <div class="eyebrow">Step 2 of 3</div>
+      <h2 style="font-family:var(--head);font-size:28px;font-weight:800;letter-spacing:-.02em">填入工費預估</h2>
+      <p class="hsub" style="font-size:13px;margin-top:.5rem">AI 已識別以下工費／整包項目，請人工填入工期與人工成本</p>
+    </div>
+    <div id="lbCards"></div>
+    <div class="btn-row">
+      <button class="btn btn-g" onclick="resetAll()">← 重新上傳</button>
+      <button class="btn btn-c" onclick="goReport()">產生報告 →</button>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div id="pnl-rpt" style="display:none">
+    <div id="rptInner"></div>
+    <div class="btn-row">
+      <button class="btn btn-g" onclick="resetAll()">← 新報價單</button>
+      <button class="btn btn-g" onclick="expJSON()">匯出 JSON</button>
+      <button class="btn btn-c" onclick="window.print()">列印 / PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: MASTER ══ -->
+<div class="pg" id="pg-master">
+  <div class="mtool">
+    <input class="msearch" id="ms" placeholder="搜尋品項規格、關鍵字…" oninput="renderM()">
+    <span class="mcnt" id="mc">共 0 筆</span>
+    <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="openAdd()">+ 新增</button>
+    <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="saveM()">儲存至 Drive</button>
+    <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="expCSV()">匯出 CSV</button>
+    <label class="btn btn-g" style="font-size:12px;padding:7px 14px;cursor:pointer">
+      匯入覆蓋 CSV <input type="file" accept=".csv" id="csvIn" style="display:none" onchange="impCSV(this)">
+    </label>
+  </div>
+  <div class="tc">
+    <div class="tsc">
+      <table id="mTbl">
+        <thead><tr>
+          <th style="text-align:left;padding-left:16px">Material Specification</th>
+          <th style="text-align:center">Unit</th>
+          <th>Unit Price (THB)</th>
+          <th style="text-align:left">Keywords</th>
+          <th style="text-align:left">Remark</th>
+          <th style="text-align:center;padding-right:16px">操作</th>
+        </tr></thead>
+        <tbody id="mBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <p id="masterHint" style="font-family:var(--mono);font-size:10px;color:var(--t3);margin-top:.75rem"></p>
+</div>
+
+<!-- ══ MODAL: ADD ══ -->
+<div class="mbg h" id="addM">
+  <div class="mbox">
+    <h3>新增品項</h3>
+    <div class="field" style="margin-bottom:.75rem"><label>Material Specification *</label><input id="m-sp" placeholder="例：Ball Valve, SS304, CL150, 2&quot;"></div>
+    <div class="g2" style="margin-bottom:.75rem">
+      <div class="field"><label>Unit</label>
+        <select id="m-un"><option>EA</option><option>M</option><option>PCS</option><option>KG</option><option>SET</option><option>LOT</option></select>
+      </div>
+      <div class="field"><label>Unit Price (THB)</label><input type="number" id="m-pr" step="0.01"></div>
+    </div>
+    <div class="field" style="margin-bottom:.75rem"><label>Keywords</label><input id="m-kw" placeholder="ball valve ss304 2inch"></div>
+    <div class="field" style="margin-bottom:1.25rem"><label>Remark</label><input id="m-rm"></div>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-g" onclick="closeAdd()">取消</button>
+      <button class="btn btn-c" onclick="addItem()">新增</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: SETTINGS ══ -->
+<div class="mbg h" id="settM">
+  <div class="mbox" style="max-width:520px">
+    <h3>系統設定</h3>
+    <div class="srow">
+      <div><div class="slbl">Apps Script 後端網址</div><div class="ssub">貼上部署後的 Web App URL（設定後即可連線 Google Drive）</div></div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <span class="sval" id="urlStat">未設定</span>
+        <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="setUrl()">設定</button>
+      </div>
+    </div>
+    <div class="srow">
+      <div><div class="slbl">Gemini API Key</div><div class="ssub">儲存於 Apps Script（伺服器端），不存在瀏覽器</div></div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <span class="sval" id="keyStat">—</span>
+        <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="setKey()">設定</button>
+      </div>
+    </div>
+    <div class="srow">
+      <div><div class="slbl">Google Drive 連線狀態</div><div class="ssub">透過 Apps Script 操作 Drive，無需 OAuth popup</div></div>
+      <span class="sval" id="drvStat">依 Apps Script 授權</span>
+    </div>
+    <div class="srow">
+      <div><div class="slbl">管理員密碼</div><div class="ssub">同步更新 Apps Script CONFIG.ADMIN_PW</div></div>
+      <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="chgPw()">修改</button>
+    </div>
+    <div class="btn-row" style="margin-top:1rem">
+      <button class="btn btn-g" onclick="closeSett()">關閉</button>
+      <button class="btn btn-c" onclick="testConn()">測試連線</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+//  ★ 唯一需要填的東西：Apps Script 部署網址
+// ═══════════════════════════════════════════
+const DEFAULT_BACKEND = localStorage.getItem('backendUrl') || '';
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+let masterData  = [];
+let parsedItems = [];
+let laborItems  = [];
+let curFile     = null;
+let curRptId    = '';
+let authToken   = '';
+let backendUrl  = DEFAULT_BACKEND;
+
+// ═══════════════════════════════════════════
+//  API CALL
+// ═══════════════════════════════════════════
+async function api(action, extra = {}) {
+  if (!backendUrl) throw new Error('尚未設定 Apps Script 網址，請至 ⚙ 設定');
+  const body = { action, token: authToken, ...extra };
+  const res  = await fetch(backendUrl, {
+    method: 'POST', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain' }, // Apps Script CORS requirement
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (!data.ok) throw new Error(data.error || 'API 錯誤');
+  return data;
+}
+
+// ═══════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════
+function openLogin() {
+  document.getElementById('lo').classList.add('on');
+  document.getElementById('lu').focus();
+}
+function closeLogin() {
+  document.getElementById('lo').classList.remove('on');
+  document.getElementById('le').textContent = '';
+}
+function showAdminUI(on) {
+  document.getElementById('adminBar').style.display = on ? 'flex' : 'none';
+}
+function goMaster() {
+  showPg('master'); // 任何人都可以查看主檔，修改才需要登入
+}
+async function doLogin() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value;
+  if (!u || !p) { document.getElementById('le').textContent = '請填入帳號與密碼'; return; }
+  if (!backendUrl) {
+    // 無後端：本地管理員模式
+    if (u === 'admin' && p === 'procure2024') {
+      authToken = 'local-admin';
+      sessionStorage.setItem('tok', authToken);
+      closeLogin();
+      showAdminUI(true);
+      showPg('master');
+      toast('管理員登入成功（本機模式）', 'ok');
+    } else {
+      document.getElementById('le').textContent = '帳號或密碼錯誤';
+      document.getElementById('lp').value = '';
+    }
+    return;
+  }
+  try {
+    document.getElementById('le').textContent = '驗證中…';
+    const d = await api('login', { username: u, password: p });
+    authToken = d.token;
+    sessionStorage.setItem('tok', authToken);
+    closeLogin();
+    showAdminUI(true);
+    showPg('master');
+    toast('管理員登入成功', 'ok');
+    fetchKeyStatus();
+  } catch(e) {
+    document.getElementById('le').textContent = e.message;
+    document.getElementById('lp').value = '';
+  }
+}
+function logout() {
+  sessionStorage.clear();
+  authToken = '';
+  showAdminUI(false);
+  showPg('analyze');
+  toast('已登出', 'info');
+}
+
+// ═══════════════════════════════════════════
+//  UTIL
+// ═══════════════════════════════════════════
+const fmt  = n => n==null?'—':Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtN = n => n==null?'—':Number(n).toLocaleString('th-TH',{maximumFractionDigits:0});
+function toast(msg, type='ok', dur=3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast on ' + type;
+  setTimeout(() => t.className = 'toast', dur);
+}
+function showPg(p) {
+  document.querySelectorAll('.pg').forEach(el=>el.classList.remove('on'));
+  document.getElementById('pg-'+p).classList.add('on');
+  document.getElementById('tab-analyze').classList.toggle('on', p==='analyze');
+  document.getElementById('tab-master').classList.toggle('on', p==='master');
+  if (p === 'master') renderM();
+}
+function setStep(n) {
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('si'+i);
+    el.className = 'si' + (i===n?' on':i<n?' done':'');
+  });
+}
+function updBadge() {
+  document.getElementById('mBadge').textContent = `主檔 ${masterData.length} 筆`;
+  document.getElementById('mc').textContent = `共 ${masterData.length} 筆`;
+}
+function updDriveBadge(ok) {
+  const el = document.getElementById('driveBadge');
+  el.textContent = ok ? '後端已連線' : (backendUrl ? '後端連線失敗' : '後端未設定');
+  el.className = 'nbadge ' + (ok ? 'ok' : 'warn');
+  // 設定頁同步
+  const ds = document.getElementById('drvStat');
+  if (ds) ds.textContent = ok ? '已連線，透過 Apps Script 存取 Drive' : '未連線';
+}
+
+// ═══════════════════════════════════════════
+//  MASTER — Load / Save
+// ═══════════════════════════════════════════
+async function loadMaster() {
+  try {
+    const d = await api('loadMaster', {});
+    masterData = (d.data || []).map(r => ({ ...r, _d: false, _n: false }));
+    if (!masterData.length) masterData = SEED.map(s => ({ ...s, _d: false, _n: false }));
+    updBadge();
+    updDriveBadge(true);
+    renderM();
+  } catch(e) {
+    toast('載入主檔失敗，使用內建資料：' + e.message, 'info', 4000);
+    loadMasterLocal();
+    updDriveBadge(false);
+  }
+}
+function loadMasterLocal() {
+  masterData = SEED.map(s => ({ ...s, _d: false, _n: false }));
+  updBadge(); renderM();
+}
+async function saveM() {
+  if (!authToken) { openLogin(); return; }
+  try {
+    const d = await api('saveMaster', { data: masterData });
+    masterData.forEach(r => { r._d = false; r._n = false; });
+    renderM();
+    toast(`已儲存 ${d.count} 筆至 Google Drive ✓`, 'ok');
+  } catch(e) {
+    // fallback local save
+    masterData.forEach(r => { r._d = false; r._n = false; });
+    renderM();
+    toast('已本機暫存（設定後端可同步至 Drive）', 'info');
+  }
+}
+
+// ═══════════════════════════════════════════
+//  FILE UPLOAD
+// ═══════════════════════════════════════════
+const ICONS = { pdf:'📋', xlsx:'📊', xls:'📊', docx:'📝', doc:'📝', jpg:'🖼', jpeg:'🖼', png:'🖼', heic:'🖼', webp:'🖼' };
+const dz = document.getElementById('dz');
+const fi = document.getElementById('fi');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag'); if(e.dataTransfer.files[0]) setF(e.dataTransfer.files[0]); });
+fi.addEventListener('change', e => { if(e.target.files[0]) setF(e.target.files[0]); fi.value=''; });
+function setF(f) {
+  curFile = f;
+  const ext = f.name.split('.').pop().toLowerCase();
+  document.getElementById('pico').textContent = ICONS[ext] || '📄';
+  document.getElementById('pnm').textContent  = f.name;
+  document.getElementById('psz').textContent  = (f.size/1024).toFixed(1) + ' KB';
+  document.getElementById('fp').classList.add('on');
+  document.getElementById('aBtn').disabled = false;
+}
+function clrF() { curFile=null; document.getElementById('fp').classList.remove('on'); document.getElementById('aBtn').disabled=true; }
+function resetAll() {
+  clrF();
+  ['pnl-lb','pnl-rpt','pnl-ld'].forEach(id => document.getElementById(id).style.display='none');
+  document.getElementById('pnl-up').style.display = '';
+  setStep(1);
+}
+
+// ═══════════════════════════════════════════
+//  ANALYZE
+// ═══════════════════════════════════════════
+async function doAnalyze() {
+  if (!curFile) return;
+  // Get Gemini key from backend
+  let geminiKey;
+  try {
+    const kd = await api('getGeminiKey', {});
+    geminiKey = kd.key;
+    if (!geminiKey) { toast('請至 ⚙ 設定填入 Gemini API Key', 'err'); return; }
+  } catch(e) { toast('無法取得 API Key：' + e.message, 'err'); return; }
+
+  document.getElementById('pnl-up').style.display = 'none';
+  document.getElementById('pnl-ld').style.display = '';
+  setStep(2);
+
+  const msgs = [
+    ['Gemini 解析報價單中…','辨識品項規格與廠商資訊'],
+    ['比對主檔最低價…', `${masterData.length} 筆材料主檔`],
+    ['計算差異幅度…','篩選工費與整包項目'],
+    ['整理燈號結果…','即將完成']
+  ];
+  let mi = 0;
+  const tick = setInterval(() => {
+    mi = (mi+1) % msgs.length;
+    document.getElementById('ldT').textContent = msgs[mi][0];
+    document.getElementById('ldS').textContent = msgs[mi][1];
+  }, 1800);
+
+  try {
+    const b64  = await f2b64(curFile);
+    const ext  = curFile.name.split('.').pop().toLowerCase();
+    const mimeMap = { pdf:'application/pdf', jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', heic:'image/heic', webp:'image/webp' };
+    const mime = mimeMap[ext] || 'application/pdf';
+    const isMedia = ['jpg','jpeg','png','heic','webp','pdf'].includes(ext);
+    const today = new Date().toISOString().slice(0,10);
+    const masterJson = JSON.stringify(masterData.map(r => ({ spec:r.spec, unit:r.unit, price:r.price, keywords:r.keywords })));
+
+    const prompt = `You are an expert procurement engineer with 20 years experience in Thailand construction projects.
+Today's date: ${today}
+Master Item List (${masterData.length} items): ${masterJson}
+TASK: Analyze the attached quotation document. Extract ALL line items.
+Return ONLY a single valid JSON (no markdown):
+{
+  "vendor": "exact company name from document",
+  "project": "project name or scope from document",
+  "currency": "THB",
+  "items": [{
+    "spec": "original text",
+    "unit": "unit",
+    "qty": number_or_null,
+    "unitPrice": number,
+    "subtotal": number_or_null,
+    "category": "material|labor|package",
+    "masterSpec": "matched spec or null",
+    "masterLowestPrice": number_or_null,
+    "matchConfidence": "high|medium|low|none",
+    "flag": "normal|high|low|pending|no_basis|labor_package"
+  }]
+}
+FLAG: normal=±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis=no match, labor_package=labor/package category`;
+
+    let parts;
+    if (isMedia) parts = [{ text: prompt }, { inline_data: { mime_type: mime, data: b64 } }];
+    else parts = [{ text: prompt + '\n\n[' + ext + ' file]' }];
+
+    const res  = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ contents: [{ parts }] })
+    });
+    if (!res.ok) throw new Error('Gemini API ' + res.status);
+    const rd    = await res.json();
+    const raw   = rd.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+
+    clearInterval(tick);
+    parsedItems = parsed.items || [];
+    curRptId = 'RPT-' + today.replace(/-/g,'') + '-' + Math.floor(Math.random()*900+100);
+
+    // Store extracted info globally
+    window._aiVendor  = parsed.vendor  || '—';
+    window._aiProject = parsed.project || '—';
+    window._aiDate    = today;
+
+    // Backup original file to Drive
+    try { await api('uploadFile', { fileName: curFile.name, base64Data: b64, mimeType: mime }); } catch(_){}
+
+    laborItems = parsedItems.filter(it => it.flag === 'labor_package');
+    document.getElementById('pnl-ld').style.display = 'none';
+    if (laborItems.length > 0) { buildLabor(); document.getElementById('pnl-lb').style.display=''; setStep(2); }
+    else { buildReport(); document.getElementById('pnl-rpt').style.display=''; setStep(3); }
+  } catch(e) {
+    clearInterval(tick);
+    document.getElementById('pnl-ld').style.display = 'none';
+    document.getElementById('pnl-up').style.display = '';
+    setStep(1);
+    toast(e.message.includes('JSON') ? 'AI 回傳格式異常，請重試' : '錯誤：' + e.message, 'err', 5000);
+  }
+}
+function f2b64(file) { return new Promise((ok,fail) => { const r=new FileReader(); r.onload=()=>ok(r.result.split(',')[1]); r.onerror=fail; r.readAsDataURL(file); }); }
+
+// ═══════════════════════════════════════════
+//  LABOR
+// ═══════════════════════════════════════════
+function buildLabor() {
+  document.getElementById('lbCards').innerHTML = laborItems.map((it,i) => `
+    <div class="lcard">
+      <div class="lhd">
+        <span class="lbadge">工費 / 整包</span>
+        <span class="lname">${it.spec}</span>
+        <span class="lquoted">廠商報：฿ ${fmt(it.unitPrice)}</span>
+      </div>
+      <div class="g3">
+        <div class="field"><label>工期（天）</label><input type="number" min="0" step="1" placeholder="5" id="ld${i}" oninput="calcL(${i})"></div>
+        <div class="field"><label>每日人工費（฿/人）</label><input type="number" min="0" step="100" placeholder="1500" id="lr${i}" oninput="calcL(${i})"></div>
+        <div class="field"><label>人數</label><input type="number" min="0" step="1" placeholder="4" id="lw${i}" oninput="calcL(${i})"></div>
+      </div>
+      <div class="lres">
+        <span class="lest">預估合理工費：<strong id="le${i}">請填入上方數值</strong></span>
+        <span class="lflag" id="lf${i}"></span>
+      </div>
+    </div>`).join('');
+}
+function calcL(i) {
+  const d=parseFloat(document.getElementById(`ld${i}`)?.value)||0;
+  const r=parseFloat(document.getElementById(`lr${i}`)?.value)||0;
+  const w=parseFloat(document.getElementById(`lw${i}`)?.value)||0;
+  if(!d||!r||!w){document.getElementById(`le${i}`).textContent='請填入上方數值';document.getElementById(`lf${i}`).textContent='';laborItems[i]._est=null;return;}
+  const est=d*r*w;
+  Object.assign(laborItems[i],{_est:est,_days:d,_rate:r,_workers:w});
+  document.getElementById(`le${i}`).textContent=`฿ ${fmt(est)}`;
+  const dv=(laborItems[i].unitPrice-est)/est,p=(dv*100).toFixed(1);
+  let lbl,col;
+  if(Math.abs(dv)<=.1){lbl=`🟢 正常 (${dv>=0?'+':''}${p}%)`;col='var(--gn)'}
+  else if(dv>.1){lbl=`🔴 偏高 (+${p}%)`;col='var(--rd)'}
+  else{lbl=`🟣 偏低 (${p}%)`;col='var(--pu)'}
+  const el=document.getElementById(`lf${i}`);el.textContent=lbl;el.style.color=col;
+}
+function goReport(){buildReport();document.getElementById('pnl-lb').style.display='none';document.getElementById('pnl-rpt').style.display='';setStep(3);}
+
+// ═══════════════════════════════════════════
+//  REPORT
+// ═══════════════════════════════════════════
+function getF(it) {
+  if(it.flag==='labor_package'){
+    if(it._est==null)return{lbl:'工費/整包',cls:'py',diff:null};
+    const d=(it.unitPrice-it._est)/it._est,p=(d*100).toFixed(1);
+    if(Math.abs(d)<=.1)return{lbl:`🟢 正常 (${d>=0?'+':''}${p}%)`,cls:'pg',diff:d};
+    if(d>.1)return{lbl:`🔴 偏高 (+${p}%)`,cls:'pr',diff:d};
+    return{lbl:`🟣 偏低 (${p}%)`,cls:'pp',diff:d};
+  }
+  const base=it.masterLowestPrice,p=base?((it.unitPrice-base)/base*100).toFixed(1):null,d=p!=null?parseFloat(p):null;
+  switch(it.flag){
+    case'normal':return{lbl:`🟢 正常 (${d>=0?'+':''}${p}%)`,cls:'pg',diff:d};
+    case'high':  return{lbl:`🔴 偏高 (+${p}%)`,cls:'pr',diff:d};
+    case'low':   return{lbl:`🟣 偏低 (${p}%)`,cls:'pp',diff:d};
+    case'pending':return{lbl:'🟠 待確認',cls:'pa',diff:d};
+    case'no_basis':return{lbl:'⚪ 無基準',cls:'pgr',diff:null};
+    default:return{lbl:'—',cls:'pgr',diff:null};
+  }
+}
+async function buildReport() {
+  const vendor  = window._aiVendor  || '—';
+  const project = window._aiProject || '—';
+  const rptDate = new Date().toLocaleString('zh-TW',{hour12:false});
+  const cnt={normal:0,high:0,low:0,pending:0,no_basis:0,labor:0};
+  parsedItems.forEach(it=>{
+    if(it.flag==='labor_package'){
+      if(it._est==null||Math.abs((it.unitPrice-it._est)/it._est)<=.1)cnt.labor++;
+      else if(it.unitPrice>it._est*1.1)cnt.high++; else cnt.low++;
+    } else cnt[it.flag]=(cnt[it.flag]||0)+1;
+  });
+  const totalQ=parsedItems.reduce((s,it)=>s+(it.subtotal??it.unitPrice*(it.qty??1)),0);
+  let totalS=0,canSave=0;
+  parsedItems.forEach(it=>{
+    const sub=it.subtotal??it.unitPrice*(it.qty??1);
+    if(it.flag==='labor_package'&&it._est!=null){totalS+=it._est;if(it.unitPrice>it._est*1.1)canSave+=(it.unitPrice-it._est);}
+    else if(it.flag==='high'&&it.masterLowestPrice){totalS+=it.masterLowestPrice*(it.qty??1);canSave+=(it.unitPrice-it.masterLowestPrice)*(it.qty??1);}
+    else totalS+=sub;
+  });
+  const cats={};parsedItems.forEach(it=>{const c=it.category||'other';(cats[c]=cats[c]||[]).push(it);});
+  const catL={material:'配管材料',labor:'工費',package:'整包項目',other:'其他'};
+  let rows='';
+  Object.entries(cats).forEach(([cat,items])=>{
+    rows+=`<tr class="tsec"><td colspan="9">${catL[cat]||cat}</td></tr>`;
+    items.forEach(it=>{
+      const sub=it.subtotal!=null?it.subtotal:(it.qty?it.unitPrice*it.qty:null);
+      const f=getF(it);
+      let baseStr,diffStr;
+      if(it.flag==='labor_package'){
+        baseStr=it._est!=null?`฿ ${fmt(it._est)}`:'—';
+        if(it._est!=null){const dv=(it.unitPrice-it._est)/it._est*100;diffStr=`<span class="${dv>0?'cup':dv<0?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;}
+        else diffStr='<span class="cna">未填</span>';
+      } else {
+        baseStr=it.masterLowestPrice?`฿ ${fmt(it.masterLowestPrice)}`:'—';
+        if(it.masterLowestPrice){const dv=(it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice*100;diffStr=`<span class="${dv>1?'cup':dv<-1?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;}
+        else diffStr='<span class="cna">—</span>';
+      }
+      const extra=it.flag==='labor_package'&&it._est!=null
+        ?`<div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-top:3px">${it._days}天×฿${fmtN(it._rate)}/人×${it._workers}人</div>`
+        :it.flag==='labor_package'?`<div style="font-family:var(--mono);font-size:9px;color:var(--am);margin-top:2px">⚠ 未填工費預估</div>`:'';
+      rows+=`<tr>
+        <td>${it.spec}${extra}</td><td>${it.unit||'—'}</td>
+        <td>${it.qty!=null?fmtN(it.qty):'—'}</td>
+        <td>฿ ${fmt(it.unitPrice)}</td>
+        <td>${sub!=null?'฿ '+fmt(sub):'—'}</td>
+        <td style="font-size:11px">${baseStr}</td>
+        <td>${diffStr}</td>
+        <td style="font-size:10px;color:var(--t3);max-width:130px;white-space:normal">${it.masterSpec||'—'}</td>
+        <td><span class="pill ${f.cls}">${f.lbl}</span></td>
+      </tr>`;
+    });
+  });
+  const advs=parsedItems.filter(it=>['high','low'].includes(it.flag)||(it.flag==='labor_package'&&it._est!=null&&Math.abs((it.unitPrice-it._est)/it._est)>.1));
+  const advHtml=advs.slice(0,6).map(it=>{
+    const f=getF(it);
+    const col=f.cls==='pr'?'var(--rd)':f.cls==='pp'?'var(--pu)':'var(--am)';
+    let msg='';
+    const isLH=it.flag==='labor_package'&&it._est&&it.unitPrice>it._est*1.1;
+    const isLL=it.flag==='labor_package'&&it._est&&it.unitPrice<it._est*.9;
+    if(isLH)msg=`廠商報 ฿${fmt(it.unitPrice)}，預估合理工費 ฿${fmt(it._est)}（${it._days}天×฿${fmtN(it._rate)}×${it._workers}人），建議議降。`;
+    else if(isLL)msg=`廠商報 ฿${fmt(it.unitPrice)}，低於預估工費 ฿${fmt(it._est)}，確認工作範圍是否縮水。`;
+    else if(it.flag==='high')msg=`歷史最低價 ฿${fmt(it.masterLowestPrice)}，廠商報 ฿${fmt(it.unitPrice)}（+${((it.unitPrice/it.masterLowestPrice-1)*100).toFixed(1)}%），建議優先議價。`;
+    else msg=`廠商報 ฿${fmt(it.unitPrice)}，低於歷史最低價 ฿${fmt(it.masterLowestPrice)}，確認規格一致性。`;
+    return `<div class="adv" style="border-left-color:${col}"><div class="adv-t">${f.lbl.split('(')[0].trim()} — ${it.spec}</div><div class="adv-b">${msg}</div></div>`;
+  }).join('');
+
+  document.getElementById('rptInner').innerHTML=`
+    <div class="card" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem">
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.1em;margin-bottom:5px">${curRptId}</div>
+          <div style="font-family:var(--head);font-size:20px;font-weight:800">${vendor}</div>
+          <div style="font-size:13px;color:var(--t2);margin-top:3px">${project}</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--t3);margin-top:2px">分析日期：${window._aiDate}</div>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);text-align:right">製表：${rptDate}<br>主檔：${masterData.length} 筆</div>
+      </div>
+      <div class="ss">
+        <div class="sbox sg"><div class="sn" style="color:var(--gn)">${cnt.normal}</div><div class="sl">正常</div></div>
+        <div class="sbox sr"><div class="sn" style="color:var(--rd)">${cnt.high}</div><div class="sl">偏高</div></div>
+        <div class="sbox sp"><div class="sn" style="color:var(--pu)">${cnt.low}</div><div class="sl">偏低</div></div>
+        <div class="sbox sa"><div class="sn" style="color:var(--am)">${cnt.pending}</div><div class="sl">待確認</div></div>
+        <div class="sbox sgr"><div class="sn" style="color:var(--t3)">${cnt.no_basis}</div><div class="sl">無基準</div></div>
+        <div class="sbox sy"><div class="sn" style="color:var(--yw)">${cnt.labor}</div><div class="sl">工費</div></div>
+      </div>
+    </div>
+    <div class="tc" style="margin-bottom:1rem"><div class="tsc"><table>
+      <thead><tr>
+        <th style="text-align:left;padding-left:16px">品項規格（廠商原文）</th>
+        <th style="text-align:center">單位</th><th>數量</th>
+        <th>廠商單價 (฿)</th><th>報價小計 (฿)</th>
+        <th>歷史最低價 / 工費預估 (฿)</th><th>差異</th>
+        <th style="text-align:left">比對品項</th>
+        <th style="text-align:center;padding-right:16px">燈號</th>
+      </tr></thead>
+      <tbody>${rows}
+        <tr class="ttot">
+          <td colspan="3" style="text-align:left;padding-left:16px;font-family:var(--mono);font-size:10px;color:var(--t3)">TOTAL</td>
+          <td></td><td style="font-family:var(--mono);font-size:14px">฿ ${fmt(totalQ)}</td>
+          <td colspan="4"></td>
+        </tr>
+      </tbody>
+    </table></div></div>
+    <div class="totals">
+      <div class="tcell"><label>廠商報價總計</label><div class="tamt" style="color:var(--t1)">฿ ${fmt(totalQ)}</div><div class="tnote" style="color:var(--t3)">廠商開價</div></div>
+      <div class="tcell"><label>建議目標價</label><div class="tamt" style="color:var(--gn)">฿ ${fmt(totalS)}</div><div class="tnote" style="color:var(--t3)">依最低價 / 工費預估</div></div>
+      <div class="tcell"><label>可節省金額</label><div class="tamt" style="color:var(--mg)">฿ ${fmt(canSave)}</div><div class="tnote" style="color:${canSave>0?'var(--mg)':'var(--t3)'}">${totalQ>0?'−'+((canSave/totalQ)*100).toFixed(1)+'%':'—'}</div></div>
+    </div>
+    ${advHtml?`<div style="margin-bottom:1rem"><div class="clabel" style="margin-bottom:.75rem">AI 議價建議</div>${advHtml}</div>`:''}
+    <div style="font-family:var(--mono);font-size:10px;color:var(--t3);padding:.75rem 0;border-top:1px solid var(--rim)">
+      燈號：±10% 為正常區間 ／ 工費：人工填入預估 ／ Gemini AI 自動生成 ／ ${curRptId}
+    </div>`;
+
+  // Backup report to Drive
+  try {
+    const rptData = { reportId:curRptId, vendor, project, date:window._aiDate, generatedAt:new Date().toISOString(), items:parsedItems };
+    await api('saveReport', { reportId:curRptId, reportData:rptData });
+    toast('報告已備份至 Google Drive', 'info');
+  } catch(_) {}
+}
+
+// ═══════════════════════════════════════════
+//  MASTER TABLE
+// ═══════════════════════════════════════════
+function renderM() {
+  const q = (document.getElementById('ms').value || '').toLowerCase();
+  const rows = masterData.filter(r => !q || r.spec.toLowerCase().includes(q) || (r.keywords||'').toLowerCase().includes(q));
+  const canEdit = !!authToken;
+  document.getElementById('mBody').innerHTML = rows.map(r => {
+    const i = masterData.indexOf(r);
+    const ce = canEdit ? 'true' : 'false';
+    const cur = canEdit ? '' : 'cursor:default';
+    const clk = canEdit ? '' : 'onclick="openLogin()"';
+    const delBtn = canEdit
+      ? `<button class="btn btn-r" style="font-size:11px;padding:3px 10px" onclick="delM(${i})">刪除</button>`
+      : `<button class="btn btn-g" style="font-size:11px;padding:3px 10px;opacity:.4" onclick="openLogin()">🔒</button>`;
+    const units = ['EA','M','PCS','KG','SET','LOT'].map(u =>
+      `<option${r.unit===u?' selected':''}>${u}</option>`).join('');
+    return `<tr class="${r._n?'rn':r._d?'rd':''}">
+      <td contenteditable="${ce}" onblur="eM(${i},'spec',this.textContent)" style="${cur}" ${clk}>${r.spec}</td>
+      <td style="text-align:center">
+        <select onchange="eM(${i},'unit',this.value)" ${canEdit?'':'disabled'} style="background:transparent;border:none;color:var(--t1);font-size:12px;font-family:var(--body)">${units}</select>
+      </td>
+      <td contenteditable="${ce}" onblur="eM(${i},'price',this.textContent)" style="${cur}" ${clk}>${r.price}</td>
+      <td contenteditable="${ce}" onblur="eM(${i},'keywords',this.textContent)" style="font-size:11px;color:var(--t3);max-width:220px;white-space:normal;${cur}" ${clk}>${r.keywords||''}</td>
+      <td contenteditable="${ce}" onblur="eM(${i},'remark',this.textContent)" style="font-size:11px;color:var(--t3);${cur}" ${clk}>${r.remark||''}</td>
+      <td style="text-align:center;padding-right:16px">${delBtn}</td>
+    </tr>`;
+  }).join('');
+  updBadge();
+  const hint = document.getElementById('masterHint');
+  if (hint) hint.textContent = canEdit
+    ? '* 點欄位直接編輯。橘色列 = 未儲存。「儲存至 Drive」推送 master_list.json。「匯入覆蓋 CSV」整批替換主檔。'
+    : '🔒 唯讀模式 — 點任意欄位或按鈕即可登入管理員進行編輯。';
+}
+
+function eM(i,f,v) {
+  if (!authToken) {
+    renderM(); // 還原顯示（不儲存變更）
+    openLogin();
+    return;
+  }
+  masterData[i][f] = f==='price' ? (parseFloat(v)||0) : v;
+  masterData[i]._d = true;
+}
+function delM(i) {
+  if (!authToken) { openLogin(); return; }
+  if (!confirm(`確定刪除「${masterData[i].spec}」？`)) return;
+  masterData.splice(i,1); renderM(); toast('已刪除','ok');
+}
+function openAdd() {
+  if (!authToken) { openLogin(); return; }
+  document.getElementById('addM').classList.remove('h');
+}
+function closeAdd(){document.getElementById('addM').classList.add('h');}
+function addItem(){
+  const spec=document.getElementById('m-sp').value.trim();
+  if(!spec){toast('品項規格不可空白','err');return;}
+  masterData.push({spec,unit:document.getElementById('m-un').value,price:parseFloat(document.getElementById('m-pr').value)||0,keywords:document.getElementById('m-kw').value.trim(),remark:document.getElementById('m-rm').value.trim(),_d:false,_n:true});
+  closeAdd();['m-sp','m-kw','m-rm'].forEach(id=>document.getElementById(id).value='');document.getElementById('m-pr').value='';
+  renderM();toast('已新增，記得按「儲存至 Drive」','ok');
+}
+function expCSV(){
+  const rows=[['Material Specification','Unit','Unit Price (THB)','Keywords','Remark'],...masterData.map(r=>[r.spec,r.unit,r.price,r.keywords||'',r.remark||''])];
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  dl('\uFEFF'+csv,'master_item_list.csv','text/csv;charset=utf-8');
+  toast('CSV 已匯出','ok');
+}
+function impCSV(inp){
+  const f=inp.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const lines=e.target.result.split('\n').filter(l=>l.trim());
+    const parse=l=>{const cells=[];let cur='',inQ=false;for(const ch of l){if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){cells.push(cur.trim());cur='';}else cur+=ch;}cells.push(cur.trim());return cells.map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"'));};
+    const rows=lines.map(parse);
+    const h=rows[0].map(x=>x.toLowerCase().trim());
+    const si=h.findIndex(x=>x.includes('spec')),ui=h.findIndex(x=>x.includes('unit')&&!x.includes('price')),pi=h.findIndex(x=>x.includes('price')),ki=h.findIndex(x=>x.includes('key')),ri=h.findIndex(x=>x.includes('rem'));
+    const data=rows.slice(1).filter(r=>r[si>=0?si:0]).map(r=>({spec:r[si>=0?si:0]||'',unit:r[ui>=0?ui:1]||'EA',price:parseFloat(r[pi>=0?pi:2])||0,keywords:r[ki>=0?ki:3]||'',remark:r[ri>=0?ri:4]||'',_d:false,_n:true}));
+    if (!authToken) { openLogin(); return; }
+    if(!confirm(`確定用匯入的 ${data.length} 筆覆蓋現有主檔 ${masterData.length} 筆？`))return;
+    masterData=data;renderM();toast(`已匯入 ${data.length} 筆，請按「儲存至 Drive」同步`,'ok');
+  };
+  reader.readAsText(f,'utf-8');inp.value='';
+}
+function expJSON(){
+  const d={reportId:curRptId,generatedAt:new Date().toISOString(),vendor:window._aiVendor,project:window._aiProject,items:parsedItems};
+  dl(JSON.stringify(d,null,2),curRptId+'.json','application/json');toast('JSON 已匯出','ok');
+}
+function dl(content,name,type){const blob=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();}
+
+// ═══════════════════════════════════════════
+//  SETTINGS
+// ═══════════════════════════════════════════
+function openSett(){document.getElementById('settM').classList.remove('h');updSettUI();}
+function closeSett(){document.getElementById('settM').classList.add('h');}
+function updSettUI(){
+  document.getElementById('urlStat').textContent = backendUrl ? '已設定 ✓' : '未設定';
+}
+function setUrl(){
+  const u=prompt('請貼上 Apps Script 部署網址：\n（格式：https://script.google.com/macros/s/...）');
+  if(!u)return;
+  backendUrl=u.trim();localStorage.setItem('backendUrl',backendUrl);
+  updSettUI();toast('網址已儲存','ok');
+}
+async function setKey(){
+  const k=prompt('請輸入 Gemini API Key（AIzaSy...）：');
+  if(!k)return;
+  try{await api('setGeminiKey',{key:k.trim()});document.getElementById('keyStat').textContent='已設定 ✓';toast('Gemini Key 已加密儲存至 Apps Script','ok');}
+  catch(e){toast('儲存失敗：'+e.message,'err');}
+}
+async function fetchKeyStatus(){
+  try{const d=await api('getGeminiKey',{});document.getElementById('keyStat').textContent=d.key?'已設定 ✓':'未設定';}catch(_){}
+}
+function chgPw(){
+  const np=prompt('請輸入新密碼（最少 8 碼）：');
+  if(!np||np.length<8){toast('密碼太短','err');return;}
+  toast('請在 Apps Script CONFIG.ADMIN_PW 中更新密碼，然後重新部署','info',6000);
+}
+async function testConn(){
+  try{
+    const res=await fetch(backendUrl);
+    const d=await res.json();
+    toast(d.ok?'連線成功：'+d.msg:'連線失敗：'+d.error,d.ok?'ok':'err');
+  }catch(e){toast('無法連線：'+e.message,'err');}
+}
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  // 訪客直接進入，載入主檔（唯讀）
+  const tok = sessionStorage.getItem('tok');
+  if (tok) { authToken = tok; showAdminUI(true); fetchKeyStatus(); }
+  loadMaster();
+  updSettUI();
+});
+document.getElementById('addM').addEventListener('click',function(e){if(e.target===this)closeAdd()});
+document.getElementById('settM').addEventListener('click',function(e){if(e.target===this)closeSett()});
+
+// ═══════════════════════════════════════════
+//  SEED DATA
+// ═══════════════════════════════════════════
+const SEED=[
+  {spec:'Ball Valve, SS304, CL150, PTFE, 1/2" (Screw)',unit:'EA',price:850,keywords:'ball valve ss304 150p ptfe 1/2 screw npt stainless',remark:''},
+  {spec:'Ball Valve, SS304, CL150, PTFE, 1" (Screw)',unit:'EA',price:1150,keywords:'ball valve ss304 150p ptfe 1inch screw npt stainless',remark:''},
+  {spec:'Ball Valve, SS304, CL150, PTFE, 1-1/2"',unit:'EA',price:2200,keywords:'ball valve ss304 150p ptfe 1.5 40a flange stainless',remark:''},
+  {spec:'Ball Valve, SS304, CL150, PTFE, 2"',unit:'EA',price:3150,keywords:'ball valve ss304 150p 2inch flange stainless ptfe',remark:''},
+  {spec:'Ball Valve, SS304, CL150, PTFE, 4"',unit:'EA',price:8500,keywords:'ball valve ss304 150p 4inch flange stainless ptfe',remark:''},
+  {spec:'Ball Valve, A105, CL150, 1" (FLG RF)',unit:'EA',price:1800,keywords:'ball valve a105 150lb 1inch flange rf carbon steel',remark:''},
+  {spec:'Ball Valve, A105, CL150, 3" (FLG RF)',unit:'EA',price:5200,keywords:'ball valve a105 150lb 3inch flange rf carbon steel',remark:''},
+  {spec:'Ball Valve, A105, CL150, 4" (FLG RF)',unit:'EA',price:7800,keywords:'ball valve a105 150lb 4inch flange rf carbon steel',remark:''},
+  {spec:'Ball Valve, WCB, CL150, 2" (FLG RF)',unit:'EA',price:4200,keywords:'ball valve wcb 150p 2inch flange rf carbon steel',remark:''},
+  {spec:'Ball Valve, 150#, 3"',unit:'EA',price:5800,keywords:'ball valve 150lb 3inch carbon steel',remark:''},
+  {spec:'Ball Valve, 150#, 4"',unit:'EA',price:8200,keywords:'ball valve 150lb 4inch carbon steel',remark:''},
+  {spec:'Ball Valve, 150#, 6"',unit:'EA',price:18500,keywords:'ball valve 150lb 6inch carbon steel',remark:''},
+  {spec:'Gate Valve, 2" PN10',unit:'EA',price:580,keywords:'gate valve 2inch pn10 carbon steel screwed',remark:''},
+  {spec:'Gate Valve, 4" PN10',unit:'EA',price:1850,keywords:'gate valve 4inch pn10 carbon steel flange',remark:''},
+  {spec:'Butterfly Valve, CL150, 4"',unit:'EA',price:6500,keywords:'butterfly valve 150lb 4inch flange carbon steel',remark:''},
+  {spec:'Butterfly Valve, 8" (Manual)',unit:'EA',price:14000,keywords:'butterfly valve 8inch manual',remark:''},
+  {spec:'Butterfly Valve, 8" (Pneumatic)',unit:'EA',price:32000,keywords:'butterfly valve 8inch pneumatic actuated',remark:''},
+  {spec:'Butterfly Valve, 12" (Pneumatic)',unit:'EA',price:68000,keywords:'butterfly valve 12inch pneumatic actuated',remark:''},
+  {spec:'Knife Gate Valve, 12" (Pneumatic)',unit:'EA',price:85000,keywords:'knife gate valve 12inch pneumatic actuated',remark:''},
+  {spec:'Check Valve, 2" (Swing)',unit:'EA',price:650,keywords:'check valve swing 2inch carbon steel',remark:''},
+  {spec:'Check Valve, 4" (Swing)',unit:'EA',price:1850,keywords:'check valve swing 4inch carbon steel',remark:''},
+  {spec:'Globe Valve, 2" PN16',unit:'EA',price:1200,keywords:'globe valve 2inch pn16 carbon steel',remark:''},
+  {spec:'Strainer, Y-Type, 2"',unit:'EA',price:780,keywords:'strainer y type 2inch carbon steel filter',remark:''},
+  {spec:'Strainer, Y-Type, 4"',unit:'EA',price:2200,keywords:'strainer y type 4inch carbon steel filter',remark:''},
+  {spec:'PPR Pipe, PN20, 1/2"',unit:'M',price:22,keywords:'ppr pipe pn20 1/2 15mm water',remark:''},
+  {spec:'PPR Pipe, PN20, 3/4"',unit:'M',price:31.5,keywords:'ppr pipe pn20 3/4 20mm water',remark:''},
+  {spec:'PPR Pipe, PN20, 1"',unit:'M',price:52,keywords:'ppr pipe pn20 1inch 25mm water',remark:''},
+  {spec:'PPR Pipe, PN20, 1-1/2"',unit:'M',price:98,keywords:'ppr pipe pn20 1.5inch 40mm water',remark:''},
+  {spec:'PPR Pipe, PN20, 2"',unit:'M',price:145,keywords:'ppr pipe pn20 2inch 50mm water',remark:''},
+  {spec:'UPVC Pipe, Class 13.5, 1/2" x 4m',unit:'EA',price:85,keywords:'upvc pipe class 13.5 1/2inch 4m pvc',remark:''},
+  {spec:'UPVC Pipe, Class 13.5, 3/4" x 4m',unit:'EA',price:120,keywords:'upvc pipe class 13.5 3/4inch 4m pvc',remark:''},
+  {spec:'UPVC Pipe, Class 13.5, 1" x 4m',unit:'EA',price:172,keywords:'upvc pipe class 13.5 1inch 4m pvc',remark:''},
+  {spec:'UPVC Pipe, Class 13.5, 1-1/2" x 4m',unit:'EA',price:248,keywords:'upvc pipe class 13.5 1.5inch 4m pvc',remark:''},
+  {spec:'UPVC Pipe, Class 13.5, 2" x 4m',unit:'EA',price:335,keywords:'upvc pipe class 13.5 2inch 4m pvc',remark:''},
+  {spec:'UPVC Pipe, Class 13.5, 3" x 4m',unit:'EA',price:520,keywords:'upvc pipe class 13.5 3inch 4m pvc',remark:''},
+  {spec:'UPVC Pipe, Class 13.5, 4" x 4m',unit:'EA',price:850,keywords:'upvc pipe class 13.5 4inch 4m pvc',remark:''},
+  {spec:'UPVC Elbow 90°, 1/2"',unit:'EA',price:7,keywords:'upvc elbow 90 1/2inch fitting pvc',remark:''},
+  {spec:'UPVC Elbow 90°, 1"',unit:'EA',price:14,keywords:'upvc elbow 90 1inch fitting pvc',remark:''},
+  {spec:'UPVC Elbow 90°, 2"',unit:'EA',price:38,keywords:'upvc elbow 90 2inch fitting pvc',remark:''},
+  {spec:'UPVC Elbow 90°, 3"',unit:'EA',price:85,keywords:'upvc elbow 90 3inch fitting pvc',remark:''},
+  {spec:'UPVC Tee, 1"',unit:'EA',price:16.5,keywords:'upvc tee 1inch fitting pvc',remark:''},
+  {spec:'UPVC Tee, 2"',unit:'EA',price:52,keywords:'upvc tee 2inch fitting pvc',remark:''},
+  {spec:'UPVC Coupling, 1"',unit:'EA',price:7.8,keywords:'upvc coupling 1inch fitting pvc',remark:''},
+  {spec:'UPVC Coupling, 2"',unit:'EA',price:28,keywords:'upvc coupling 2inch fitting pvc',remark:''},
+  {spec:'UPVC Cap, 1/2"',unit:'EA',price:5.2,keywords:'upvc cap 1/2inch end cap pvc',remark:''},
+  {spec:'Reducing Socket, 2"x1"',unit:'EA',price:72,keywords:'reducing socket 2x1 reducer upvc pvc',remark:''},
+  {spec:'Union Coupling, 1-1/2"',unit:'EA',price:185,keywords:'union coupling 1.5inch upvc pvc',remark:''},
+  {spec:'PVC Solvent Cement, 400ml',unit:'PCS',price:88,keywords:'pvc solvent cement glue 400ml',remark:''},
+  {spec:'Teflon Tape, 3/4" x 10m',unit:'PCS',price:20,keywords:'teflon tape ptfe 3/4 10m thread seal',remark:''},
+  {spec:'Pipe Support Clamp, 1" (SS)',unit:'EA',price:32,keywords:'pipe support clamp 1inch stainless ss304',remark:''},
+  {spec:'Pipe Support Clamp, 2" (SS)',unit:'EA',price:65,keywords:'pipe support clamp 2inch stainless ss304',remark:''},
+  {spec:'Pipe Support Clamp, 4" (SS)',unit:'EA',price:195,keywords:'pipe support clamp 4inch stainless ss304',remark:''},
+  {spec:'Flexible Hose, SS, 16"',unit:'EA',price:420,keywords:'flexible hose stainless 16inch braided',remark:''},
+  {spec:'Pressure Gauge, 0-10 bar, 4"',unit:'EA',price:1100,keywords:'pressure gauge 0-10bar 4inch dial',remark:''},
+  {spec:'CS Pipe, 2" Sch40 (6m)',unit:'EA',price:1850,keywords:'carbon steel pipe 2inch schedule 40 6m cs',remark:''},
+  {spec:'CS Pipe, 4" Sch40 (6m)',unit:'EA',price:4800,keywords:'carbon steel pipe 4inch schedule 40 6m cs',remark:''},
+  {spec:'SS304 Pipe, 2" Sch10 (6m)',unit:'EA',price:3200,keywords:'stainless steel pipe ss304 2inch schedule 10 6m',remark:''},
+  {spec:'Flange, WN, 2" CL150',unit:'EA',price:580,keywords:'flange weld neck 2inch class 150 carbon steel',remark:''},
+  {spec:'Flange, WN, 4" CL150',unit:'EA',price:1450,keywords:'flange weld neck 4inch class 150 carbon steel',remark:''},
+  {spec:'Stud Bolt Set, 2" CL150',unit:'SET',price:180,keywords:'stud bolt set 2inch class 150 carbon steel',remark:''},
+  {spec:'Stud Bolt Set, 4" CL150',unit:'SET',price:420,keywords:'stud bolt set 4inch class 150 carbon steel',remark:''},
+  {spec:'VFD, 5.5kW, 3Phase',unit:'EA',price:18500,keywords:'vfd inverter 5.5kw 3phase variable frequency drive',remark:''},
+  {spec:'MCB, 1P, 16A (6kA)',unit:'EA',price:185,keywords:'mcb 1p 16a 6ka miniature circuit breaker',remark:''},
+  {spec:'MCCB, 3P, 100A (25kA)',unit:'EA',price:4800,keywords:'mccb 3p 100a 25ka molded case circuit breaker',remark:''},
+  {spec:'Wire, THW, 2.5 sq.mm',unit:'M',price:12.5,keywords:'wire thw 2.5mm electrical copper',remark:''},
+  {spec:'Wire, THW, 4 sq.mm',unit:'M',price:18,keywords:'wire thw 4mm electrical copper',remark:''},
+  {spec:'Cable, NYY, 4x6 sq.mm',unit:'M',price:145,keywords:'cable nyy 4x6mm power cable copper',remark:''},
+  {spec:'Terminal Block, 4mm, DIN Rail',unit:'EA',price:28,keywords:'terminal block 4mm din rail screw',remark:''},
+  {spec:'Earthing Rod, 5/8" x 1.8m',unit:'EA',price:285,keywords:'earthing rod 5/8 1.8m copper clad ground',remark:''},
+];
+</script>
+</body>
+</html>
