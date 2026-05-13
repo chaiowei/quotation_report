@@ -234,6 +234,65 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 ::-webkit-scrollbar-thumb{background:var(--rim3);border-radius:3px}
 
 @media(max-width:640px){.navi{padding:0 1rem}.pg{padding:1.5rem 1rem 4rem}}
+
+/* ── CATEGORY SELECT MODAL ── */
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0}
+.cat-btn{background:#FFFFFF;border:2px solid var(--rim2);border-radius:var(--r);padding:.9rem .75rem;text-align:center;cursor:pointer;transition:all .2s;font-family:var(--body)}
+.cat-btn:hover{border-color:var(--cy);background:var(--cyf)}
+.cat-btn.sel{border-color:var(--cy);background:var(--cyf);box-shadow:0 0 0 3px rgba(0,168,157,0.12)}
+.cat-ico{font-size:24px;display:block;margin-bottom:.35rem}
+.cat-lbl{font-size:13px;font-weight:600;color:var(--t1)}
+.cat-sub{font-size:10px;color:var(--t3);margin-top:2px}
+
+/* ── MASTER TABS ── */
+.mtabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1rem}
+.mtab{padding:6px 14px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--rim2);background:#FFFFFF;color:var(--t2);transition:all .2s;font-family:var(--body)}
+.mtab:hover{border-color:var(--cy);color:var(--cy)}
+.mtab.on{background:var(--cy);color:#FFFFFF;border-color:var(--cy)}
+.mtab-cnt{font-size:10px;background:rgba(255,255,255,0.3);padding:1px 5px;border-radius:10px;margin-left:4px}
+.mtab.on .mtab-cnt{background:rgba(255,255,255,0.3)}
+
+/* ── EDITABLE REPORT ── */
+.rpt-section{background:#FFFFFF;border:1.5px solid var(--rim2);border-radius:var(--r2);overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 12px rgba(0,168,157,0.07)}
+.rpt-toolbar{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg3);border-bottom:1.5px solid var(--rim2);flex-wrap:wrap;gap:.5rem}
+.rpt-toolbar-title{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--cy);letter-spacing:.08em;text-transform:uppercase}
+.edit-mode-badge{font-family:var(--mono);font-size:10px;padding:3px 9px;border-radius:20px;background:var(--amf);color:var(--am);border:1.5px solid rgba(224,136,0,.3)}
+.edit-mode-badge.active{background:rgba(232,56,109,0.1);color:var(--mg);border-color:var(--mg)}
+
+/* editable cells in report */
+.ecell{position:relative}
+.ecell[contenteditable=true]{cursor:text;background:rgba(0,168,157,0.04);outline:none;border-radius:4px;padding:2px 4px;min-width:40px}
+.ecell[contenteditable=true]:focus{background:rgba(0,168,157,0.1);box-shadow:0 0 0 2px var(--cy)}
+.ecell[contenteditable=true]:hover{background:rgba(0,168,157,0.06)}
+
+/* labor inline in report */
+.labor-inline-card{background:#FFFDF0;border:1.5px solid rgba(224,136,0,.25);border-radius:var(--r);padding:.75rem 1rem;margin:.5rem 0}
+.labor-inline-title{font-size:12px;font-weight:600;color:var(--am);margin-bottom:.6rem;font-family:var(--mono)}
+.labor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.labor-grid .field label{font-size:10px}
+.labor-grid .field input{padding:7px 10px;font-size:12px}
+.labor-result-inline{font-family:var(--mono);font-size:12px;margin-top:.5rem;padding:.5rem .75rem;background:#FFFFFF;border:1px solid rgba(224,136,0,.2);border-radius:var(--r)}
+
+/* ── FILE PREVIEW FLOAT ── */
+.fp-toggle{position:fixed;bottom:1.5rem;left:1.5rem;z-index:350;background:var(--cy);color:#fff;border:none;border-radius:50px;padding:10px 18px;font-size:13px;font-weight:600;font-family:var(--body);cursor:pointer;box-shadow:0 4px 20px rgba(0,168,157,0.35);transition:all .2s;display:none;align-items:center;gap:8px}
+.fp-toggle:hover{background:#008F86;transform:translateY(-2px)}
+.fp-toggle.show{display:flex}
+.fp-float{position:fixed;bottom:5rem;left:1.5rem;z-index:349;width:440px;max-width:calc(50vw - 2rem);background:#FFFFFF;border:2px solid var(--rim2);border-radius:var(--r2);box-shadow:0 8px 40px rgba(0,168,157,0.2);overflow:hidden;display:none;flex-direction:column;resize:both}
+.fp-float.show{display:flex}
+.fp-float-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;background:var(--bg3);border-bottom:1.5px solid var(--rim2);cursor:move;user-select:none}
+.fp-float-title{font-family:var(--mono);font-size:11px;color:var(--cy);font-weight:600}
+.fp-float-body{flex:1;overflow:auto;min-height:300px;max-height:70vh}
+.fp-float-body img{width:100%;height:auto;display:block}
+.fp-float-body iframe{width:100%;height:100%;min-height:500px;border:none}
+.fp-close{background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;padding:0 4px}
+.fp-close:hover{color:var(--rd)}
+
+/* ── CORRECTION MODAL ── */
+.corr-row{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--rim2)}
+.corr-row:last-child{border-bottom:none}
+.corr-label{font-size:11px;color:var(--t3);font-family:var(--mono);flex-shrink:0;width:80px;padding-top:.25rem}
+.corr-val{font-size:13px;color:var(--t1);flex:1;line-height:1.5}
+
 </style>
 </head>
 <body>
@@ -315,7 +374,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
       </div>
     </div>
     <div class="btn-row">
-      <button class="btn btn-c" id="aBtn" onclick="doAnalyze()" disabled>開始 AI 分析 →</button>
+      <button class="btn btn-c" id="aBtn" onclick="openCatModal()" disabled>開始 AI 分析 →</button>
     </div>
   </div>
 
@@ -366,16 +425,28 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
       匯入覆蓋 CSV <input type="file" accept=".csv" id="csvIn" style="display:none" onchange="impCSV(this)">
     </label>
   </div>
+  <!-- 分頁 tabs -->
+  <div class="mtabs" id="masterTabs">
+    <button class="mtab on" onclick="setMTab('all')" id="mtab-all">全部 <span class="mtab-cnt" id="cnt-all">0</span></button>
+    <button class="mtab" onclick="setMTab('piping')" id="mtab-piping">⚙ 配管 <span class="mtab-cnt" id="cnt-piping">0</span></button>
+    <button class="mtab" onclick="setMTab('electrical')" id="mtab-electrical">⚡ 儀電 <span class="mtab-cnt" id="cnt-electrical">0</span></button>
+    <button class="mtab" onclick="setMTab('civil')" id="mtab-civil">🏗 土木 <span class="mtab-cnt" id="cnt-civil">0</span></button>
+    <button class="mtab" onclick="setMTab('structural')" id="mtab-structural">🔩 鋼構 <span class="mtab-cnt" id="cnt-structural">0</span></button>
+    <button class="mtab" onclick="setMTab('common')" id="mtab-common">📦 共用 <span class="mtab-cnt" id="cnt-common">0</span></button>
+    <button class="mtab" onclick="setMTab('labor')" id="mtab-labor">👷 工費 <span class="mtab-cnt" id="cnt-labor">0</span></button>
+  </div>
   <div class="tc">
     <div class="tsc">
       <table id="mTbl">
         <thead><tr>
-          <th style="text-align:left;padding-left:16px">Material Specification</th>
-          <th style="text-align:center">Unit</th>
-          <th>Unit Price (THB)</th>
-          <th style="text-align:left">Keywords</th>
-          <th style="text-align:left">Remark</th>
-          <th style="text-align:center;padding-right:16px">操作</th>
+          <th style="text-align:left;padding-left:16px;min-width:220px">Material Specification</th>
+          <th style="text-align:center;min-width:60px">Unit</th>
+          <th style="min-width:110px">Unit Price (THB)</th>
+          <th style="text-align:center;min-width:100px">Category</th>
+          <th style="text-align:left;min-width:180px">Keywords</th>
+          <th style="text-align:left;min-width:100px">Remark</th>
+          <th style="text-align:center;min-width:130px">Updated</th>
+          <th style="text-align:center;padding-right:16px;min-width:70px">操作</th>
         </tr></thead>
         <tbody id="mBody"></tbody>
       </table>
@@ -394,6 +465,16 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
         <select id="m-un"><option>EA</option><option>M</option><option>PCS</option><option>KG</option><option>SET</option><option>LOT</option></select>
       </div>
       <div class="field"><label>Unit Price (THB)</label><input type="number" id="m-pr" step="0.01"></div>
+    </div>
+    <div class="field" style="margin-bottom:.75rem"><label>Category *</label>
+      <select id="m-cat">
+        <option value="piping">⚙ 配管 (Piping)</option>
+        <option value="electrical">⚡ 儀電 (Electrical)</option>
+        <option value="civil">🏗 土木 (Civil)</option>
+        <option value="structural">🔩 鋼構 (Structural)</option>
+        <option value="common">📦 共用 (Common)</option>
+        <option value="labor">👷 工費 (Labor)</option>
+      </select>
     </div>
     <div class="field" style="margin-bottom:.75rem"><label>Keywords</label><input id="m-kw" placeholder="ball valve ss304 2inch"></div>
     <div class="field" style="margin-bottom:1.25rem"><label>Remark</label><input id="m-rm"></div>
@@ -434,6 +515,108 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
   </div>
 </div>
 
+
+<!-- ══ MODAL: CATEGORY SELECT ══ -->
+<div class="mbg h" id="catModal">
+  <div class="mbox" style="max-width:480px">
+    <h3>選擇工程類別</h3>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:.25rem">選擇後 AI 只比對對應類別的主檔，節省分析時間</p>
+    <div class="cat-grid">
+      <div class="cat-btn" onclick="selCat('all')" id="cat-all">
+        <span class="cat-ico">📋</span>
+        <div class="cat-lbl">ALL</div>
+        <div class="cat-sub">全部主檔比對</div>
+      </div>
+      <div class="cat-btn" onclick="selCat('piping')" id="cat-piping">
+        <span class="cat-ico">⚙</span>
+        <div class="cat-lbl">配管</div>
+        <div class="cat-sub">Piping + Common</div>
+      </div>
+      <div class="cat-btn" onclick="selCat('electrical')" id="cat-electrical">
+        <span class="cat-ico">⚡</span>
+        <div class="cat-lbl">儀電</div>
+        <div class="cat-sub">Electrical + Common</div>
+      </div>
+      <div class="cat-btn" onclick="selCat('civil')" id="cat-civil">
+        <span class="cat-ico">🏗</span>
+        <div class="cat-lbl">土木</div>
+        <div class="cat-sub">Civil + Common</div>
+      </div>
+      <div class="cat-btn" onclick="selCat('structural')" id="cat-structural">
+        <span class="cat-ico">🔩</span>
+        <div class="cat-lbl">鋼構</div>
+        <div class="cat-sub">Structural + Common</div>
+      </div>
+      <div class="cat-btn" onclick="selCat('labor')" id="cat-labor">
+        <span class="cat-ico">👷</span>
+        <div class="cat-lbl">工費/整包</div>
+        <div class="cat-sub">Labor + Common</div>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:.5rem">
+      <button class="btn btn-g" onclick="document.getElementById('catModal').classList.add('h')">取消</button>
+      <button class="btn btn-c" id="catConfirmBtn" onclick="startAnalyzeWithCat()" disabled>開始分析 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FILE PREVIEW FLOAT ══ -->
+<button class="fp-toggle" id="fpToggle" onclick="togglePreview()">
+  📄 查看原始檔
+</button>
+<div class="fp-float" id="fpFloat">
+  <div class="fp-float-header" id="fpDragHandle">
+    <span class="fp-float-title">📄 原始報價單</span>
+    <div style="display:flex;gap:.5rem">
+      <button class="nbtn" style="font-size:11px;padding:3px 8px" onclick="openFileNewTab()">開新分頁 ↗</button>
+      <button class="fp-close" onclick="togglePreview()">✕</button>
+    </div>
+  </div>
+  <div class="fp-float-body" id="fpBody"></div>
+</div>
+
+<!-- ══ MODAL: CORRECTION ══ -->
+<div class="mbg h" id="corrModal">
+  <div class="mbox" style="max-width:520px">
+    <h3>回報 AI 讀取錯誤</h3>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:1rem">這筆修正會存入 Google Drive，下次分析同類工程時 AI 會自動參考</p>
+    <div class="corr-row"><span class="corr-label">品項</span><span class="corr-val" id="corr-spec">—</span></div>
+    <div class="corr-row">
+      <span class="corr-label">AI 讀取</span>
+      <div class="corr-val" id="corr-ai" style="color:var(--rd)">—</div>
+    </div>
+    <div class="corr-row">
+      <span class="corr-label">正確答案</span>
+      <div class="field" style="flex:1">
+        <input id="corr-correct" placeholder="輸入正確的值">
+      </div>
+    </div>
+    <div class="corr-row">
+      <span class="corr-label">類別</span>
+      <div class="field" style="flex:1">
+        <select id="corr-cat">
+          <option value="common">📦 共用 (Common)</option>
+          <option value="piping">⚙ 配管 (Piping)</option>
+          <option value="electrical">⚡ 儀電 (Electrical)</option>
+          <option value="civil">🏗 土木 (Civil)</option>
+          <option value="structural">🔩 鋼構 (Structural)</option>
+          <option value="labor">👷 工費 (Labor)</option>
+        </select>
+      </div>
+    </div>
+    <div class="corr-row">
+      <span class="corr-label">說明</span>
+      <div class="field" style="flex:1">
+        <input id="corr-note" placeholder="例：廠商慣用泰文縮寫，實際是 XXX">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-g" onclick="document.getElementById('corrModal').classList.add('h')">取消</button>
+      <button class="btn btn-c" onclick="submitCorrection()">儲存修正</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -441,246 +624,348 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 // ║  ★ 部署設定 — 只需修改這裡，改完上傳 GitHub 即生效       ║
 // ╚═══════════════════════════════════════════════════════════╝
 const CONFIG = {
-  BACKEND_URL:   'https://script.google.com/macros/s/AKfycbzOhaG8CB88CnQsKK8-1ixfB0EvkVpc8ejSx7FWHyY6_n0xEFL67HENeWP9K0-aOrmi2Q/exec',  // ★ 唯一還需要填的：貼上 Apps Script 部署網址
+  BACKEND_URL:   'https://script.google.com/macros/s/AKfycbz-FwZfyrBghDODQfbP9vr_7_yp5z0mba0r6uZTI_H1T11JYBVy29guvQSRn77NDtKj/exec',  // ★ 貼上 Apps Script 部署網址
   ADMIN_USER:    'AAA',
   ADMIN_PW:      '123',
 };
 // ════════════════════════════════════════════════════════════
 
-// ═══════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════
+// ═══ STATE ═══
 let masterData  = [];
 let parsedItems = [];
 let laborItems  = [];
 let curFile     = null;
+let curFileUrl  = null;   // object URL for preview
 let curRptId    = '';
 let authToken   = '';
-const backendUrl = CONFIG.BACKEND_URL;
+let backendUrl  = CONFIG.BACKEND_URL;
+let selectedCat = 'all'; // 選擇的工程類別
+let currentMTab = 'all'; // master 分頁
+let corrTarget  = null;  // 目前要修正的品項
 
-// ═══════════════════════════════════════════
-//  API CALL
-// ═══════════════════════════════════════════
-async function api(action, extra = {}) {
-  if (!backendUrl || backendUrl === 'YOUR_APPS_SCRIPT_URL') throw new Error('請在 HTML 第一行 CONFIG.BACKEND_URL 填入 Apps Script 網址後重新上傳 GitHub');
+const CATS = {
+  all:        { label:'ALL',   icon:'📋', related:['piping','electrical','civil','structural','common','labor'] },
+  piping:     { label:'配管',  icon:'⚙',  related:['piping','common'] },
+  electrical: { label:'儀電',  icon:'⚡', related:['electrical','common'] },
+  civil:      { label:'土木',  icon:'🏗', related:['civil','common'] },
+  structural: { label:'鋼構',  icon:'🔩', related:['structural','common'] },
+  labor:      { label:'工費',  icon:'👷', related:['labor','common'] },
+};
+
+// ═══ API ═══
+async function api(action, extra={}) {
+  if (!backendUrl || backendUrl === 'YOUR_APPS_SCRIPT_URL')
+    throw new Error('請在 HTML CONFIG.BACKEND_URL 填入 Apps Script 網址後重新上傳 GitHub');
   const body = { action, token: authToken, ...extra };
   let res;
   try {
     res = await fetch(backendUrl, {
-      method: 'POST',
-      redirect: 'follow',
-      // Content-Type 必須是 text/plain，Apps Script 才不會觸發 CORS preflight
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      method:'POST', redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
       body: JSON.stringify(body)
     });
-  } catch(fetchErr) {
-    // CORS 或網路錯誤
-    if (fetchErr.message.includes('CORS') || fetchErr.message.includes('fetch')) {
-      throw new Error('CORS 錯誤：請確認 Apps Script 部署設定「存取權 → 所有人（包含匿名使用者）」，並重新部署');
-    }
-    throw fetchErr;
+  } catch(e) {
+    throw new Error('網路錯誤：' + e.message);
   }
   if (!res.ok) throw new Error('HTTP ' + res.status);
   let data;
-  try { data = await res.json(); } catch(_) { throw new Error('回應格式錯誤，請確認 Apps Script 部署正確'); }
+  try { data = await res.json(); } catch(_) { throw new Error('回應格式錯誤'); }
   if (!data.ok) throw new Error(data.error || 'API 錯誤');
   return data;
 }
 
-// ═══════════════════════════════════════════
-//  AUTH
-// ═══════════════════════════════════════════
-function openLogin() {
-  document.getElementById('lo').classList.add('on');
-  document.getElementById('lu').focus();
+// ═══ UTIL ═══
+const fmt  = n => n==null?'—':Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtN = n => n==null?'—':Number(n).toLocaleString('th-TH',{maximumFractionDigits:0});
+function toast(msg,type='ok',dur=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast on '+type;
+  setTimeout(()=>t.className='toast',dur);
 }
-function closeLogin() {
-  document.getElementById('lo').classList.remove('on');
-  document.getElementById('le').textContent = '';
+function showPg(p){
+  document.querySelectorAll('.pg').forEach(el=>el.classList.remove('on'));
+  document.getElementById('pg-'+p).classList.add('on');
+  document.getElementById('tab-analyze').classList.toggle('on',p==='analyze');
+  document.getElementById('tab-master').classList.toggle('on',p==='master');
+  if(p==='master') renderM();
 }
-function showAdminUI(on) {
-  document.getElementById('adminBar').style.display = on ? 'flex' : 'none';
+function setStep(n){
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('si'+i);
+    el.className='si'+(i===n?' on':i<n?' done':'');
+  });
 }
-function goMaster() {
-  showPg('master'); // 任何人都可以查看主檔，修改才需要登入
+function updBadge(){
+  const n=masterData.length;
+  document.getElementById('mBadge').textContent=`主檔 ${n} 筆`;
+  document.getElementById('mc').textContent=`共 ${n} 筆`;
 }
-async function doLogin() {
-  const u = document.getElementById('lu').value.trim();
-  const p = document.getElementById('lp').value;
-  if (!u || !p) { document.getElementById('le').textContent = '請填入帳號與密碼'; return; }
-  if (!backendUrl || backendUrl === 'YOUR_APPS_SCRIPT_URL') {
-    // 無後端：本地管理員模式（用 CONFIG 裡的帳密）
-    if (u === CONFIG.ADMIN_USER && p === CONFIG.ADMIN_PW) {
-      authToken = 'local-admin';
-      sessionStorage.setItem('tok', authToken);
-      closeLogin();
-      showAdminUI(true);
-      showPg('master');
-      toast('管理員登入成功（本機模式）', 'ok');
-    } else {
-      document.getElementById('le').textContent = '帳號或密碼錯誤';
-      document.getElementById('lp').value = '';
-    }
+function updDriveBadge(ok){
+  const el=document.getElementById('driveBadge');
+  el.textContent=ok?'後端已連線':(backendUrl&&backendUrl!=='YOUR_APPS_SCRIPT_URL'?'後端連線失敗':'後端未設定');
+  el.className='nbadge '+(ok?'ok':'warn');
+}
+function showAdminUI(on){
+  document.getElementById('adminBar').style.display=on?'flex':'none';
+}
+function goMaster(){ showPg('master'); }
+
+// ═══ AUTH ═══
+function openLogin(){ document.getElementById('lo').classList.add('on'); document.getElementById('lu').focus(); }
+function closeLogin(){ document.getElementById('lo').classList.remove('on'); document.getElementById('le').textContent=''; }
+async function doLogin(){
+  const u=document.getElementById('lu').value.trim();
+  const p=document.getElementById('lp').value;
+  if(!u||!p){document.getElementById('le').textContent='請填入帳號與密碼';return;}
+  if(!backendUrl||backendUrl==='YOUR_APPS_SCRIPT_URL'){
+    if(u===CONFIG.ADMIN_USER&&p===CONFIG.ADMIN_PW){
+      authToken='local-admin';sessionStorage.setItem('tok',authToken);
+      closeLogin();showAdminUI(true);showPg('master');toast('管理員登入成功（本機模式）','ok');
+    } else { document.getElementById('le').textContent='帳號或密碼錯誤';document.getElementById('lp').value=''; }
     return;
   }
   try {
-    document.getElementById('le').textContent = '驗證中…';
-    const d = await api('login', { username: u, password: p });
-    authToken = d.token;
-    sessionStorage.setItem('tok', authToken);
-    closeLogin();
-    showAdminUI(true);
-    showPg('master');
-    toast('管理員登入成功', 'ok');
-    fetchKeyStatus();
-  } catch(e) {
-    document.getElementById('le').textContent = e.message;
-    document.getElementById('lp').value = '';
+    document.getElementById('le').textContent='驗證中…';
+    const d=await api('login',{username:u,password:p});
+    authToken=d.token;sessionStorage.setItem('tok',authToken);
+    closeLogin();showAdminUI(true);showPg('master');toast('管理員登入成功','ok');
+  } catch(e){document.getElementById('le').textContent=e.message;document.getElementById('lp').value='';}
+}
+function logout(){sessionStorage.clear();authToken='';showAdminUI(false);showPg('analyze');toast('已登出','info');}
+
+// ═══ MASTER LOAD / SAVE ═══
+async function loadMaster(){
+  try {
+    const d=await api('loadMaster',{});
+    masterData=(d.data||[]).map(r=>({...r,_d:false,_n:false}));
+    if(!masterData.length) masterData=SEED.map(s=>({...s,_d:false,_n:false}));
+    updBadge();updDriveBadge(true);renderM();
+  } catch(e){
+    masterData=SEED.map(s=>({...s,_d:false,_n:false}));
+    updBadge();updDriveBadge(false);renderM();
   }
 }
-function logout() {
-  sessionStorage.clear();
-  authToken = '';
-  showAdminUI(false);
-  showPg('analyze');
-  toast('已登出', 'info');
+function loadMasterLocal(){ masterData=SEED.map(s=>({...s,_d:false,_n:false}));updBadge();renderM(); }
+async function saveM(){
+  if(!authToken){openLogin();return;}
+  try {
+    const d=await api('saveMaster',{data:masterData});
+    masterData.forEach(r=>{r._d=false;r._n=false;});renderM();
+    toast(`已儲存 ${d.count} 筆至 Google Drive ✓`,'ok');
+  } catch(e){masterData.forEach(r=>{r._d=false;r._n=false;});renderM();toast('已本機暫存','info');}
 }
 
-// ═══════════════════════════════════════════
-//  UTIL
-// ═══════════════════════════════════════════
-const fmt  = n => n==null?'—':Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmtN = n => n==null?'—':Number(n).toLocaleString('th-TH',{maximumFractionDigits:0});
-function toast(msg, type='ok', dur=3000) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast on ' + type;
-  setTimeout(() => t.className = 'toast', dur);
+// ═══ MASTER TABLE ═══
+let currentMTabVal = 'all';
+function setMTab(cat){
+  currentMTabVal=cat;
+  document.querySelectorAll('.mtab').forEach(el=>el.classList.remove('on'));
+  document.getElementById('mtab-'+cat)?.classList.add('on');
+  renderM();
 }
-function showPg(p) {
-  document.querySelectorAll('.pg').forEach(el=>el.classList.remove('on'));
-  document.getElementById('pg-'+p).classList.add('on');
-  document.getElementById('tab-analyze').classList.toggle('on', p==='analyze');
-  document.getElementById('tab-master').classList.toggle('on', p==='master');
-  if (p === 'master') renderM();
-}
-function setStep(n) {
-  [1,2,3].forEach(i => {
-    const el = document.getElementById('si'+i);
-    el.className = 'si' + (i===n?' on':i<n?' done':'');
+function renderM(){
+  const q=(document.getElementById('ms').value||'').toLowerCase();
+  const canEdit=!!authToken;
+  // 分頁篩選
+  let rows=masterData.filter(r=>{
+    if(r._del) return false;
+    if(currentMTabVal!=='all' && r.category!==currentMTabVal) return false;
+    if(q && !r.spec.toLowerCase().includes(q) && !(r.keywords||'').toLowerCase().includes(q)) return false;
+    return true;
   });
+  // 更新 tab 計數
+  const catKeys=['piping','electrical','civil','structural','common','labor'];
+  catKeys.forEach(c=>{
+    const cnt=masterData.filter(r=>!r._del&&r.category===c).length;
+    const el=document.getElementById('cnt-'+c);
+    if(el) el.textContent=cnt;
+  });
+  const allEl=document.getElementById('cnt-all');
+  if(allEl) allEl.textContent=masterData.filter(r=>!r._del).length;
+
+  const catOpts=['piping','electrical','civil','structural','common','labor'];
+  const catLabels={piping:'⚙ 配管',electrical:'⚡ 儀電',civil:'🏗 土木',structural:'🔩 鋼構',common:'📦 共用',labor:'👷 工費'};
+  document.getElementById('mBody').innerHTML=rows.map(r=>{
+    const i=masterData.indexOf(r);
+    const ce=canEdit?'true':'false';
+    const cur=canEdit?'':'cursor:default';
+    const clk=canEdit?'':'onclick="openLogin()"';
+    const catSel=catOpts.map(c=>`<option value="${c}"${r.category===c?' selected':''}>${catLabels[c]}</option>`).join('');
+    const delBtn=canEdit
+      ?`<button class="btn btn-r" style="font-size:11px;padding:3px 8px" onclick="delM(${i})">刪除</button>`
+      :`<button class="btn btn-g" style="font-size:11px;padding:3px 8px;opacity:.4" onclick="openLogin()">🔒</button>`;
+    const units=['EA','M','PCS','KG','SET','LOT'].map(u=>`<option${r.unit===u?' selected':''}>${u}</option>`).join('');
+    const updStr=r.updatedAt?new Date(r.updatedAt).toLocaleDateString('zh-TW'):'—';
+    return `<tr class="${r._n?'rn':r._d?'rd':''}">
+      <td contenteditable="${ce}" onblur="eM(${i},'spec',this.textContent)" style="${cur}" ${clk}>${r.spec}</td>
+      <td style="text-align:center">
+        <select onchange="eM(${i},'unit',this.value)" ${canEdit?'':'disabled'} style="background:transparent;border:none;color:var(--t1);font-size:12px;font-family:var(--body)">${units}</select>
+      </td>
+      <td contenteditable="${ce}" onblur="eM(${i},'price',this.textContent)" style="${cur}" ${clk}>${r.price}</td>
+      <td style="text-align:center">
+        <select onchange="eM(${i},'category',this.value)" ${canEdit?'':'disabled'} style="background:transparent;border:none;color:var(--cy);font-size:11px;font-family:var(--mono)">${catSel}</select>
+      </td>
+      <td contenteditable="${ce}" onblur="eM(${i},'keywords',this.textContent)" style="font-size:11px;color:var(--t3);max-width:200px;white-space:normal;${cur}" ${clk}>${r.keywords||''}</td>
+      <td contenteditable="${ce}" onblur="eM(${i},'remark',this.textContent)" style="font-size:11px;color:var(--t3);${cur}" ${clk}>${r.remark||''}</td>
+      <td style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--t3)">${updStr}</td>
+      <td style="text-align:center;padding-right:12px">${delBtn}</td>
+    </tr>`;
+  }).join('');
+  updBadge();
+  const hint=document.getElementById('masterHint');
+  if(hint) hint.textContent=canEdit
+    ?'* 點欄位直接編輯。橘色列 = 未儲存。「儲存至 Drive」推送 master_list.json。更新時間自動記錄。'
+    :'🔒 唯讀模式 — 點任意欄位即可登入管理員進行編輯。';
 }
-function updBadge() {
-  document.getElementById('mBadge').textContent = `主檔 ${masterData.length} 筆`;
-  document.getElementById('mc').textContent = `共 ${masterData.length} 筆`;
+function eM(i,f,v){
+  if(!authToken){renderM();openLogin();return;}
+  masterData[i][f]=f==='price'?(parseFloat(v)||0):v;
+  masterData[i]._d=true;
+  masterData[i].updatedAt=new Date().toISOString(); // 自動記錄更新時間
 }
-function updDriveBadge(ok) {
-  const el = document.getElementById('driveBadge');
-  el.textContent = ok ? '後端已連線' : (backendUrl ? '後端連線失敗' : '後端未設定');
-  el.className = 'nbadge ' + (ok ? 'ok' : 'warn');
-  // 設定頁同步
-  const ds = document.getElementById('drvStat');
-  if (ds) ds.textContent = ok ? '已連線，透過 Apps Script 存取 Drive' : '未連線';
+function delM(i){if(!authToken){openLogin();return;}if(!confirm(`確定刪除「${masterData[i].spec}」？`))return;masterData.splice(i,1);renderM();toast('已刪除','ok');}
+function openAdd(){if(!authToken){openLogin();return;}document.getElementById('addM').classList.remove('h');}
+function closeAdd(){document.getElementById('addM').classList.add('h');}
+function addItem(){
+  const spec=document.getElementById('m-sp').value.trim();
+  if(!spec){toast('品項規格不可空白','err');return;}
+  masterData.push({
+    spec,unit:document.getElementById('m-un').value,
+    price:parseFloat(document.getElementById('m-pr').value)||0,
+    category:document.getElementById('m-cat').value,
+    keywords:document.getElementById('m-kw').value.trim(),
+    remark:document.getElementById('m-rm').value.trim(),
+    updatedAt:new Date().toISOString(),
+    _d:false,_n:true
+  });
+  closeAdd();
+  ['m-sp','m-kw','m-rm'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('m-pr').value='';
+  renderM();toast('已新增，記得按「儲存至 Drive」','ok');
 }
 
-// ═══════════════════════════════════════════
-//  MASTER — Load / Save
-// ═══════════════════════════════════════════
-async function loadMaster() {
-  try {
-    const d = await api('loadMaster', {});
-    masterData = (d.data || []).map(r => ({ ...r, _d: false, _n: false }));
-    if (!masterData.length) masterData = SEED.map(s => ({ ...s, _d: false, _n: false }));
-    updBadge();
-    updDriveBadge(true);
-    renderM();
-  } catch(e) {
-    toast('載入主檔失敗，使用內建資料：' + e.message, 'info', 4000);
-    loadMasterLocal();
-    updDriveBadge(false);
-  }
+// ═══ CSV ═══
+function expCSV(){
+  const rows=[['Material Specification','Unit','Unit Price (THB)','Category','Keywords','Remark','Updated At'],
+    ...masterData.filter(r=>!r._del).map(r=>[r.spec,r.unit,r.price,r.category||'',r.keywords||'',r.remark||'',r.updatedAt||''])];
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  dl('\uFEFF'+csv,'master_item_list.csv','text/csv;charset=utf-8');toast('CSV 已匯出','ok');
 }
-function loadMasterLocal() {
-  masterData = SEED.map(s => ({ ...s, _d: false, _n: false }));
-  updBadge(); renderM();
-}
-async function saveM() {
-  if (!authToken) { openLogin(); return; }
-  try {
-    const d = await api('saveMaster', { data: masterData });
-    masterData.forEach(r => { r._d = false; r._n = false; });
-    renderM();
-    toast(`已儲存 ${d.count} 筆至 Google Drive ✓`, 'ok');
-  } catch(e) {
-    // fallback local save
-    masterData.forEach(r => { r._d = false; r._n = false; });
-    renderM();
-    toast('已本機暫存（設定後端可同步至 Drive）', 'info');
-  }
+function impCSV(inp){
+  const f=inp.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const lines=e.target.result.split('\n').filter(l=>l.trim());
+    const parse=l=>{const cells=[];let cur='',inQ=false;for(const ch of l){if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){cells.push(cur.trim());cur='';}else cur+=ch;}cells.push(cur.trim());return cells.map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"'));};
+    const rows=lines.map(parse);
+    const h=rows[0].map(x=>x.toLowerCase().trim());
+    const si=h.findIndex(x=>x.includes('spec')),ui=h.findIndex(x=>x.includes('unit')&&!x.includes('price')),pi=h.findIndex(x=>x.includes('price')),ci=h.findIndex(x=>x.includes('category')||x.includes('cat')),ki=h.findIndex(x=>x.includes('key')),ri=h.findIndex(x=>x.includes('rem')),updi=h.findIndex(x=>x.includes('updated'));
+    const data=rows.slice(1).filter(r=>r[si>=0?si:0]).map(r=>({
+      spec:r[si>=0?si:0]||'',unit:r[ui>=0?ui:1]||'EA',price:parseFloat(r[pi>=0?pi:2])||0,
+      category:r[ci>=0?ci:3]||'common',keywords:r[ki>=0?ki:4]||'',remark:r[ri>=0?ri:5]||'',
+      updatedAt:r[updi>=0?updi:6]||new Date().toISOString(),
+      _d:false,_n:true
+    }));
+    if(!confirm(`確定用匯入的 ${data.length} 筆覆蓋現有主檔 ${masterData.length} 筆？`))return;
+    masterData=data;renderM();toast(`已匯入 ${data.length} 筆，請按「儲存至 Drive」同步`,'ok');
+  };
+  reader.readAsText(f,'utf-8');inp.value='';
 }
 
-// ═══════════════════════════════════════════
-//  FILE UPLOAD
-// ═══════════════════════════════════════════
-const ICONS = { pdf:'📋', xlsx:'📊', xls:'📊', docx:'📝', doc:'📝', jpg:'🖼', jpeg:'🖼', png:'🖼', heic:'🖼', webp:'🖼' };
-const dz = document.getElementById('dz');
-const fi = document.getElementById('fi');
-dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
-dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag'); if(e.dataTransfer.files[0]) setF(e.dataTransfer.files[0]); });
-fi.addEventListener('change', e => { if(e.target.files[0]) setF(e.target.files[0]); fi.value=''; });
-function setF(f) {
-  curFile = f;
-  const ext = f.name.split('.').pop().toLowerCase();
-  document.getElementById('pico').textContent = ICONS[ext] || '📄';
-  document.getElementById('pnm').textContent  = f.name;
-  document.getElementById('psz').textContent  = (f.size/1024).toFixed(1) + ' KB';
+// ═══ FILE UPLOAD ═══
+const ICONS={pdf:'📋',xlsx:'📊',xls:'📊',docx:'📝',doc:'📝',jpg:'🖼',jpeg:'🖼',png:'🖼',heic:'🖼',webp:'🖼'};
+const dz=document.getElementById('dz');
+const fi=document.getElementById('fi');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])setF(e.dataTransfer.files[0])});
+fi.addEventListener('change',e=>{if(e.target.files[0])setF(e.target.files[0]);fi.value='';});
+function setF(f){
+  curFile=f;
+  if(curFileUrl) URL.revokeObjectURL(curFileUrl);
+  curFileUrl=URL.createObjectURL(f);
+  const ext=f.name.split('.').pop().toLowerCase();
+  document.getElementById('pico').textContent=ICONS[ext]||'📄';
+  document.getElementById('pnm').textContent=f.name;
+  document.getElementById('psz').textContent=(f.size/1024).toFixed(1)+' KB';
   document.getElementById('fp').classList.add('on');
-  document.getElementById('aBtn').disabled = false;
+  document.getElementById('aBtn').disabled=false;
 }
-function clrF() { curFile=null; document.getElementById('fp').classList.remove('on'); document.getElementById('aBtn').disabled=true; }
-function resetAll() {
+function clrF(){
+  curFile=null;
+  if(curFileUrl){URL.revokeObjectURL(curFileUrl);curFileUrl=null;}
+  document.getElementById('fp').classList.remove('on');
+  document.getElementById('aBtn').disabled=true;
+}
+function resetAll(){
   clrF();
-  ['pnl-lb','pnl-rpt','pnl-ld'].forEach(id => document.getElementById(id).style.display='none');
-  document.getElementById('pnl-up').style.display = '';
+  ['pnl-rpt','pnl-ld'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('pnl-up').style.display='';
   setStep(1);
+  document.getElementById('fpToggle').classList.remove('show');
+  document.getElementById('fpFloat').classList.remove('show');
 }
 
-// ═══════════════════════════════════════════
-//  ANALYZE
-// ═══════════════════════════════════════════
-async function doAnalyze() {
-  if (!curFile) return;
-  if (!backendUrl || backendUrl === 'YOUR_APPS_SCRIPT_URL') { toast('請在 HTML CONFIG.BACKEND_URL 填入 Apps Script 網址後重新上傳 GitHub', 'err'); return; }
+// ═══ CATEGORY SELECT ═══
+function openCatModal(){
+  if(!curFile)return;
+  document.getElementById('catModal').classList.remove('h');
+}
+function selCat(cat){
+  selectedCat=cat;
+  document.querySelectorAll('.cat-btn').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('cat-'+cat)?.classList.add('sel');
+  document.getElementById('catConfirmBtn').disabled=false;
+}
+function startAnalyzeWithCat(){
+  document.getElementById('catModal').classList.add('h');
+  doAnalyze();
+}
 
-  document.getElementById('pnl-up').style.display = 'none';
-  document.getElementById('pnl-ld').style.display = '';
+// ═══ ANALYZE ═══
+async function doAnalyze(){
+  if(!curFile)return;
+  if(!backendUrl||backendUrl==='YOUR_APPS_SCRIPT_URL'){toast('請設定 Apps Script 後端網址','err');return;}
+  document.getElementById('pnl-up').style.display='none';
+  document.getElementById('pnl-ld').style.display='';
   setStep(2);
-
-  const msgs = [
+  const msgs=[
     ['Gemini 解析報價單中…','辨識品項規格與廠商資訊'],
-    ['比對主檔最低價…', `${masterData.length} 筆材料主檔`],
-    ['計算差異幅度…','篩選工費與整包項目'],
-    ['整理燈號結果…','即將完成']
+    [`比對 ${selectedCat==='all'?'全部':''+CATS[selectedCat]?.label} 主檔…`,`篩選對應類別品項`],
+    ['計算差異幅度…','標記燈號'],
+    ['整理報告…','即將完成']
   ];
-  let mi = 0;
-  const tick = setInterval(() => {
-    mi = (mi+1) % msgs.length;
-    document.getElementById('ldT').textContent = msgs[mi][0];
-    document.getElementById('ldS').textContent = msgs[mi][1];
-  }, 1800);
-
+  let mi=0;
+  const tick=setInterval(()=>{mi=(mi+1)%msgs.length;document.getElementById('ldT').textContent=msgs[mi][0];document.getElementById('ldS').textContent=msgs[mi][1];},1800);
   try {
-    const b64  = await f2b64(curFile);
-    const ext  = curFile.name.split('.').pop().toLowerCase();
-    const mimeMap = { pdf:'application/pdf', jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', heic:'image/heic', webp:'image/webp' };
-    const mime = mimeMap[ext] || 'application/pdf';
-    const isMedia = ['jpg','jpeg','png','heic','webp','pdf'].includes(ext);
-    const today = new Date().toISOString().slice(0,10);
-    const masterJson = JSON.stringify(masterData.map(r => ({ spec:r.spec, unit:r.unit, price:r.price, keywords:r.keywords })));
+    const b64=await f2b64(curFile);
+    const ext=curFile.name.split('.').pop().toLowerCase();
+    const mimeMap={pdf:'application/pdf',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',heic:'image/heic',webp:'image/webp'};
+    const mime=mimeMap[ext]||'application/pdf';
+    const isMedia=['jpg','jpeg','png','heic','webp','pdf'].includes(ext);
+    const today=new Date().toISOString().slice(0,10);
 
-    const prompt = `You are an expert procurement engineer with 20 years experience in Thailand construction projects.
+    // 依類別篩選 Master List
+    const relatedCats = selectedCat==='all'
+      ? ['piping','electrical','civil','structural','common','labor']
+      : CATS[selectedCat].related;
+    const filteredMaster=masterData.filter(r=>!r._del&&(!r.category||relatedCats.includes(r.category)));
+    const masterJson=JSON.stringify(filteredMaster.map(r=>({spec:r.spec,unit:r.unit,price:r.price,keywords:r.keywords})));
+
+    // 撈修正紀錄（最多 30 筆，same category + common）
+    let corrText='';
+    try {
+      const cd=await api('loadCorrections',{category:selectedCat});
+      if(cd.data&&cd.data.length){
+        corrText='\n\n【過去修正紀錄 — 請注意這些常見錯誤】\n'+cd.data.slice(0,30).map(c=>`- 「${c.aiRead}」→ 正確應為「${c.correct}」${c.note?'（'+c.note+'）':''}`).join('\n');
+      }
+    } catch(_){}
+
+    const prompt=`You are an expert procurement engineer with 20 years experience in Thailand construction projects.
 Today's date: ${today}
-Master Item List (${masterData.length} items): ${masterJson}
+Analysis category: ${selectedCat==='all'?'ALL categories':CATS[selectedCat]?.label||selectedCat}
+Master Item List (${filteredMaster.length} items): ${masterJson}${corrText}
+
 TASK: Analyze the attached quotation document. Extract ALL line items.
 Return ONLY a single valid JSON (no markdown):
 {
@@ -688,7 +973,7 @@ Return ONLY a single valid JSON (no markdown):
   "project": "project name or scope from document",
   "currency": "THB",
   "items": [{
-    "spec": "original text",
+    "spec": "original text from quotation",
     "unit": "unit",
     "qty": number_or_null,
     "unitPrice": number,
@@ -700,113 +985,115 @@ Return ONLY a single valid JSON (no markdown):
     "flag": "normal|high|low|pending|no_basis|labor_package"
   }]
 }
-FLAG: normal=±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis=no match, labor_package=labor/package category`;
+FLAG: normal=±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis=no match, labor_package=labor/package`;
 
-    // ★ 透過 Apps Script 後端呼叫 Gemini，Key 不會暴露在前端
-    const geminiResp = await api('callGemini', {
-      prompt,
-      base64Data: isMedia ? b64 : null,
-      mimeType:   isMedia ? mime : null
-    });
-    const raw   = geminiResp.text || '';
-    const clean = raw.replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(clean);
+    let parts;
+    if(isMedia) parts=[{text:prompt},{inline_data:{mime_type:mime,data:b64}}];
+    else parts=[{text:prompt+'\n\n['+ext+' file]'}];
 
+    const geminiResp=await api('callGemini',{prompt,base64Data:isMedia?b64:null,mimeType:isMedia?mime:null});
+    const raw=geminiResp.text||'';
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(clean);
     clearInterval(tick);
-    parsedItems = parsed.items || [];
-    curRptId = 'RPT-' + today.replace(/-/g,'') + '-' + Math.floor(Math.random()*900+100);
+    parsedItems=parsed.items||[];
+    curRptId='RPT-'+today.replace(/-/g,'')+'-'+Math.floor(Math.random()*900+100);
+    window._aiVendor=parsed.vendor||'—';
+    window._aiProject=parsed.project||'—';
+    window._aiDate=today;
+    laborItems=parsedItems.filter(it=>it.flag==='labor_package');
 
-    // Store extracted info globally
-    window._aiVendor  = parsed.vendor  || '—';
-    window._aiProject = parsed.project || '—';
-    window._aiDate    = today;
+    // 上傳原始檔
+    try { await api('uploadFile',{fileName:curFile.name,base64Data:b64,mimeType:mime}); } catch(_){}
 
-    // Backup original file to Drive
-    try { await api('uploadFile', { fileName: curFile.name, base64Data: b64, mimeType: mime }); } catch(_){}
-
-    laborItems = parsedItems.filter(it => it.flag === 'labor_package');
-    document.getElementById('pnl-ld').style.display = 'none';
-    if (laborItems.length > 0) { buildLabor(); document.getElementById('pnl-lb').style.display=''; setStep(2); }
-    else { buildReport(); document.getElementById('pnl-rpt').style.display=''; setStep(3); }
-  } catch(e) {
+    document.getElementById('pnl-ld').style.display='none';
+    buildReport();
+    document.getElementById('pnl-rpt').style.display='';
+    setStep(3);
+    // 顯示原始檔預覽按鈕
+    document.getElementById('fpToggle').classList.add('show');
+    setupPreview();
+  } catch(e){
     clearInterval(tick);
-    document.getElementById('pnl-ld').style.display = 'none';
-    document.getElementById('pnl-up').style.display = '';
+    document.getElementById('pnl-ld').style.display='none';
+    document.getElementById('pnl-up').style.display='';
     setStep(1);
-    toast(e.message.includes('JSON') ? 'AI 回傳格式異常，請重試' : '錯誤：' + e.message, 'err', 5000);
+    toast(e.message.includes('JSON')?'AI 回傳格式異常，請重試':'錯誤：'+e.message,'err',5000);
   }
 }
-function f2b64(file) { return new Promise((ok,fail) => { const r=new FileReader(); r.onload=()=>ok(r.result.split(',')[1]); r.onerror=fail; r.readAsDataURL(file); }); }
+function f2b64(file){return new Promise((ok,fail)=>{const r=new FileReader();r.onload=()=>ok(r.result.split(',')[1]);r.onerror=fail;r.readAsDataURL(file);});}
 
-// ═══════════════════════════════════════════
-//  LABOR
-// ═══════════════════════════════════════════
-function buildLabor() {
-  document.getElementById('lbCards').innerHTML = laborItems.map((it,i) => `
-    <div class="lcard">
-      <div class="lhd">
-        <span class="lbadge">工費 / 整包</span>
-        <span class="lname">${it.spec}</span>
-        <span class="lquoted">廠商報：฿ ${fmt(it.unitPrice)}</span>
-      </div>
-      <div class="g3">
-        <div class="field"><label>工期（天）</label><input type="number" min="0" step="1" placeholder="5" id="ld${i}" oninput="calcL(${i})"></div>
-        <div class="field"><label>每日人工費（฿/人）</label><input type="number" min="0" step="100" placeholder="1500" id="lr${i}" oninput="calcL(${i})"></div>
-        <div class="field"><label>人數</label><input type="number" min="0" step="1" placeholder="4" id="lw${i}" oninput="calcL(${i})"></div>
-      </div>
-      <div class="lres">
-        <span class="lest">預估合理工費：<strong id="le${i}">請填入上方數值</strong></span>
-        <span class="lflag" id="lf${i}"></span>
-      </div>
-    </div>`).join('');
+// ═══ FILE PREVIEW ═══
+function setupPreview(){
+  if(!curFileUrl||!curFile)return;
+  const body=document.getElementById('fpBody');
+  const ext=curFile.name.split('.').pop().toLowerCase();
+  if(['jpg','jpeg','png','webp','heic'].includes(ext)){
+    body.innerHTML=`<img src="${curFileUrl}" alt="報價單預覽" style="width:100%;height:auto;display:block">`;
+  } else if(ext==='pdf'){
+    body.innerHTML=`<iframe src="${curFileUrl}" style="width:100%;height:600px;border:none"></iframe>`;
+  } else {
+    body.innerHTML=`<div style="padding:1rem;text-align:center;color:var(--t3);font-size:13px">此格式僅支援下載查看<br><a href="${curFileUrl}" download="${curFile.name}" style="color:var(--cy)">點此下載原始檔 ↓</a></div>`;
+  }
 }
-function calcL(i) {
-  const d=parseFloat(document.getElementById(`ld${i}`)?.value)||0;
-  const r=parseFloat(document.getElementById(`lr${i}`)?.value)||0;
-  const w=parseFloat(document.getElementById(`lw${i}`)?.value)||0;
-  if(!d||!r||!w){document.getElementById(`le${i}`).textContent='請填入上方數值';document.getElementById(`lf${i}`).textContent='';laborItems[i]._est=null;return;}
-  const est=d*r*w;
-  Object.assign(laborItems[i],{_est:est,_days:d,_rate:r,_workers:w});
-  document.getElementById(`le${i}`).textContent=`฿ ${fmt(est)}`;
-  const dv=(laborItems[i].unitPrice-est)/est,p=(dv*100).toFixed(1);
-  let lbl,col;
-  if(Math.abs(dv)<=.1){lbl=`🟢 正常 (${dv>=0?'+':''}${p}%)`;col='var(--gn)'}
-  else if(dv>.1){lbl=`🔴 偏高 (+${p}%)`;col='var(--rd)'}
-  else{lbl=`🟣 偏低 (${p}%)`;col='var(--pu)'}
-  const el=document.getElementById(`lf${i}`);el.textContent=lbl;el.style.color=col;
+function togglePreview(){
+  const f=document.getElementById('fpFloat');
+  f.classList.toggle('show');
 }
-function goReport(){buildReport();document.getElementById('pnl-lb').style.display='none';document.getElementById('pnl-rpt').style.display='';setStep(3);}
+function openFileNewTab(){
+  if(curFileUrl) window.open(curFileUrl,'_blank');
+}
+// 浮動視窗拖曳
+(function(){
+  let drag=false,ox=0,oy=0,startL=0,startT=0;
+  document.addEventListener('DOMContentLoaded',()=>{
+    const h=document.getElementById('fpDragHandle');
+    const f=document.getElementById('fpFloat');
+    if(!h||!f) return;
+    h.addEventListener('mousedown',e=>{
+      drag=true;ox=e.clientX;oy=e.clientY;
+      const r=f.getBoundingClientRect();startL=r.left;startT=r.top;
+      f.style.bottom='auto';
+    });
+    document.addEventListener('mousemove',e=>{
+      if(!drag)return;
+      f.style.left=(startL+e.clientX-ox)+'px';
+      f.style.top=(startT+e.clientY-oy)+'px';
+    });
+    document.addEventListener('mouseup',()=>drag=false);
+  });
+})();
 
-// ═══════════════════════════════════════════
-//  REPORT
-// ═══════════════════════════════════════════
-function getF(it) {
+// ═══ FLAG HELPER ═══
+function getF(it){
   if(it.flag==='labor_package'){
-    if(it._est==null)return{lbl:'工費/整包',cls:'py',diff:null};
+    if(it._est==null) return{lbl:'工費/整包',cls:'py',diff:null};
     const d=(it.unitPrice-it._est)/it._est,p=(d*100).toFixed(1);
-    if(Math.abs(d)<=.1)return{lbl:`🟢 正常 (${d>=0?'+':''}${p}%)`,cls:'pg',diff:d};
-    if(d>.1)return{lbl:`🔴 偏高 (+${p}%)`,cls:'pr',diff:d};
+    if(Math.abs(d)<=.1) return{lbl:`🟢 正常 (${d>=0?'+':''}${p}%)`,cls:'pg',diff:d};
+    if(d>.1) return{lbl:`🔴 偏高 (+${p}%)`,cls:'pr',diff:d};
     return{lbl:`🟣 偏低 (${p}%)`,cls:'pp',diff:d};
   }
   const base=it.masterLowestPrice,p=base?((it.unitPrice-base)/base*100).toFixed(1):null,d=p!=null?parseFloat(p):null;
   switch(it.flag){
-    case'normal':return{lbl:`🟢 正常 (${d>=0?'+':''}${p}%)`,cls:'pg',diff:d};
-    case'high':  return{lbl:`🔴 偏高 (+${p}%)`,cls:'pr',diff:d};
-    case'low':   return{lbl:`🟣 偏低 (${p}%)`,cls:'pp',diff:d};
-    case'pending':return{lbl:'🟠 待確認',cls:'pa',diff:d};
+    case'normal':  return{lbl:`🟢 正常 (${d>=0?'+':''}${p}%)`,cls:'pg',diff:d};
+    case'high':    return{lbl:`🔴 偏高 (+${p}%)`,cls:'pr',diff:d};
+    case'low':     return{lbl:`🟣 偏低 (${p}%)`,cls:'pp',diff:d};
+    case'pending': return{lbl:'🟠 待確認',cls:'pa',diff:d};
     case'no_basis':return{lbl:'⚪ 無基準',cls:'pgr',diff:null};
-    default:return{lbl:'—',cls:'pgr',diff:null};
+    default:       return{lbl:'—',cls:'pgr',diff:null};
   }
 }
-async function buildReport() {
-  const vendor  = window._aiVendor  || '—';
-  const project = window._aiProject || '—';
+
+// ═══ BUILD REPORT ═══
+async function buildReport(){
+  const vendor  = window._aiVendor||'—';
+  const project = window._aiProject||'—';
   const rptDate = new Date().toLocaleString('zh-TW',{hour12:false});
   const cnt={normal:0,high:0,low:0,pending:0,no_basis:0,labor:0};
   parsedItems.forEach(it=>{
     if(it.flag==='labor_package'){
-      if(it._est==null||Math.abs((it.unitPrice-it._est)/it._est)<=.1)cnt.labor++;
-      else if(it.unitPrice>it._est*1.1)cnt.high++; else cnt.low++;
+      if(it._est==null||Math.abs((it.unitPrice-it._est)/it._est)<=.1) cnt.labor++;
+      else if(it.unitPrice>it._est*1.1) cnt.high++; else cnt.low++;
     } else cnt[it.flag]=(cnt[it.flag]||0)+1;
   });
   const totalQ=parsedItems.reduce((s,it)=>s+(it.subtotal??it.unitPrice*(it.qty??1)),0);
@@ -817,39 +1104,56 @@ async function buildReport() {
     else if(it.flag==='high'&&it.masterLowestPrice){totalS+=it.masterLowestPrice*(it.qty??1);canSave+=(it.unitPrice-it.masterLowestPrice)*(it.qty??1);}
     else totalS+=sub;
   });
+
   const cats={};parsedItems.forEach(it=>{const c=it.category||'other';(cats[c]=cats[c]||[]).push(it);});
   const catL={material:'配管材料',labor:'工費',package:'整包項目',other:'其他'};
+
   let rows='';
   Object.entries(cats).forEach(([cat,items])=>{
-    rows+=`<tr class="tsec"><td colspan="9">${catL[cat]||cat}</td></tr>`;
-    items.forEach(it=>{
+    rows+=`<tr class="tsec"><td colspan="10">${catL[cat]||cat}</td></tr>`;
+    items.forEach((it,idx)=>{
+      const i=parsedItems.indexOf(it);
       const sub=it.subtotal!=null?it.subtotal:(it.qty?it.unitPrice*it.qty:null);
       const f=getF(it);
-      let baseStr,diffStr;
+      let baseStr='—',diffStr='<span class="cna">—</span>';
       if(it.flag==='labor_package'){
-        baseStr=it._est!=null?`฿ ${fmt(it._est)}`:'—';
+        baseStr=it._est!=null?`฿ ${fmt(it._est)}`:'<span style="color:var(--am)">請填入↓</span>';
         if(it._est!=null){const dv=(it.unitPrice-it._est)/it._est*100;diffStr=`<span class="${dv>0?'cup':dv<0?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;}
-        else diffStr='<span class="cna">未填</span>';
-      } else {
-        baseStr=it.masterLowestPrice?`฿ ${fmt(it.masterLowestPrice)}`:'—';
-        if(it.masterLowestPrice){const dv=(it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice*100;diffStr=`<span class="${dv>1?'cup':dv<-1?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;}
-        else diffStr='<span class="cna">—</span>';
+      } else if(it.masterLowestPrice){
+        baseStr=`฿ ${fmt(it.masterLowestPrice)}`;
+        const dv=(it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice*100;
+        diffStr=`<span class="${dv>1?'cup':dv<-1?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;
       }
-      const extra=it.flag==='labor_package'&&it._est!=null
-        ?`<div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-top:3px">${it._days}天×฿${fmtN(it._rate)}/人×${it._workers}人</div>`
-        :it.flag==='labor_package'?`<div style="font-family:var(--mono);font-size:9px;color:var(--am);margin-top:2px">⚠ 未填工費預估</div>`:'';
-      rows+=`<tr>
-        <td>${it.spec}${extra}</td><td>${it.unit||'—'}</td>
-        <td>${it.qty!=null?fmtN(it.qty):'—'}</td>
-        <td>฿ ${fmt(it.unitPrice)}</td>
-        <td>${sub!=null?'฿ '+fmt(sub):'—'}</td>
-        <td style="font-size:11px">${baseStr}</td>
-        <td>${diffStr}</td>
-        <td style="font-size:10px;color:var(--t3);max-width:130px;white-space:normal">${it.masterSpec||'—'}</td>
-        <td><span class="pill ${f.cls}">${f.lbl}</span></td>
+
+      // 工費 inline 輸入（內嵌在列裡）
+      const laborInline=it.flag==='labor_package'?`
+        <div class="labor-inline-card">
+          <div class="labor-inline-title">⚙ 填入預估工費</div>
+          <div class="labor-grid">
+            <div class="field"><label>工期（天）</label><input type="number" min="0" step="1" placeholder="5" id="ld${i}" oninput="calcLInline(${i})"></div>
+            <div class="field"><label>每日人工費（฿/人）</label><input type="number" min="0" step="100" placeholder="1500" id="lr${i}" oninput="calcLInline(${i})"></div>
+            <div class="field"><label>人數</label><input type="number" min="0" step="1" placeholder="4" id="lw${i}" oninput="calcLInline(${i})"></div>
+          </div>
+          <div class="labor-result-inline" id="lres${i}">預估合理工費：<strong>請填入上方數值</strong></div>
+        </div>`:'';
+
+      rows+=`<tr id="rptrow-${i}">
+        <td class="ecell" contenteditable="true" onblur="editRpt(${i},'spec',this.textContent)">${it.spec}</td>
+        <td class="ecell" style="text-align:center" contenteditable="true" onblur="editRpt(${i},'unit',this.textContent)">${it.unit||'—'}</td>
+        <td class="ecell" contenteditable="true" onblur="editRpt(${i},'qty',this.textContent)">${it.qty!=null?fmtN(it.qty):'—'}</td>
+        <td class="ecell" contenteditable="true" onblur="editRpt(${i},'unitPrice',this.textContent)">฿ ${fmt(it.unitPrice)}</td>
+        <td id="sub-${i}">${sub!=null?'฿ '+fmt(sub):'—'}</td>
+        <td id="base-${i}" style="font-size:12px">${baseStr}${laborInline}</td>
+        <td id="diff-${i}">${diffStr}</td>
+        <td style="font-size:11px;color:var(--t3);max-width:140px;white-space:normal">${it.masterSpec||'—'}</td>
+        <td id="flag-${i}"><span class="pill ${f.cls}" id="pill-${i}">${f.lbl}</span></td>
+        <td style="text-align:center;padding-right:8px">
+          <button title="回報 AI 讀取錯誤" style="background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px" onclick="openCorr(${i})">✏️</button>
+        </td>
       </tr>`;
     });
   });
+
   const advs=parsedItems.filter(it=>['high','low'].includes(it.flag)||(it.flag==='labor_package'&&it._est!=null&&Math.abs((it.unitPrice-it._est)/it._est)>.1));
   const advHtml=advs.slice(0,6).map(it=>{
     const f=getF(it);
@@ -857,10 +1161,10 @@ async function buildReport() {
     let msg='';
     const isLH=it.flag==='labor_package'&&it._est&&it.unitPrice>it._est*1.1;
     const isLL=it.flag==='labor_package'&&it._est&&it.unitPrice<it._est*.9;
-    if(isLH)msg=`廠商報 ฿${fmt(it.unitPrice)}，預估合理工費 ฿${fmt(it._est)}（${it._days}天×฿${fmtN(it._rate)}×${it._workers}人），建議議降。`;
-    else if(isLL)msg=`廠商報 ฿${fmt(it.unitPrice)}，低於預估工費 ฿${fmt(it._est)}，確認工作範圍是否縮水。`;
-    else if(it.flag==='high')msg=`歷史最低價 ฿${fmt(it.masterLowestPrice)}，廠商報 ฿${fmt(it.unitPrice)}（+${((it.unitPrice/it.masterLowestPrice-1)*100).toFixed(1)}%），建議優先議價。`;
-    else msg=`廠商報 ฿${fmt(it.unitPrice)}，低於歷史最低價 ฿${fmt(it.masterLowestPrice)}，確認規格一致性。`;
+    if(isLH) msg=`廠商報 ฿${fmt(it.unitPrice)}，預估合理 ฿${fmt(it._est)}，建議議降。`;
+    else if(isLL) msg=`廠商報 ฿${fmt(it.unitPrice)}，低於預估 ฿${fmt(it._est)}，確認工作範圍。`;
+    else if(it.flag==='high') msg=`歷史最低 ฿${fmt(it.masterLowestPrice)}，廠商報 ฿${fmt(it.unitPrice)}（+${((it.unitPrice/it.masterLowestPrice-1)*100).toFixed(1)}%），建議議價。`;
+    else msg=`廠商報低於歷史最低價 ${((1-it.unitPrice/it.masterLowestPrice)*100).toFixed(1)}%，確認規格一致性。`;
     return `<div class="adv" style="border-left-color:${col}"><div class="adv-t">${f.lbl.split('(')[0].trim()} — ${it.spec}</div><div class="adv-b">${msg}</div></div>`;
   }).join('');
 
@@ -869,11 +1173,11 @@ async function buildReport() {
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem">
         <div>
           <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.1em;margin-bottom:5px">${curRptId}</div>
-          <div style="font-family:var(--head);font-size:20px;font-weight:800">${vendor}</div>
-          <div style="font-size:13px;color:var(--t2);margin-top:3px">${project}</div>
-          <div style="font-family:var(--mono);font-size:11px;color:var(--t3);margin-top:2px">分析日期：${window._aiDate}</div>
+          <div style="font-family:var(--head);font-size:20px;font-weight:800;color:var(--cy)" id="rpt-vendor" contenteditable="true">${vendor}</div>
+          <div style="font-size:13px;color:var(--t2);margin-top:3px" id="rpt-project" contenteditable="true">${project}</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--t3);margin-top:2px">分析日期：${window._aiDate} ｜ 工程類別：${CATS[selectedCat]?.icon||''} ${CATS[selectedCat]?.label||'ALL'}</div>
         </div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);text-align:right">製表：${rptDate}<br>主檔：${masterData.length} 筆</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);text-align:right">製表：${rptDate}<br>主檔：${masterData.length} 筆<br>比對範圍：${selectedCat==='all'?'全部':CATS[selectedCat]?.label}</div>
       </div>
       <div class="ss">
         <div class="sbox sg"><div class="sn" style="color:var(--gn)">${cnt.normal}</div><div class="sl">正常</div></div>
@@ -884,124 +1188,157 @@ async function buildReport() {
         <div class="sbox sy"><div class="sn" style="color:var(--yw)">${cnt.labor}</div><div class="sl">工費</div></div>
       </div>
     </div>
-    <div class="tc" style="margin-bottom:1rem"><div class="tsc"><table>
-      <thead><tr>
-        <th style="text-align:left;padding-left:16px">品項規格（廠商原文）</th>
-        <th style="text-align:center">單位</th><th>數量</th>
-        <th>廠商單價 (฿)</th><th>報價小計 (฿)</th>
-        <th>歷史最低價 / 工費預估 (฿)</th><th>差異</th>
-        <th style="text-align:left">比對品項</th>
-        <th style="text-align:center;padding-right:16px">燈號</th>
-      </tr></thead>
-      <tbody>${rows}
-        <tr class="ttot">
-          <td colspan="3" style="text-align:left;padding-left:16px;font-family:var(--mono);font-size:10px;color:var(--t3)">TOTAL</td>
-          <td></td><td style="font-family:var(--mono);font-size:14px">฿ ${fmt(totalQ)}</td>
-          <td colspan="4"></td>
-        </tr>
-      </tbody>
-    </table></div></div>
-    <div class="totals">
+    <div class="tc" style="margin-bottom:1rem">
+      <div class="rpt-toolbar">
+        <span class="rpt-toolbar-title">📋 完整品項明細</span>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+          <span style="font-family:var(--mono);font-size:11px;color:var(--t3)">✏️ 所有欄位可直接點擊編輯</span>
+          <span class="edit-mode-badge">可編輯模式</span>
+        </div>
+      </div>
+      <div class="tsc"><table>
+        <thead><tr>
+          <th style="text-align:left;padding-left:16px">品項規格（廠商原文）</th>
+          <th style="text-align:center">單位</th><th>數量</th>
+          <th>廠商單價 (฿)</th><th>報價小計 (฿)</th>
+          <th>歷史最低價 / 工費預估 (฿)</th><th>差異</th>
+          <th style="text-align:left">比對品項</th>
+          <th style="text-align:center">燈號</th>
+          <th style="text-align:center;padding-right:8px">回報</th>
+        </tr></thead>
+        <tbody>${rows}
+          <tr class="ttot">
+            <td colspan="3" style="text-align:left;padding-left:16px;font-family:var(--mono);font-size:10px;color:var(--t3)">TOTAL</td>
+            <td></td><td id="totalQ" style="font-family:var(--mono);font-size:14px">฿ ${fmt(totalQ)}</td>
+            <td colspan="5"></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="totals" id="totalsBar">
       <div class="tcell"><label>廠商報價總計</label><div class="tamt" style="color:var(--t1)">฿ ${fmt(totalQ)}</div><div class="tnote" style="color:var(--t3)">廠商開價</div></div>
-      <div class="tcell"><label>建議目標價</label><div class="tamt" style="color:var(--gn)">฿ ${fmt(totalS)}</div><div class="tnote" style="color:var(--t3)">依最低價 / 工費預估</div></div>
-      <div class="tcell"><label>可節省金額</label><div class="tamt" style="color:var(--mg)">฿ ${fmt(canSave)}</div><div class="tnote" style="color:${canSave>0?'var(--mg)':'var(--t3)'}">${totalQ>0?'−'+((canSave/totalQ)*100).toFixed(1)+'%':'—'}</div></div>
+      <div class="tcell"><label>建議目標價</label><div class="tamt" style="color:var(--gn)" id="totalS">฿ ${fmt(totalS)}</div><div class="tnote" style="color:var(--t3)">依最低價 / 工費預估</div></div>
+      <div class="tcell"><label>可節省金額</label><div class="tamt" style="color:var(--mg)" id="canSave">฿ ${fmt(canSave)}</div><div class="tnote" style="color:${canSave>0?'var(--mg)':'var(--t3)'}" id="savePct">${totalQ>0?'−'+((canSave/totalQ)*100).toFixed(1)+'%':'—'}</div></div>
     </div>
     ${advHtml?`<div style="margin-bottom:1rem"><div class="clabel" style="margin-bottom:.75rem">AI 議價建議</div>${advHtml}</div>`:''}
-    <div style="font-family:var(--mono);font-size:10px;color:var(--t3);padding:.75rem 0;border-top:1px solid var(--rim)">
-      燈號：±10% 為正常區間 ／ 工費：人工填入預估 ／ Gemini AI 自動生成 ／ ${curRptId}
+    <div style="font-family:var(--mono);font-size:10px;color:var(--t3);padding:.75rem 0;border-top:1px solid var(--rim2)">
+      燈號：±10% 為正常區間 ／ 工費：請在各品項列下方填入預估值 ／ Gemini AI 自動生成 ／ ${curRptId}
     </div>`;
 
-  // Backup report to Drive
+  // backup
   try {
-    const rptData = { reportId:curRptId, vendor, project, date:window._aiDate, generatedAt:new Date().toISOString(), items:parsedItems };
-    await api('saveReport', { reportId:curRptId, reportData:rptData });
-    toast('報告已備份至 Google Drive', 'info');
-  } catch(_) {}
+    await api('saveReport',{reportId:curRptId,reportData:{reportId:curRptId,vendor,project,date:window._aiDate,generatedAt:new Date().toISOString(),items:parsedItems}});
+    toast('報告已備份至 Google Drive','info');
+  } catch(_){}
 }
 
-// ═══════════════════════════════════════════
-//  MASTER TABLE
-// ═══════════════════════════════════════════
-function renderM() {
-  const q = (document.getElementById('ms').value || '').toLowerCase();
-  const rows = masterData.filter(r => !q || r.spec.toLowerCase().includes(q) || (r.keywords||'').toLowerCase().includes(q));
-  const canEdit = !!authToken;
-  document.getElementById('mBody').innerHTML = rows.map(r => {
-    const i = masterData.indexOf(r);
-    const ce = canEdit ? 'true' : 'false';
-    const cur = canEdit ? '' : 'cursor:default';
-    const clk = canEdit ? '' : 'onclick="openLogin()"';
-    const delBtn = canEdit
-      ? `<button class="btn btn-r" style="font-size:11px;padding:3px 10px" onclick="delM(${i})">刪除</button>`
-      : `<button class="btn btn-g" style="font-size:11px;padding:3px 10px;opacity:.4" onclick="openLogin()">🔒</button>`;
-    const units = ['EA','M','PCS','KG','SET','LOT'].map(u =>
-      `<option${r.unit===u?' selected':''}>${u}</option>`).join('');
-    return `<tr class="${r._n?'rn':r._d?'rd':''}">
-      <td contenteditable="${ce}" onblur="eM(${i},'spec',this.textContent)" style="${cur}" ${clk}>${r.spec}</td>
-      <td style="text-align:center">
-        <select onchange="eM(${i},'unit',this.value)" ${canEdit?'':'disabled'} style="background:transparent;border:none;color:var(--t1);font-size:12px;font-family:var(--body)">${units}</select>
-      </td>
-      <td contenteditable="${ce}" onblur="eM(${i},'price',this.textContent)" style="${cur}" ${clk}>${r.price}</td>
-      <td contenteditable="${ce}" onblur="eM(${i},'keywords',this.textContent)" style="font-size:11px;color:var(--t3);max-width:220px;white-space:normal;${cur}" ${clk}>${r.keywords||''}</td>
-      <td contenteditable="${ce}" onblur="eM(${i},'remark',this.textContent)" style="font-size:11px;color:var(--t3);${cur}" ${clk}>${r.remark||''}</td>
-      <td style="text-align:center;padding-right:16px">${delBtn}</td>
-    </tr>`;
-  }).join('');
-  updBadge();
-  const hint = document.getElementById('masterHint');
-  if (hint) hint.textContent = canEdit
-    ? '* 點欄位直接編輯。橘色列 = 未儲存。「儲存至 Drive」推送 master_list.json。「匯入覆蓋 CSV」整批替換主檔。'
-    : '🔒 唯讀模式 — 點任意欄位或按鈕即可登入管理員進行編輯。';
-}
-
-function eM(i,f,v) {
-  if (!authToken) {
-    renderM(); // 還原顯示（不儲存變更）
-    openLogin();
-    return;
+// ═══ EDITABLE REPORT ═══
+function editRpt(i,field,val){
+  const it=parsedItems[i];
+  if(!it) return;
+  if(field==='unitPrice'){
+    const n=parseFloat(val.replace(/[^0-9.]/g,''));
+    if(!isNaN(n)) it.unitPrice=n;
+  } else if(field==='qty'){
+    const n=parseFloat(val.replace(/[^0-9.]/g,''));
+    if(!isNaN(n)) it.qty=n;
+  } else {
+    it[field]=val;
   }
-  masterData[i][f] = f==='price' ? (parseFloat(v)||0) : v;
-  masterData[i]._d = true;
+  // 重新計算此列
+  const sub=it.qty?it.unitPrice*it.qty:null;
+  const subEl=document.getElementById(`sub-${i}`);
+  if(subEl) subEl.textContent=sub!=null?'฿ '+fmt(sub):'—';
+  // 重新算燈號
+  const f=getF(it);
+  const pillEl=document.getElementById(`pill-${i}`);
+  if(pillEl){pillEl.textContent=f.lbl;pillEl.className='pill '+f.cls;}
+  // 重新算差異
+  const diffEl=document.getElementById(`diff-${i}`);
+  if(diffEl&&it.masterLowestPrice&&it.flag!=='labor_package'){
+    const dv=(it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice*100;
+    diffEl.innerHTML=`<span class="${dv>1?'cup':dv<-1?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;
+  }
+  recalcTotals();
 }
-function delM(i) {
-  if (!authToken) { openLogin(); return; }
-  if (!confirm(`確定刪除「${masterData[i].spec}」？`)) return;
-  masterData.splice(i,1); renderM(); toast('已刪除','ok');
+
+// ═══ LABOR INLINE CALC ═══
+function calcLInline(i){
+  const it=parsedItems[i];if(!it) return;
+  const d=parseFloat(document.getElementById(`ld${i}`)?.value)||0;
+  const r=parseFloat(document.getElementById(`lr${i}`)?.value)||0;
+  const w=parseFloat(document.getElementById(`lw${i}`)?.value)||0;
+  const resEl=document.getElementById(`lres${i}`);
+  if(!d||!r||!w){if(resEl) resEl.innerHTML='預估合理工費：<strong>請填入上方數值</strong>';it._est=null;return;}
+  const est=d*r*w;
+  Object.assign(it,{_est:est,_days:d,_rate:r,_workers:w});
+  const dv=(it.unitPrice-est)/est;const pct=(dv*100).toFixed(1);
+  let lbl,col;
+  if(Math.abs(dv)<=.1){lbl=`🟢 正常 (${dv>=0?'+':''}${pct}%)`;col='var(--gn)';}
+  else if(dv>.1){lbl=`🔴 偏高 (+${pct}%)`;col='var(--rd)';}
+  else{lbl=`🟣 偏低 (${pct}%)`;col='var(--pu)';}
+  if(resEl) resEl.innerHTML=`預估合理工費：<strong>฿ ${fmt(est)}</strong> <span style="color:${col};font-weight:600">${lbl}</span>`;
+  const baseEl=document.getElementById(`base-${i}`);
+  const diffEl=document.getElementById(`diff-${i}`);
+  if(diffEl){const dv2=dv*100;diffEl.innerHTML=`<span class="${dv2>0?'cup':dv2<0?'cdn':'cok'}">${dv2>=0?'+':''}${dv2.toFixed(1)}%</span>`;}
+  const f=getF(it);
+  const pillEl=document.getElementById(`pill-${i}`);
+  if(pillEl){pillEl.textContent=f.lbl;pillEl.className='pill '+f.cls;}
+  recalcTotals();
 }
-function openAdd() {
-  if (!authToken) { openLogin(); return; }
-  document.getElementById('addM').classList.remove('h');
+
+function recalcTotals(){
+  const totalQ=parsedItems.reduce((s,it)=>s+(it.subtotal??it.unitPrice*(it.qty??1)),0);
+  let totalS=0,canSave=0;
+  parsedItems.forEach(it=>{
+    const sub=it.subtotal??it.unitPrice*(it.qty??1);
+    if(it.flag==='labor_package'&&it._est!=null){totalS+=it._est;if(it.unitPrice>it._est*1.1)canSave+=(it.unitPrice-it._est);}
+    else if(it.flag==='high'&&it.masterLowestPrice){totalS+=it.masterLowestPrice*(it.qty??1);canSave+=(it.unitPrice-it.masterLowestPrice)*(it.qty??1);}
+    else totalS+=sub;
+  });
+  const tq=document.getElementById('totalQ');if(tq) tq.textContent='฿ '+fmt(totalQ);
+  const ts=document.getElementById('totalS');if(ts) ts.textContent='฿ '+fmt(totalS);
+  const cs=document.getElementById('canSave');if(cs) cs.textContent='฿ '+fmt(canSave);
+  const sp=document.getElementById('savePct');if(sp) sp.textContent=totalQ>0?'−'+((canSave/totalQ)*100).toFixed(1)+'%':'—';
 }
-function closeAdd(){document.getElementById('addM').classList.add('h');}
-function addItem(){
-  const spec=document.getElementById('m-sp').value.trim();
-  if(!spec){toast('品項規格不可空白','err');return;}
-  masterData.push({spec,unit:document.getElementById('m-un').value,price:parseFloat(document.getElementById('m-pr').value)||0,keywords:document.getElementById('m-kw').value.trim(),remark:document.getElementById('m-rm').value.trim(),_d:false,_n:true});
-  closeAdd();['m-sp','m-kw','m-rm'].forEach(id=>document.getElementById(id).value='');document.getElementById('m-pr').value='';
-  renderM();toast('已新增，記得按「儲存至 Drive」','ok');
+
+// ═══ CORRECTION ═══
+function openCorr(i){
+  const it=parsedItems[i];if(!it) return;
+  corrTarget=i;
+  document.getElementById('corr-spec').textContent=it.spec;
+  document.getElementById('corr-ai').textContent=`單價: ฿${fmt(it.unitPrice)} ／ 比對: ${it.masterSpec||'無'}`;
+  document.getElementById('corr-correct').value='';
+  document.getElementById('corr-note').value='';
+  // 預設 category
+  const catSel=document.getElementById('corr-cat');
+  if(catSel) catSel.value=selectedCat==='all'?'common':selectedCat;
+  document.getElementById('corrModal').classList.remove('h');
 }
-function expCSV(){
-  const rows=[['Material Specification','Unit','Unit Price (THB)','Keywords','Remark'],...masterData.map(r=>[r.spec,r.unit,r.price,r.keywords||'',r.remark||''])];
-  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-  dl('\uFEFF'+csv,'master_item_list.csv','text/csv;charset=utf-8');
-  toast('CSV 已匯出','ok');
-}
-function impCSV(inp){
-  const f=inp.files[0];if(!f)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const lines=e.target.result.split('\n').filter(l=>l.trim());
-    const parse=l=>{const cells=[];let cur='',inQ=false;for(const ch of l){if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){cells.push(cur.trim());cur='';}else cur+=ch;}cells.push(cur.trim());return cells.map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"'));};
-    const rows=lines.map(parse);
-    const h=rows[0].map(x=>x.toLowerCase().trim());
-    const si=h.findIndex(x=>x.includes('spec')),ui=h.findIndex(x=>x.includes('unit')&&!x.includes('price')),pi=h.findIndex(x=>x.includes('price')),ki=h.findIndex(x=>x.includes('key')),ri=h.findIndex(x=>x.includes('rem'));
-    const data=rows.slice(1).filter(r=>r[si>=0?si:0]).map(r=>({spec:r[si>=0?si:0]||'',unit:r[ui>=0?ui:1]||'EA',price:parseFloat(r[pi>=0?pi:2])||0,keywords:r[ki>=0?ki:3]||'',remark:r[ri>=0?ri:4]||'',_d:false,_n:true}));
-    if (!authToken) { openLogin(); return; }
-    if(!confirm(`確定用匯入的 ${data.length} 筆覆蓋現有主檔 ${masterData.length} 筆？`))return;
-    masterData=data;renderM();toast(`已匯入 ${data.length} 筆，請按「儲存至 Drive」同步`,'ok');
+async function submitCorrection(){
+  const correct=document.getElementById('corr-correct').value.trim();
+  if(!correct){toast('請填入正確答案','err');return;}
+  const it=parsedItems[corrTarget];
+  const corr={
+    aiRead: `${it.spec} → 單價 ฿${fmt(it.unitPrice)}`,
+    correct,
+    note: document.getElementById('corr-note').value.trim(),
+    category: document.getElementById('corr-cat').value,
+    createdAt: new Date().toISOString(),
+    reportId: curRptId
   };
-  reader.readAsText(f,'utf-8');inp.value='';
+  try {
+    await api('saveCorrection',{correction:corr});
+    toast('修正已儲存，下次同類分析自動帶入 ✓','ok');
+    document.getElementById('corrModal').classList.add('h');
+  } catch(e){
+    // fallback: 本機暫存
+    toast('後端未連線，修正暫存於本機（重新整理後消失）','info',4000);
+    document.getElementById('corrModal').classList.add('h');
+  }
 }
+
+// ═══ EXPORT ═══
 function expJSON(){
   const d={reportId:curRptId,generatedAt:new Date().toISOString(),vendor:window._aiVendor,project:window._aiProject,items:parsedItems};
   dl(JSON.stringify(d,null,2),curRptId+'.json','application/json');toast('JSON 已匯出','ok');
@@ -1009,147 +1346,138 @@ function expJSON(){
 async function expExcel(){
   if(!parsedItems.length){toast('尚無報告資料','err');return;}
   toast('產生 Excel 中…','info',3000);
-  try{
-    const resp = await api('generateExcel',{
-      reportId: curRptId,
-      vendor:   window._aiVendor  || '—',
-      project:  window._aiProject || '—',
-      date:     window._aiDate    || new Date().toISOString().slice(0,10),
-      items:    parsedItems
-    });
-    // Apps Script 回傳 base64 xlsx
-    const b64  = resp.base64;
-    const bin  = atob(b64);
-    const arr  = new Uint8Array(bin.length);
+  try {
+    const resp=await api('generateExcel',{reportId:curRptId,vendor:window._aiVendor||'—',project:window._aiProject||'—',date:window._aiDate||new Date().toISOString().slice(0,10),items:parsedItems});
+    const b64=resp.base64;
+    const bin=atob(b64);const arr=new Uint8Array(bin.length);
     for(let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
-    const blob = new Blob([arr],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const blob=new Blob([arr],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=curRptId+'.xlsx';a.click();
-    toast('Excel 已下載並備份至 Google Drive ✓','ok');
-  }catch(e){toast('Excel 產生失敗：'+e.message,'err',5000);}
+    toast('Excel 已下載並備份至 Drive ✓','ok');
+  } catch(e){toast('Excel 產生失敗：'+e.message,'err',5000);}
 }
 function dl(content,name,type){const blob=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();}
 
-// ═══════════════════════════════════════════
-//  SETTINGS
-// ═══════════════════════════════════════════
-function openSett(){
-  if(!authToken){ openLogin(); return; }
-  document.getElementById('settM').classList.remove('h');
-  updSettUI();
-}
+// ═══ SETTINGS ═══
+function openSett(){if(!authToken){openLogin();return;}document.getElementById('settM').classList.remove('h');updSettUI();}
 function closeSett(){document.getElementById('settM').classList.add('h');}
 function updSettUI(){
-  document.getElementById('urlStat').textContent = backendUrl ? '已設定 ✓' : '未設定';
+  const configured=backendUrl&&backendUrl!=='YOUR_APPS_SCRIPT_URL';
+  document.getElementById('urlStat').textContent=configured?'已設定 ✓':'未設定 — 請修改 HTML CONFIG';
 }
-
-function setUrl(){
-  const u=prompt('請貼上 Apps Script 部署網址：\n（格式：https://script.google.com/macros/s/...）');
-  if(!u)return;
-  backendUrl=u.trim();
-  updSettUI();toast('網址已儲存','ok');
-}
-
-
-function chgPw(){
-  const np=prompt('請輸入新密碼（最少 8 碼）：');
-  if(!np||np.length<8){toast('密碼太短','err');return;}
-  toast('請在 Apps Script CONFIG.ADMIN_PW 中更新密碼，然後重新部署','info',6000);
-}
+function setUrl(){toast('請直接修改 HTML 第一行 CONFIG.BACKEND_URL，再上傳 GitHub 即生效','info',5000);}
+function chgPw(){const np=prompt('請輸入新密碼（最少 8 碼）：');if(!np||np.length<8){toast('密碼太短','err');return;}toast('請在 Apps Script CONFIG.ADMIN_PW 更新密碼後重新部署','info',6000);}
 async function testConn(){
-  try{
-    const res=await fetch(backendUrl);
-    const d=await res.json();
-    toast(d.ok?'連線成功：'+d.msg:'連線失敗：'+d.error,d.ok?'ok':'err');
-  }catch(e){toast('無法連線：'+e.message,'err');}
+  try{const res=await fetch(backendUrl);const d=await res.json();toast(d.ok?'連線成功：'+d.msg:'連線失敗：'+d.error,d.ok?'ok':'err');}
+  catch(e){toast('無法連線：'+e.message,'err');}
 }
 
-// ═══════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════
-window.addEventListener('DOMContentLoaded', () => {
-  // 訪客直接進入，載入主檔（唯讀）
-  const tok = sessionStorage.getItem('tok');
-  if (tok) { authToken = tok; showAdminUI(true); }
+// ═══ INIT ═══
+window.addEventListener('DOMContentLoaded',()=>{
+  const tok=sessionStorage.getItem('tok');
+  if(tok){authToken=tok;showAdminUI(true);}
   loadMaster();
   updSettUI();
 });
 document.getElementById('addM').addEventListener('click',function(e){if(e.target===this)closeAdd()});
 document.getElementById('settM').addEventListener('click',function(e){if(e.target===this)closeSett()});
+document.getElementById('catModal').addEventListener('click',function(e){if(e.target===this)this.classList.add('h')});
+document.getElementById('corrModal').addEventListener('click',function(e){if(e.target===this)this.classList.add('h')});
 
-// ═══════════════════════════════════════════
-//  SEED DATA
-// ═══════════════════════════════════════════
+// ═══ SEED DATA (Notion Master List) ═══
 const SEED=[
-  {spec:'Ball Valve, SS304, CL150, PTFE, 1/2" (Screw)',unit:'EA',price:850,keywords:'ball valve ss304 150p ptfe 1/2 screw npt stainless',remark:''},
-  {spec:'Ball Valve, SS304, CL150, PTFE, 1" (Screw)',unit:'EA',price:1150,keywords:'ball valve ss304 150p ptfe 1inch screw npt stainless',remark:''},
-  {spec:'Ball Valve, SS304, CL150, PTFE, 1-1/2"',unit:'EA',price:2200,keywords:'ball valve ss304 150p ptfe 1.5 40a flange stainless',remark:''},
-  {spec:'Ball Valve, SS304, CL150, PTFE, 2"',unit:'EA',price:3150,keywords:'ball valve ss304 150p 2inch flange stainless ptfe',remark:''},
-  {spec:'Ball Valve, SS304, CL150, PTFE, 4"',unit:'EA',price:8500,keywords:'ball valve ss304 150p 4inch flange stainless ptfe',remark:''},
-  {spec:'Ball Valve, A105, CL150, 1" (FLG RF)',unit:'EA',price:1800,keywords:'ball valve a105 150lb 1inch flange rf carbon steel',remark:''},
-  {spec:'Ball Valve, A105, CL150, 3" (FLG RF)',unit:'EA',price:5200,keywords:'ball valve a105 150lb 3inch flange rf carbon steel',remark:''},
-  {spec:'Ball Valve, A105, CL150, 4" (FLG RF)',unit:'EA',price:7800,keywords:'ball valve a105 150lb 4inch flange rf carbon steel',remark:''},
-  {spec:'Ball Valve, WCB, CL150, 2" (FLG RF)',unit:'EA',price:4200,keywords:'ball valve wcb 150p 2inch flange rf carbon steel',remark:''},
-  {spec:'Ball Valve, 150#, 3"',unit:'EA',price:5800,keywords:'ball valve 150lb 3inch carbon steel',remark:''},
-  {spec:'Ball Valve, 150#, 4"',unit:'EA',price:8200,keywords:'ball valve 150lb 4inch carbon steel',remark:''},
-  {spec:'Ball Valve, 150#, 6"',unit:'EA',price:18500,keywords:'ball valve 150lb 6inch carbon steel',remark:''},
-  {spec:'Gate Valve, 2" PN10',unit:'EA',price:580,keywords:'gate valve 2inch pn10 carbon steel screwed',remark:''},
-  {spec:'Gate Valve, 4" PN10',unit:'EA',price:1850,keywords:'gate valve 4inch pn10 carbon steel flange',remark:''},
-  {spec:'Butterfly Valve, CL150, 4"',unit:'EA',price:6500,keywords:'butterfly valve 150lb 4inch flange carbon steel',remark:''},
-  {spec:'Butterfly Valve, 8" (Manual)',unit:'EA',price:14000,keywords:'butterfly valve 8inch manual',remark:''},
-  {spec:'Butterfly Valve, 8" (Pneumatic)',unit:'EA',price:32000,keywords:'butterfly valve 8inch pneumatic actuated',remark:''},
-  {spec:'Butterfly Valve, 12" (Pneumatic)',unit:'EA',price:68000,keywords:'butterfly valve 12inch pneumatic actuated',remark:''},
-  {spec:'Knife Gate Valve, 12" (Pneumatic)',unit:'EA',price:85000,keywords:'knife gate valve 12inch pneumatic actuated',remark:''},
-  {spec:'Check Valve, 2" (Swing)',unit:'EA',price:650,keywords:'check valve swing 2inch carbon steel',remark:''},
-  {spec:'Check Valve, 4" (Swing)',unit:'EA',price:1850,keywords:'check valve swing 4inch carbon steel',remark:''},
-  {spec:'Globe Valve, 2" PN16',unit:'EA',price:1200,keywords:'globe valve 2inch pn16 carbon steel',remark:''},
-  {spec:'Strainer, Y-Type, 2"',unit:'EA',price:780,keywords:'strainer y type 2inch carbon steel filter',remark:''},
-  {spec:'Strainer, Y-Type, 4"',unit:'EA',price:2200,keywords:'strainer y type 4inch carbon steel filter',remark:''},
-  {spec:'PPR Pipe, PN20, 1/2"',unit:'M',price:22,keywords:'ppr pipe pn20 1/2 15mm water',remark:''},
-  {spec:'PPR Pipe, PN20, 3/4"',unit:'M',price:31.5,keywords:'ppr pipe pn20 3/4 20mm water',remark:''},
-  {spec:'PPR Pipe, PN20, 1"',unit:'M',price:52,keywords:'ppr pipe pn20 1inch 25mm water',remark:''},
-  {spec:'PPR Pipe, PN20, 1-1/2"',unit:'M',price:98,keywords:'ppr pipe pn20 1.5inch 40mm water',remark:''},
-  {spec:'PPR Pipe, PN20, 2"',unit:'M',price:145,keywords:'ppr pipe pn20 2inch 50mm water',remark:''},
-  {spec:'UPVC Pipe, Class 13.5, 1/2" x 4m',unit:'EA',price:85,keywords:'upvc pipe class 13.5 1/2inch 4m pvc',remark:''},
-  {spec:'UPVC Pipe, Class 13.5, 3/4" x 4m',unit:'EA',price:120,keywords:'upvc pipe class 13.5 3/4inch 4m pvc',remark:''},
-  {spec:'UPVC Pipe, Class 13.5, 1" x 4m',unit:'EA',price:172,keywords:'upvc pipe class 13.5 1inch 4m pvc',remark:''},
-  {spec:'UPVC Pipe, Class 13.5, 1-1/2" x 4m',unit:'EA',price:248,keywords:'upvc pipe class 13.5 1.5inch 4m pvc',remark:''},
-  {spec:'UPVC Pipe, Class 13.5, 2" x 4m',unit:'EA',price:335,keywords:'upvc pipe class 13.5 2inch 4m pvc',remark:''},
-  {spec:'UPVC Pipe, Class 13.5, 3" x 4m',unit:'EA',price:520,keywords:'upvc pipe class 13.5 3inch 4m pvc',remark:''},
-  {spec:'UPVC Pipe, Class 13.5, 4" x 4m',unit:'EA',price:850,keywords:'upvc pipe class 13.5 4inch 4m pvc',remark:''},
-  {spec:'UPVC Elbow 90°, 1/2"',unit:'EA',price:7,keywords:'upvc elbow 90 1/2inch fitting pvc',remark:''},
-  {spec:'UPVC Elbow 90°, 1"',unit:'EA',price:14,keywords:'upvc elbow 90 1inch fitting pvc',remark:''},
-  {spec:'UPVC Elbow 90°, 2"',unit:'EA',price:38,keywords:'upvc elbow 90 2inch fitting pvc',remark:''},
-  {spec:'UPVC Elbow 90°, 3"',unit:'EA',price:85,keywords:'upvc elbow 90 3inch fitting pvc',remark:''},
-  {spec:'UPVC Tee, 1"',unit:'EA',price:16.5,keywords:'upvc tee 1inch fitting pvc',remark:''},
-  {spec:'UPVC Tee, 2"',unit:'EA',price:52,keywords:'upvc tee 2inch fitting pvc',remark:''},
-  {spec:'UPVC Coupling, 1"',unit:'EA',price:7.8,keywords:'upvc coupling 1inch fitting pvc',remark:''},
-  {spec:'UPVC Coupling, 2"',unit:'EA',price:28,keywords:'upvc coupling 2inch fitting pvc',remark:''},
-  {spec:'UPVC Cap, 1/2"',unit:'EA',price:5.2,keywords:'upvc cap 1/2inch end cap pvc',remark:''},
-  {spec:'Reducing Socket, 2"x1"',unit:'EA',price:72,keywords:'reducing socket 2x1 reducer upvc pvc',remark:''},
-  {spec:'Union Coupling, 1-1/2"',unit:'EA',price:185,keywords:'union coupling 1.5inch upvc pvc',remark:''},
-  {spec:'PVC Solvent Cement, 400ml',unit:'PCS',price:88,keywords:'pvc solvent cement glue 400ml',remark:''},
-  {spec:'Teflon Tape, 3/4" x 10m',unit:'PCS',price:20,keywords:'teflon tape ptfe 3/4 10m thread seal',remark:''},
-  {spec:'Pipe Support Clamp, 1" (SS)',unit:'EA',price:32,keywords:'pipe support clamp 1inch stainless ss304',remark:''},
-  {spec:'Pipe Support Clamp, 2" (SS)',unit:'EA',price:65,keywords:'pipe support clamp 2inch stainless ss304',remark:''},
-  {spec:'Pipe Support Clamp, 4" (SS)',unit:'EA',price:195,keywords:'pipe support clamp 4inch stainless ss304',remark:''},
-  {spec:'Flexible Hose, SS, 16"',unit:'EA',price:420,keywords:'flexible hose stainless 16inch braided',remark:''},
-  {spec:'Pressure Gauge, 0-10 bar, 4"',unit:'EA',price:1100,keywords:'pressure gauge 0-10bar 4inch dial',remark:''},
-  {spec:'CS Pipe, 2" Sch40 (6m)',unit:'EA',price:1850,keywords:'carbon steel pipe 2inch schedule 40 6m cs',remark:''},
-  {spec:'CS Pipe, 4" Sch40 (6m)',unit:'EA',price:4800,keywords:'carbon steel pipe 4inch schedule 40 6m cs',remark:''},
-  {spec:'SS304 Pipe, 2" Sch10 (6m)',unit:'EA',price:3200,keywords:'stainless steel pipe ss304 2inch schedule 10 6m',remark:''},
-  {spec:'Flange, WN, 2" CL150',unit:'EA',price:580,keywords:'flange weld neck 2inch class 150 carbon steel',remark:''},
-  {spec:'Flange, WN, 4" CL150',unit:'EA',price:1450,keywords:'flange weld neck 4inch class 150 carbon steel',remark:''},
-  {spec:'Stud Bolt Set, 2" CL150',unit:'SET',price:180,keywords:'stud bolt set 2inch class 150 carbon steel',remark:''},
-  {spec:'Stud Bolt Set, 4" CL150',unit:'SET',price:420,keywords:'stud bolt set 4inch class 150 carbon steel',remark:''},
-  {spec:'VFD, 5.5kW, 3Phase',unit:'EA',price:18500,keywords:'vfd inverter 5.5kw 3phase variable frequency drive',remark:''},
-  {spec:'MCB, 1P, 16A (6kA)',unit:'EA',price:185,keywords:'mcb 1p 16a 6ka miniature circuit breaker',remark:''},
-  {spec:'MCCB, 3P, 100A (25kA)',unit:'EA',price:4800,keywords:'mccb 3p 100a 25ka molded case circuit breaker',remark:''},
-  {spec:'Wire, THW, 2.5 sq.mm',unit:'M',price:12.5,keywords:'wire thw 2.5mm electrical copper',remark:''},
-  {spec:'Wire, THW, 4 sq.mm',unit:'M',price:18,keywords:'wire thw 4mm electrical copper',remark:''},
-  {spec:'Cable, NYY, 4x6 sq.mm',unit:'M',price:145,keywords:'cable nyy 4x6mm power cable copper',remark:''},
-  {spec:'Terminal Block, 4mm, DIN Rail',unit:'EA',price:28,keywords:'terminal block 4mm din rail screw',remark:''},
-  {spec:'Earthing Rod, 5/8" x 1.8m',unit:'EA',price:285,keywords:'earthing rod 5/8 1.8m copper clad ground',remark:''},
+  {spec:'Ball Valve, SS304, CL150, PTFE, 1/2" (Screw)',unit:'EA',price:850,category:'piping',keywords:'ball valve ss304 150p ptfe 1/2 screw npt stainless',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, SS304, CL150, PTFE, 1" (Screw)',unit:'EA',price:1150,category:'piping',keywords:'ball valve ss304 150p ptfe 1inch screw npt stainless',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, SS304, CL150, PTFE, 1-1/2"',unit:'EA',price:2200,category:'piping',keywords:'ball valve ss304 150p ptfe 1.5 40a flange stainless',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, SS304, CL150, PTFE, 2"',unit:'EA',price:3150,category:'piping',keywords:'ball valve ss304 150p 2inch flange stainless ptfe',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, SS304, CL150, PTFE, 4"',unit:'EA',price:8500,category:'piping',keywords:'ball valve ss304 150p 4inch flange stainless ptfe',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, A105, CL150, 1" (FLG RF)',unit:'EA',price:1800,category:'piping',keywords:'ball valve a105 150lb 1inch flange rf carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, A105, CL150, 3" (FLG RF)',unit:'EA',price:5200,category:'piping',keywords:'ball valve a105 150lb 3inch flange rf carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, A105, CL150, 4" (FLG RF)',unit:'EA',price:7800,category:'piping',keywords:'ball valve a105 150lb 4inch flange rf carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, WCB, CL150, 2" (FLG RF)',unit:'EA',price:4200,category:'piping',keywords:'ball valve wcb 150p 2inch flange rf carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, 150#, 3"',unit:'EA',price:5800,category:'piping',keywords:'ball valve 150lb 3inch carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, 150#, 4"',unit:'EA',price:8200,category:'piping',keywords:'ball valve 150lb 4inch carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, 150#, 6"',unit:'EA',price:18500,category:'piping',keywords:'ball valve 150lb 6inch carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, SS304, Screwed, 1/2"',unit:'EA',price:720,category:'piping',keywords:'ball valve ss304 screwed 1pc 1/2inch stainless',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, SS304, Screwed, 1"',unit:'EA',price:980,category:'piping',keywords:'ball valve ss304 screwed 1pc 1inch stainless',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Ball Valve, SS304, Screwed, 2"',unit:'EA',price:2800,category:'piping',keywords:'ball valve ss304 screwed 1pc 2inch stainless',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Butterfly Valve, CL150, 4"',unit:'EA',price:6500,category:'piping',keywords:'butterfly valve 150lb 4inch flange carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Butterfly Valve, 8" (Manual)',unit:'EA',price:14000,category:'piping',keywords:'butterfly valve 8inch manual',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Butterfly Valve, 8" (Pneumatic)',unit:'EA',price:32000,category:'piping',keywords:'butterfly valve 8inch pneumatic actuated',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Butterfly Valve, 12" (Pneumatic)',unit:'EA',price:68000,category:'piping',keywords:'butterfly valve 12inch pneumatic actuated',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Knife Gate Valve, 12" (Pneumatic)',unit:'EA',price:85000,category:'piping',keywords:'knife gate valve 12inch pneumatic actuated',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Check Valve, 2" (Swing)',unit:'EA',price:650,category:'piping',keywords:'check valve swing 2inch carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Check Valve, 4" (Swing)',unit:'EA',price:1850,category:'piping',keywords:'check valve swing 4inch carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Globe Valve, 2" PN16',unit:'EA',price:1200,category:'piping',keywords:'globe valve 2inch pn16 carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Gate Valve, 2" PN10',unit:'EA',price:580,category:'piping',keywords:'gate valve 2inch pn10 carbon steel screwed',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Gate Valve, 4" PN10',unit:'EA',price:1850,category:'piping',keywords:'gate valve 4inch pn10 carbon steel flange',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Strainer, Y-Type, 2"',unit:'EA',price:780,category:'piping',keywords:'strainer y type 2inch carbon steel filter',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Strainer, Y-Type, 4"',unit:'EA',price:2200,category:'piping',keywords:'strainer y type 4inch carbon steel filter',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'PPR Pipe, PN20, 1/2"',unit:'M',price:22,category:'piping',keywords:'ppr pipe pn20 1/2 15mm water',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'PPR Pipe, PN20, 3/4"',unit:'M',price:31.5,category:'piping',keywords:'ppr pipe pn20 3/4 20mm water',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'PPR Pipe, PN20, 1"',unit:'M',price:52,category:'piping',keywords:'ppr pipe pn20 1inch 25mm water',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'PPR Pipe, PN20, 2"',unit:'M',price:145,category:'piping',keywords:'ppr pipe pn20 2inch 50mm water',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Pipe, Class 13.5, 1/2" x 4m',unit:'EA',price:85,category:'piping',keywords:'upvc pipe class 13.5 1/2inch 4m pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Pipe, Class 13.5, 1" x 4m',unit:'EA',price:172,category:'piping',keywords:'upvc pipe class 13.5 1inch 4m pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Pipe, Class 13.5, 1-1/2" x 4m',unit:'EA',price:248,category:'piping',keywords:'upvc pipe class 13.5 1.5inch 4m pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Pipe, Class 13.5, 2" x 4m',unit:'EA',price:335,category:'piping',keywords:'upvc pipe class 13.5 2inch 4m pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Pipe, Class 13.5, 3" x 4m',unit:'EA',price:520,category:'piping',keywords:'upvc pipe class 13.5 3inch 4m pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Elbow 90°, 1"',unit:'EA',price:14,category:'piping',keywords:'upvc elbow 90 1inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Elbow 90°, 2"',unit:'EA',price:38,category:'piping',keywords:'upvc elbow 90 2inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Tee, 1"',unit:'EA',price:16.5,category:'piping',keywords:'upvc tee 1inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Tee, 2"',unit:'EA',price:52,category:'piping',keywords:'upvc tee 2inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Coupling, 1"',unit:'EA',price:7.8,category:'piping',keywords:'upvc coupling 1inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Reducing Socket, 2"x1"',unit:'EA',price:72,category:'piping',keywords:'reducing socket 2x1 reducer upvc pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Union Coupling, 1-1/2"',unit:'EA',price:185,category:'piping',keywords:'union coupling 1.5inch upvc pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'PVC Solvent Cement, 400ml',unit:'PCS',price:88,category:'piping',keywords:'pvc solvent cement glue 400ml',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Flexible Hose, SS, 16"',unit:'EA',price:420,category:'piping',keywords:'flexible hose stainless 16inch braided',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Pressure Gauge, 0-10 bar, 4"',unit:'EA',price:1100,category:'piping',keywords:'pressure gauge 0-10bar 4inch dial',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Flange, WN, 2" CL150',unit:'EA',price:580,category:'piping',keywords:'flange weld neck 2inch class 150 carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Flange, WN, 4" CL150',unit:'EA',price:1450,category:'piping',keywords:'flange weld neck 4inch class 150 carbon steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'CS Pipe, 2" Sch40 (6m)',unit:'EA',price:1850,category:'piping',keywords:'carbon steel pipe 2inch schedule 40 6m cs',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'CS Pipe, 4" Sch40 (6m)',unit:'EA',price:4800,category:'piping',keywords:'carbon steel pipe 4inch schedule 40 6m cs',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'SS304 Pipe, 2" Sch10 (6m)',unit:'EA',price:3200,category:'piping',keywords:'stainless steel pipe ss304 2inch schedule 10 6m',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Pipe Insulation, 2" (25mm)',unit:'M',price:185,category:'piping',keywords:'pipe insulation 2inch 25mm fiberglass foam',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Pipe Support Clamp, 1" (SS)',unit:'EA',price:32,category:'piping',keywords:'pipe support clamp 1inch stainless ss304',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Pipe Support Clamp, 2" (SS)',unit:'EA',price:65,category:'piping',keywords:'pipe support clamp 2inch stainless ss304',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Pipe Hanger, 2" (Adjustable)',unit:'EA',price:95,category:'piping',keywords:'pipe hanger 2inch adjustable support rod',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'VFD, 5.5kW, 3Phase',unit:'EA',price:18500,category:'electrical',keywords:'vfd inverter 5.5kw 3phase variable frequency drive',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'VFD, 11kW, 3Phase',unit:'EA',price:32000,category:'electrical',keywords:'vfd inverter 11kw 3phase variable frequency drive',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'MCB, 1P, 16A (6kA)',unit:'EA',price:185,category:'electrical',keywords:'mcb 1p 16a 6ka miniature circuit breaker',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'MCB, 3P, 63A (10kA)',unit:'EA',price:1850,category:'electrical',keywords:'mcb 3p 63a 10ka miniature circuit breaker',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'MCCB, 3P, 100A (25kA)',unit:'EA',price:4800,category:'electrical',keywords:'mccb 3p 100a 25ka molded case circuit breaker',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Contactor, 3P, 25A (AC3)',unit:'EA',price:1200,category:'electrical',keywords:'contactor 3p 25a ac3 magnetic',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Wire, THW, 2.5 sq.mm',unit:'M',price:12.5,category:'electrical',keywords:'wire thw 2.5mm electrical copper',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Wire, THW, 4 sq.mm',unit:'M',price:18,category:'electrical',keywords:'wire thw 4mm electrical copper',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Cable, NYY, 4x6 sq.mm',unit:'M',price:145,category:'electrical',keywords:'cable nyy 4x6mm power cable copper',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Terminal Block, 4mm, DIN Rail',unit:'EA',price:28,category:'electrical',keywords:'terminal block 4mm din rail screw',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Earthing Rod, 5/8" x 1.8m',unit:'EA',price:285,category:'electrical',keywords:'earthing rod 5/8 1.8m copper clad ground',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'H-Beam, 150x150x7x10',unit:'KG',price:28,category:'structural',keywords:'h beam 150x150 steel structural section',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'H-Beam, 200x200x8x12',unit:'KG',price:28,category:'structural',keywords:'h beam 200x200 steel structural section',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Angle Bar, 50x50x5',unit:'KG',price:26,category:'structural',keywords:'angle bar 50x50x5 steel equal angle',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Angle Bar, 75x75x6',unit:'KG',price:26,category:'structural',keywords:'angle bar 75x75x6 steel equal angle',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Steel Plate, 6mm (SS400)',unit:'KG',price:27,category:'structural',keywords:'steel plate 6mm ss400 flat plate',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Steel Plate, 12mm (SS400)',unit:'KG',price:27,category:'structural',keywords:'steel plate 12mm ss400 flat plate',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Channel (C), 75x40',unit:'KG',price:27,category:'structural',keywords:'channel c section 75x40 steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Concrete, 240 ksc',unit:'M3',price:1900,category:'civil',keywords:'concrete 240ksc readymix normal strength',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Concrete, 280 ksc',unit:'M3',price:2100,category:'civil',keywords:'concrete 280ksc readymix medium strength',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Rebar, SD40, D16',unit:'KG',price:26,category:'civil',keywords:'rebar sd40 d16 deformed bar reinforcement',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Rebar, SD40, D25',unit:'KG',price:26,category:'civil',keywords:'rebar sd40 d25 deformed bar reinforcement',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Formwork (Plywood)',unit:'M2',price:280,category:'civil',keywords:'formwork plywood shuttering concrete',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Bolt, M12x50, Hex (GR8.8)',unit:'EA',price:8,category:'common',keywords:'bolt m12 50mm hex grade 8.8 fastener',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Bolt, M16x60, Hex (GR8.8)',unit:'EA',price:14,category:'common',keywords:'bolt m16 60mm hex grade 8.8 fastener',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Bolt, M20x80, Hex (GR8.8)',unit:'EA',price:22,category:'common',keywords:'bolt m20 80mm hex grade 8.8 fastener',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Nut, M12 (GR8)',unit:'EA',price:3,category:'common',keywords:'nut m12 hex grade 8 fastener',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Nut, M16 (GR8)',unit:'EA',price:5,category:'common',keywords:'nut m16 hex grade 8 fastener',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Washer, M12 (Flat)',unit:'EA',price:2,category:'common',keywords:'washer m12 flat steel zinc plated',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Anchor Bolt, M12 x 150mm',unit:'EA',price:28,category:'common',keywords:'anchor bolt m12 150mm expansion chemical',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Anchor Bolt, M16 x 200mm',unit:'EA',price:52,category:'common',keywords:'anchor bolt m16 200mm expansion chemical',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Threaded Rod, M12 (3m)',unit:'EA',price:145,category:'common',keywords:'threaded rod m12 3m galvanized',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Unistrut Channel, 41x41 (3m)',unit:'EA',price:380,category:'common',keywords:'unistrut strut channel 41x41 3m galvanized',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Welding Rod, E6013, 3.2mm',unit:'KG',price:55,category:'common',keywords:'welding rod electrode e6013 3.2mm mild steel',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'Teflon Tape, 3/4" x 10m',unit:'PCS',price:20,category:'common',keywords:'teflon tape ptfe 3/4 10m thread seal',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
 ];
+
 </script>
 </body>
 </html>
