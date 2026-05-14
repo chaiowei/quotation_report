@@ -572,8 +572,8 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 </button>
 <div class="fp-float" id="fpFloat">
   <div class="fp-float-header" id="fpDragHandle">
-    <span class="fp-float-title">📄 原始報價單</span>
-    <button class="nbtn" style="font-size:11px;padding:3px 8px" onclick="openFileNewTab()">開新分頁 ↗</button>
+    <span class="fp-float-title" id="fpTitle">📄 原始報價單</span>
+    <a id="fpDownloadBtn" style="font-size:11px;padding:3px 10px;border:1px solid var(--rim2);border-radius:var(--r);color:var(--cy);text-decoration:none;background:#fff;cursor:pointer;display:inline-block" download="">⬇ 下載</a>
   </div>
   <div class="fp-float-body" id="fpBody"></div>
 </div>
@@ -898,21 +898,33 @@ function setF(f){
   // 用 FileReader 轉成 data URL，相容所有開啟方式（file://、GitHub Pages 等）
   const reader=new FileReader();
   reader.onload=e=>{
-    curFileUrl=e.target.result; // data URL
-    // 預先載入預覽內容
+    curFileUrl=e.target.result;
     const ext=f.name.split('.').pop().toLowerCase();
     const body=document.getElementById('fpBody');
+    if(!body) return;
     if(['jpg','jpeg','png','webp','heic'].includes(ext)){
-      body.innerHTML=`<img src="${curFileUrl}" alt="報價單預覽" style="width:100%;height:auto;display:block">`;
+      body.innerHTML='';
+      const img=document.createElement('img');
+      img.src=curFileUrl;img.alt='報價單預覽';
+      img.style.cssText='width:100%;height:auto;display:block';
+      body.appendChild(img);
     } else if(ext==='pdf'){
-      body.innerHTML=`<iframe src="${curFileUrl}" style="width:100%;height:600px;border:none"></iframe>`;
+      body.innerHTML='';
+      const ifr=document.createElement('iframe');
+      ifr.src=curFileUrl;ifr.style.cssText='width:100%;height:600px;border:none';
+      body.appendChild(ifr);
     } else {
       body.innerHTML=`<div style="padding:2rem;text-align:center;color:var(--t3);font-size:13px">
         <div style="font-size:32px;margin-bottom:1rem">📄</div>
-        ${f.name}<br><br>
-        <a href="${curFileUrl}" download="${f.name}" style="color:var(--cy);text-decoration:none;border:1px solid var(--cy);padding:6px 16px;border-radius:6px">⬇ 下載原始檔</a>
+        <div>${f.name}</div>
+        <div style="margin-top:.5rem;font-size:11px">請點下方「⬇ 下載」查看</div>
       </div>`;
     }
+    // 更新下載按鈕
+    const dlBtn=document.getElementById('fpDownloadBtn');
+    if(dlBtn){ dlBtn.href=curFileUrl; dlBtn.download=f.name; }
+    const titleEl=document.getElementById('fpTitle');
+    if(titleEl) titleEl.textContent='📄 '+f.name;
   };
   reader.readAsDataURL(f);
   const ext=f.name.split('.').pop().toLowerCase();
@@ -1065,25 +1077,7 @@ function setupPreview(){
 function togglePreview(){
   document.getElementById('fpFloat').classList.toggle('show');
 }
-function openFileNewTab(){
-  if(!curFileUrl||!curFile)return;
-  const ext=curFile.name.split('.').pop().toLowerCase();
-  if(['jpg','jpeg','png','webp'].includes(ext)||ext==='pdf'){
-    // 開新分頁顯示
-    const w=window.open();
-    if(w){
-      w.document.write(`<html><body style="margin:0;background:#222">
-        ${ext==='pdf'
-          ?`<iframe src="${curFileUrl}" style="width:100vw;height:100vh;border:none"></iframe>`
-          :`<img src="${curFileUrl}" style="max-width:100%;height:auto;display:block;margin:auto">`}
-      </body></html>`);
-      w.document.close();
-    }
-  } else {
-    // 直接下載
-    const a=document.createElement('a');a.href=curFileUrl;a.download=curFile.name;a.click();
-  }
-}
+// openFileNewTab 已移除，改用 fpDownloadBtn 直接下載
 // 浮動視窗拖曳
 (function(){
   let drag=false,ox=0,oy=0,startL=0,startT=0;
