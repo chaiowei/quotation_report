@@ -898,8 +898,26 @@ dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if
 fi.addEventListener('change',e=>{if(e.target.files[0])setF(e.target.files[0]);fi.value='';});
 function setF(f){
   curFile=f;
-  if(curFileUrl) URL.revokeObjectURL(curFileUrl);
-  curFileUrl=URL.createObjectURL(f);
+  // 用 FileReader 轉成 data URL，相容所有開啟方式（file://、GitHub Pages 等）
+  const reader=new FileReader();
+  reader.onload=e=>{
+    curFileUrl=e.target.result; // data URL
+    // 預先載入預覽內容
+    const ext=f.name.split('.').pop().toLowerCase();
+    const body=document.getElementById('fpBody');
+    if(['jpg','jpeg','png','webp','heic'].includes(ext)){
+      body.innerHTML=`<img src="${curFileUrl}" alt="報價單預覽" style="width:100%;height:auto;display:block">`;
+    } else if(ext==='pdf'){
+      body.innerHTML=`<iframe src="${curFileUrl}" style="width:100%;height:600px;border:none"></iframe>`;
+    } else {
+      body.innerHTML=`<div style="padding:2rem;text-align:center;color:var(--t3);font-size:13px">
+        <div style="font-size:32px;margin-bottom:1rem">📄</div>
+        ${f.name}<br><br>
+        <a href="${curFileUrl}" download="${f.name}" style="color:var(--cy);text-decoration:none;border:1px solid var(--cy);padding:6px 16px;border-radius:6px">⬇ 下載原始檔</a>
+      </div>`;
+    }
+  };
+  reader.readAsDataURL(f);
   const ext=f.name.split('.').pop().toLowerCase();
   document.getElementById('pico').textContent=ICONS[ext]||'📄';
   document.getElementById('pnm').textContent=f.name;
@@ -909,9 +927,10 @@ function setF(f){
 }
 function clrF(){
   curFile=null;
-  if(curFileUrl){URL.revokeObjectURL(curFileUrl);curFileUrl=null;}
+  curFileUrl=null;
   document.getElementById('fp').classList.remove('on');
   document.getElementById('aBtn').disabled=true;
+  document.getElementById('fpBody').innerHTML='';
 }
 function resetAll(){
   clrF();
@@ -1041,23 +1060,34 @@ function f2b64(file){return new Promise((ok,fail)=>{const r=new FileReader();r.o
 
 // ═══ FILE PREVIEW ═══
 function setupPreview(){
-  if(!curFileUrl||!curFile)return;
-  const body=document.getElementById('fpBody');
-  const ext=curFile.name.split('.').pop().toLowerCase();
-  if(['jpg','jpeg','png','webp','heic'].includes(ext)){
-    body.innerHTML=`<img src="${curFileUrl}" alt="報價單預覽" style="width:100%;height:auto;display:block">`;
-  } else if(ext==='pdf'){
-    body.innerHTML=`<iframe src="${curFileUrl}" style="width:100%;height:600px;border:none"></iframe>`;
-  } else {
-    body.innerHTML=`<div style="padding:1rem;text-align:center;color:var(--t3);font-size:13px">此格式僅支援下載查看<br><a href="${curFileUrl}" download="${curFile.name}" style="color:var(--cy)">點此下載原始檔 ↓</a></div>`;
-  }
+  // 內容已在上傳時載入，這裡只確保按鈕可見
+  if(!curFile)return;
+  document.getElementById('fpToggle').classList.add('show');
 }
 function togglePreview(){
   const f=document.getElementById('fpFloat');
-  f.classList.toggle('show');
+  const btn=document.getElementById('fpToggle');
+  const isShowing=f.classList.toggle('show');
+  btn.textContent=isShowing?'✕ 關閉原始檔':'📄 查看原始檔';
 }
 function openFileNewTab(){
-  if(curFileUrl) window.open(curFileUrl,'_blank');
+  if(!curFileUrl||!curFile)return;
+  const ext=curFile.name.split('.').pop().toLowerCase();
+  if(['jpg','jpeg','png','webp'].includes(ext)||ext==='pdf'){
+    // 開新分頁顯示
+    const w=window.open();
+    if(w){
+      w.document.write(`<html><body style="margin:0;background:#222">
+        ${ext==='pdf'
+          ?`<iframe src="${curFileUrl}" style="width:100vw;height:100vh;border:none"></iframe>`
+          :`<img src="${curFileUrl}" style="max-width:100%;height:auto;display:block;margin:auto">`}
+      </body></html>`);
+      w.document.close();
+    }
+  } else {
+    // 直接下載
+    const a=document.createElement('a');a.href=curFileUrl;a.download=curFile.name;a.click();
+  }
 }
 // 浮動視窗拖曳
 (function(){
