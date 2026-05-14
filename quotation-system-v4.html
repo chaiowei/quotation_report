@@ -573,10 +573,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 <div class="fp-float" id="fpFloat">
   <div class="fp-float-header" id="fpDragHandle">
     <span class="fp-float-title">📄 原始報價單</span>
-    <div style="display:flex;gap:.5rem">
-      <button class="nbtn" style="font-size:11px;padding:3px 8px" onclick="openFileNewTab()">開新分頁 ↗</button>
-      <button class="fp-close" onclick="closePreview()">✕</button>
-    </div>
+    <button class="nbtn" style="font-size:11px;padding:3px 8px" onclick="openFileNewTab()">開新分頁 ↗</button>
   </div>
   <div class="fp-float-body" id="fpBody"></div>
 </div>
@@ -937,7 +934,7 @@ function resetAll(){
   ['pnl-rpt','pnl-ld'].forEach(id=>document.getElementById(id).style.display='none');
   document.getElementById('pnl-up').style.display='';
   setStep(1);
-  closePreview();
+  document.getElementById('fpFloat').classList.remove('show');
   document.getElementById('fpToggle').classList.remove('show');
   document.getElementById('fpBody').innerHTML='';
 }
@@ -1066,17 +1063,7 @@ function setupPreview(){
   document.getElementById('fpToggle').classList.add('show');
 }
 function togglePreview(){
-  const f=document.getElementById('fpFloat');
-  const btn=document.getElementById('fpToggle');
-  const isShowing=f.classList.toggle('show');
-  // 按鈕永遠保持顯示，只改文字反映目前狀態
-  btn.innerHTML=isShowing?'✕ 關閉原始檔':'📄 查看原始檔';
-  btn.style.opacity='1';
-}
-function closePreview(){
-  document.getElementById('fpFloat').classList.remove('show');
-  const btn=document.getElementById('fpToggle');
-  if(btn){ btn.innerHTML='📄 查看原始檔'; btn.style.opacity='1'; }
+  document.getElementById('fpFloat').classList.toggle('show');
 }
 function openFileNewTab(){
   if(!curFileUrl||!curFile)return;
