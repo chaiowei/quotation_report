@@ -293,6 +293,12 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 .corr-label{font-size:11px;color:var(--t3);font-family:var(--mono);flex-shrink:0;width:80px;padding-top:.25rem}
 .corr-val{font-size:13px;color:var(--t1);flex:1;line-height:1.5}
 
+
+/* ── DRAG & DROP ROWS ── */
+#rptBody tr[draggable=true]{cursor:grab}
+#rptBody tr[draggable=true]:active{cursor:grabbing}
+#rptBody tr.drag-over td{background:rgba(0,168,157,0.08)!important;outline:2px dashed var(--cy)}
+
 </style>
 </head>
 <body>
@@ -577,42 +583,52 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 
 <!-- ══ MODAL: CORRECTION ══ -->
 <div class="mbg h" id="corrModal">
-  <div class="mbox" style="max-width:520px">
-    <h3>回報 AI 讀取錯誤</h3>
-    <p style="font-size:13px;color:var(--t2);margin-bottom:1rem">這筆修正會存入 Google Drive，下次分析同類工程時 AI 會自動參考</p>
-    <div class="corr-row"><span class="corr-label">品項</span><span class="corr-val" id="corr-spec">—</span></div>
-    <div class="corr-row">
-      <span class="corr-label">AI 讀取</span>
-      <div class="corr-val" id="corr-ai" style="color:var(--rd)">—</div>
-    </div>
-    <div class="corr-row">
-      <span class="corr-label">正確答案</span>
-      <div class="field" style="flex:1">
-        <input id="corr-correct" placeholder="輸入正確的值">
+  <div class="mbox" style="max-width:560px">
+    <h3>✏️ 修正品項資料</h3>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:1rem">修改後按「套用並更新」— 報告立即更新。如同時填入「AI 說明」欄位，還會存入 Drive 供下次 AI 學習。</p>
+
+    <div class="corr-row"><span class="corr-label">AI 讀取</span><div class="corr-val" id="corr-ai" style="color:var(--rd);font-size:12px">—</div></div>
+
+    <div style="background:var(--bg3);border-radius:var(--r);padding:1rem;margin:.75rem 0">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--cy);margin-bottom:.75rem;letter-spacing:.08em">修改為正確值</div>
+      <div class="g2" style="margin-bottom:.75rem">
+        <div class="field"><label>品項規格</label><input id="corr-spec-edit" placeholder="品項名稱"></div>
+        <div class="field"><label>單位</label><input id="corr-unit-edit" placeholder="EA / M / PCS"></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>數量</label><input type="number" id="corr-qty-edit" placeholder="數量" step="0.01"></div>
+        <div class="field"><label>廠商單價 (฿)</label><input type="number" id="corr-price-edit" placeholder="單價" step="0.01"></div>
       </div>
     </div>
-    <div class="corr-row">
-      <span class="corr-label">類別</span>
-      <div class="field" style="flex:1">
-        <select id="corr-cat">
-          <option value="common">📦 共用 (Common)</option>
-          <option value="piping">⚙ 配管 (Piping)</option>
-          <option value="electrical">⚡ 儀電 (Electrical)</option>
-          <option value="civil">🏗 土木 (Civil)</option>
-          <option value="structural">🔩 鋼構 (Structural)</option>
-          <option value="labor">👷 工費 (Labor)</option>
-        </select>
+
+    <div style="border-top:1px solid var(--rim2);padding-top:.75rem;margin-top:.25rem">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--t3);margin-bottom:.6rem">以下選填 — 填入後存入 Drive，供 AI 下次學習</div>
+      <div class="corr-row">
+        <span class="corr-label">正確說明</span>
+        <div class="field" style="flex:1"><input id="corr-correct" placeholder="說明 AI 哪裡讀錯（選填）"></div>
+      </div>
+      <div class="corr-row">
+        <span class="corr-label">補充備註</span>
+        <div class="field" style="flex:1"><input id="corr-note" placeholder="例：廠商用泰文縮寫，實際是 XXX"></div>
+      </div>
+      <div class="corr-row">
+        <span class="corr-label">類別</span>
+        <div class="field" style="flex:1">
+          <select id="corr-cat">
+            <option value="common">📦 共用</option>
+            <option value="piping">⚙ 配管</option>
+            <option value="electrical">⚡ 儀電</option>
+            <option value="civil">🏗 土木</option>
+            <option value="structural">🔩 鋼構</option>
+            <option value="labor">👷 工費</option>
+          </select>
+        </div>
       </div>
     </div>
-    <div class="corr-row">
-      <span class="corr-label">說明</span>
-      <div class="field" style="flex:1">
-        <input id="corr-note" placeholder="例：廠商慣用泰文縮寫，實際是 XXX">
-      </div>
-    </div>
+
     <div class="btn-row">
       <button class="btn btn-g" onclick="document.getElementById('corrModal').classList.add('h')">取消</button>
-      <button class="btn btn-c" onclick="submitCorrection()">儲存修正</button>
+      <button class="btn btn-c" onclick="submitCorrection()">套用並更新報告 →</button>
     </div>
   </div>
 </div>
@@ -1089,95 +1105,136 @@ async function buildReport(){
   const vendor  = window._aiVendor||'—';
   const project = window._aiProject||'—';
   const rptDate = new Date().toLocaleString('zh-TW',{hour12:false});
+
+  document.getElementById('rptInner').innerHTML = buildRptHTML();
+
+  // backup
+  try {
+    await api('saveReport',{reportId:curRptId,reportData:{reportId:curRptId,vendor,project,date:window._aiDate,generatedAt:new Date().toISOString(),items:parsedItems}});
+    toast('報告已備份至 Google Drive','info');
+  } catch(_){}
+}
+
+// ─── 產生報告 HTML（可重複呼叫以更新畫面）───
+function buildRptHTML(){
+  const vendor  = window._aiVendor||'—';
+  const project = window._aiProject||'—';
+  const rptDate = new Date().toLocaleString('zh-TW',{hour12:false});
   const cnt={normal:0,high:0,low:0,pending:0,no_basis:0,labor:0};
   parsedItems.forEach(it=>{
     if(it.flag==='labor_package'){
-      if(it._est==null||Math.abs((it.unitPrice-it._est)/it._est)<=.1) cnt.labor++;
-      else if(it.unitPrice>it._est*1.1) cnt.high++; else cnt.low++;
+      if(it._est==null||Math.abs((it.unitPrice-(it._est||0))/(it._est||1))<=.1) cnt.labor++;
+      else if(it.unitPrice>(it._est||0)*1.1) cnt.high++; else cnt.low++;
     } else cnt[it.flag]=(cnt[it.flag]||0)+1;
   });
-  const totalQ=parsedItems.reduce((s,it)=>s+(it.subtotal??it.unitPrice*(it.qty??1)),0);
-  let totalS=0,canSave=0;
-  parsedItems.forEach(it=>{
-    const sub=it.subtotal??it.unitPrice*(it.qty??1);
-    if(it.flag==='labor_package'&&it._est!=null){totalS+=it._est;if(it.unitPrice>it._est*1.1)canSave+=(it.unitPrice-it._est);}
-    else if(it.flag==='high'&&it.masterLowestPrice){totalS+=it.masterLowestPrice*(it.qty??1);canSave+=(it.unitPrice-it.masterLowestPrice)*(it.qty??1);}
-    else totalS+=sub;
-  });
 
-  const cats={};parsedItems.forEach(it=>{const c=it.category||'other';(cats[c]=cats[c]||[]).push(it);});
-  const catL={material:'配管材料',labor:'工費',package:'整包項目',other:'其他'};
-
+  // ── 產生表格列（不按 category 分組，完全依原始順序）──
   let rows='';
-  Object.entries(cats).forEach(([cat,items])=>{
-    rows+=`<tr class="tsec"><td colspan="10">${catL[cat]||cat}</td></tr>`;
-    items.forEach((it,idx)=>{
-      const i=parsedItems.indexOf(it);
-      const sub=it.subtotal!=null?it.subtotal:(it.qty?it.unitPrice*it.qty:null);
-      const f=getF(it);
-      let baseStr='—',diffStr='<span class="cna">—</span>';
-      if(it.flag==='labor_package'){
-        baseStr=it._est!=null?`฿ ${fmt(it._est)}`:'<span style="color:var(--am)">請填入↓</span>';
-        if(it._est!=null){const dv=(it.unitPrice-it._est)/it._est*100;diffStr=`<span class="${dv>0?'cup':dv<0?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;}
-      } else if(it.masterLowestPrice){
-        baseStr=`฿ ${fmt(it.masterLowestPrice)}`;
-        const dv=(it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice*100;
-        diffStr=`<span class="${dv>1?'cup':dv<-1?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;
-      }
+  let lastCat='';
+  parsedItems.forEach((it,i)=>{
+    // 類別分隔標題（依序出現，不重複）
+    const thisCat = it.category||'other';
+    const catL={material:'材料',labor:'工費',package:'整包項目',other:'其他'};
+    if(thisCat !== lastCat){
+      rows += `<tr class="tsec"><td colspan="11">${catL[thisCat]||thisCat}</td></tr>`;
+      lastCat = thisCat;
+    }
 
-      // 工費 inline 輸入（內嵌在列裡）
-      const laborInline=it.flag==='labor_package'?`
-        <div class="labor-inline-card">
-          <div class="labor-inline-title">⚙ 填入預估工費</div>
-          <div class="labor-grid">
-            <div class="field"><label>工期（天）</label><input type="number" min="0" step="1" placeholder="5" id="ld${i}" oninput="calcLInline(${i})"></div>
-            <div class="field"><label>每日人工費（฿/人）</label><input type="number" min="0" step="100" placeholder="1500" id="lr${i}" oninput="calcLInline(${i})"></div>
-            <div class="field"><label>人數</label><input type="number" min="0" step="1" placeholder="4" id="lw${i}" oninput="calcLInline(${i})"></div>
-          </div>
-          <div class="labor-result-inline" id="lres${i}">預估合理工費：<strong>請填入上方數值</strong></div>
-        </div>`:'';
+    const sub = it.subtotal!=null ? it.subtotal : (it.qty ? it.unitPrice*it.qty : null);
+    const f   = getF(it);
 
-      rows+=`<tr id="rptrow-${i}">
-        <td class="ecell" contenteditable="true" onblur="editRpt(${i},'spec',this.textContent)">${it.spec}</td>
-        <td class="ecell" style="text-align:center" contenteditable="true" onblur="editRpt(${i},'unit',this.textContent)">${it.unit||'—'}</td>
-        <td class="ecell" contenteditable="true" onblur="editRpt(${i},'qty',this.textContent)">${it.qty!=null?fmtN(it.qty):'—'}</td>
-        <td class="ecell" contenteditable="true" onblur="editRpt(${i},'unitPrice',this.textContent)">฿ ${fmt(it.unitPrice)}</td>
-        <td id="sub-${i}">${sub!=null?'฿ '+fmt(sub):'—'}</td>
-        <td id="base-${i}" style="font-size:12px">${baseStr}${laborInline}</td>
-        <td id="diff-${i}">${diffStr}</td>
-        <td style="font-size:11px;color:var(--t3);max-width:140px;white-space:normal">${it.masterSpec||'—'}</td>
-        <td id="flag-${i}"><span class="pill ${f.cls}" id="pill-${i}">${f.lbl}</span></td>
-        <td style="text-align:center;padding-right:8px">
-          <button title="回報 AI 讀取錯誤" style="background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px" onclick="openCorr(${i})">✏️</button>
-        </td>
-      </tr>`;
-    });
+    // 差異
+    let diffStr = '<span class="cna">—</span>';
+    if(it.flag==='labor_package' && it._est!=null){
+      const dv=(it.unitPrice-it._est)/it._est*100;
+      diffStr=`<span class="${dv>0?'cup':dv<0?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;
+    } else if(it.masterLowestPrice){
+      const dv=(it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice*100;
+      diffStr=`<span class="${dv>1?'cup':dv<-1?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;
+    }
+
+    // 歷史最低價 / 工費格
+    let baseCell='';
+    if(it.flag==='labor_package'){
+      // 單一數字輸入格
+      const estVal = it._est!=null ? it._est : '';
+      const estResult = it._est!=null
+        ? `<span style="color:${Math.abs((it.unitPrice-it._est)/it._est)<=.1?'var(--gn)':it.unitPrice>it._est*1.1?'var(--rd)':'var(--pu)'}">≈ ฿${fmt(it._est)}</span>`
+        : '<span style="color:var(--am)">請填入預估工費</span>';
+      baseCell = `<div style="display:flex;flex-direction:column;gap:4px">
+        <input type="number" min="0" step="100"
+          placeholder="預估工費 (฿)"
+          value="${estVal}"
+          id="lv${i}"
+          oninput="setLaborEst(${i},this.value)"
+          style="width:130px;background:#fff;border:1.5px solid var(--rim2);border-radius:6px;padding:5px 8px;font-size:12px;font-family:var(--mono);color:var(--t1);outline:none"
+          onfocus="this.style.borderColor='var(--cy)'"
+          onblur="this.style.borderColor='var(--rim2)'">
+        <span id="lres${i}" style="font-family:var(--mono);font-size:11px">${estResult}</span>
+      </div>`;
+    } else {
+      baseCell = it.masterLowestPrice ? `฿ ${fmt(it.masterLowestPrice)}` : '<span class="cna">—</span>';
+    }
+
+    rows += `<tr id="rptrow-${i}" draggable="true"
+        ondragstart="dragStart(event,${i})"
+        ondragover="event.preventDefault()"
+        ondrop="dragDrop(event,${i})">
+      <td style="text-align:center;padding:0 4px;white-space:nowrap">
+        <button onclick="moveRow(${i},-1)" title="上移" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--t3);padding:1px 3px">▲</button>
+        <button onclick="moveRow(${i},1)"  title="下移" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--t3);padding:1px 3px">▼</button>
+        <button onclick="deleteRow(${i})"  title="刪除此列" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--rd);padding:1px 3px">✕</button>
+      </td>
+      <td class="ecell" contenteditable="true" onblur="editRpt(${i},'spec',this.textContent)" style="min-width:180px">${escH(it.spec)}</td>
+      <td class="ecell" style="text-align:center" contenteditable="true" onblur="editRpt(${i},'unit',this.textContent)">${escH(it.unit||'—')}</td>
+      <td class="ecell" contenteditable="true" onblur="editRpt(${i},'qty',this.textContent)" style="text-align:right">${it.qty!=null?fmtN(it.qty):'—'}</td>
+      <td class="ecell" contenteditable="true" onblur="editRpt(${i},'unitPrice',this.textContent)" style="text-align:right">฿ ${fmt(it.unitPrice)}</td>
+      <td id="sub-${i}" style="text-align:right">${sub!=null?'฿ '+fmt(sub):'—'}</td>
+      <td id="base-${i}" style="font-size:12px">${baseCell}</td>
+      <td id="diff-${i}" style="text-align:right">${diffStr}</td>
+      <td style="font-size:11px;color:var(--t3);max-width:140px;white-space:normal">${escH(it.masterSpec||'—')}</td>
+      <td id="flag-${i}" style="text-align:center"><span class="pill ${f.cls}" id="pill-${i}">${f.lbl}</span></td>
+      <td style="text-align:center;padding:0 6px">
+        <button title="修改此列資料並回報 AI 錯誤" onclick="openCorr(${i})"
+          style="background:none;border:1px solid var(--rim2);border-radius:4px;cursor:pointer;font-size:12px;padding:3px 7px;color:var(--cy);transition:all .15s"
+          onmouseover="this.style.background='var(--cyf)'" onmouseout="this.style.background='none'">✏️ 修正</button>
+      </td>
+    </tr>`;
   });
+
+  // 加新品項列
+  rows += `<tr id="addRowBtn">
+    <td colspan="11" style="text-align:center;padding:.6rem">
+      <button onclick="addNewRow()" style="background:var(--cyf);border:1.5px dashed var(--cy);border-radius:6px;color:var(--cy);font-size:13px;font-weight:500;padding:6px 20px;cursor:pointer;font-family:var(--body);width:100%">
+        + 新增品項
+      </button>
+    </td>
+  </tr>`;
+
+  // 動態計算 totals
+  const {totalQ,totalS,canSave} = calcTotals();
 
   const advs=parsedItems.filter(it=>['high','low'].includes(it.flag)||(it.flag==='labor_package'&&it._est!=null&&Math.abs((it.unitPrice-it._est)/it._est)>.1));
   const advHtml=advs.slice(0,6).map(it=>{
-    const f=getF(it);
-    const col=f.cls==='pr'?'var(--rd)':f.cls==='pp'?'var(--pu)':'var(--am)';
+    const f=getF(it);const col=f.cls==='pr'?'var(--rd)':f.cls==='pp'?'var(--pu)':'var(--am)';
     let msg='';
-    const isLH=it.flag==='labor_package'&&it._est&&it.unitPrice>it._est*1.1;
-    const isLL=it.flag==='labor_package'&&it._est&&it.unitPrice<it._est*.9;
-    if(isLH) msg=`廠商報 ฿${fmt(it.unitPrice)}，預估合理 ฿${fmt(it._est)}，建議議降。`;
-    else if(isLL) msg=`廠商報 ฿${fmt(it.unitPrice)}，低於預估 ฿${fmt(it._est)}，確認工作範圍。`;
+    if(it.flag==='labor_package'&&it._est&&it.unitPrice>it._est*1.1) msg=`廠商報 ฿${fmt(it.unitPrice)}，預估合理 ฿${fmt(it._est)}，建議議降。`;
+    else if(it.flag==='labor_package'&&it._est&&it.unitPrice<it._est*.9) msg=`廠商報低於預估 ฿${fmt(it._est)}，確認工作範圍。`;
     else if(it.flag==='high') msg=`歷史最低 ฿${fmt(it.masterLowestPrice)}，廠商報 ฿${fmt(it.unitPrice)}（+${((it.unitPrice/it.masterLowestPrice-1)*100).toFixed(1)}%），建議議價。`;
-    else msg=`廠商報低於歷史最低價 ${((1-it.unitPrice/it.masterLowestPrice)*100).toFixed(1)}%，確認規格一致性。`;
-    return `<div class="adv" style="border-left-color:${col}"><div class="adv-t">${f.lbl.split('(')[0].trim()} — ${it.spec}</div><div class="adv-b">${msg}</div></div>`;
+    else msg=`廠商報低於歷史最低 ${((1-it.unitPrice/it.masterLowestPrice)*100).toFixed(1)}%，確認規格一致性。`;
+    return `<div class="adv" style="border-left-color:${col}"><div class="adv-t">${f.lbl.split('(')[0].trim()} — ${escH(it.spec)}</div><div class="adv-b">${msg}</div></div>`;
   }).join('');
 
-  document.getElementById('rptInner').innerHTML=`
+  return `
     <div class="card" style="margin-bottom:1rem">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem">
         <div>
           <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.1em;margin-bottom:5px">${curRptId}</div>
-          <div style="font-family:var(--head);font-size:20px;font-weight:800;color:var(--cy)" id="rpt-vendor" contenteditable="true">${vendor}</div>
-          <div style="font-size:13px;color:var(--t2);margin-top:3px" id="rpt-project" contenteditable="true">${project}</div>
-          <div style="font-family:var(--mono);font-size:11px;color:var(--t3);margin-top:2px">分析日期：${window._aiDate} ｜ 工程類別：${CATS[selectedCat]?.icon||''} ${CATS[selectedCat]?.label||'ALL'}</div>
+          <div style="font-family:var(--head);font-size:20px;font-weight:800;color:var(--cy)" contenteditable="true">${escH(vendor)}</div>
+          <div style="font-size:13px;color:var(--t2);margin-top:3px" contenteditable="true">${escH(project)}</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--t3);margin-top:2px">分析日期：${window._aiDate} ｜ ${CATS[selectedCat]?.icon||''} ${CATS[selectedCat]?.label||'ALL'}</div>
         </div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);text-align:right">製表：${rptDate}<br>主檔：${masterData.length} 筆<br>比對範圍：${selectedCat==='all'?'全部':CATS[selectedCat]?.label}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);text-align:right">製表：${rptDate}<br>主檔：${masterData.length} 筆</div>
       </div>
       <div class="ss">
         <div class="sbox sg"><div class="sn" style="color:var(--gn)">${cnt.normal}</div><div class="sl">正常</div></div>
@@ -1190,153 +1247,219 @@ async function buildReport(){
     </div>
     <div class="tc" style="margin-bottom:1rem">
       <div class="rpt-toolbar">
-        <span class="rpt-toolbar-title">📋 完整品項明細</span>
+        <span class="rpt-toolbar-title">📋 完整品項明細（依原始順序）</span>
         <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
-          <span style="font-family:var(--mono);font-size:11px;color:var(--t3)">✏️ 所有欄位可直接點擊編輯</span>
-          <span class="edit-mode-badge">可編輯模式</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--t3)">所有欄位可直接點擊編輯 ｜ ▲▼ 可上下移動 ｜ ✕ 刪除</span>
         </div>
       </div>
-      <div class="tsc"><table>
+      <div class="tsc"><table id="rptTable">
         <thead><tr>
-          <th style="text-align:left;padding-left:16px">品項規格（廠商原文）</th>
-          <th style="text-align:center">單位</th><th>數量</th>
-          <th>廠商單價 (฿)</th><th>報價小計 (฿)</th>
-          <th>歷史最低價 / 工費預估 (฿)</th><th>差異</th>
+          <th style="text-align:center;min-width:70px">操作</th>
+          <th style="text-align:left;padding-left:8px">品項規格（廠商原文）</th>
+          <th style="text-align:center">單位</th><th style="text-align:right">數量</th>
+          <th style="text-align:right">廠商單價 (฿)</th>
+          <th style="text-align:right">報價小計 (฿)</th>
+          <th style="min-width:160px">歷史最低價 / 工費預估 (฿)</th>
+          <th style="text-align:right">差異</th>
           <th style="text-align:left">比對品項</th>
           <th style="text-align:center">燈號</th>
-          <th style="text-align:center;padding-right:8px">回報</th>
+          <th style="text-align:center;padding-right:8px">修正</th>
         </tr></thead>
-        <tbody>${rows}
-          <tr class="ttot">
-            <td colspan="3" style="text-align:left;padding-left:16px;font-family:var(--mono);font-size:10px;color:var(--t3)">TOTAL</td>
-            <td></td><td id="totalQ" style="font-family:var(--mono);font-size:14px">฿ ${fmt(totalQ)}</td>
+        <tbody id="rptBody">${rows}
+          <tr class="ttot" id="totalRow">
+            <td colspan="4" style="text-align:left;padding-left:16px;font-family:var(--mono);font-size:10px;color:var(--t3)">TOTAL</td>
+            <td></td><td id="totalQ" style="font-family:var(--mono);font-size:14px;text-align:right">฿ ${fmt(totalQ)}</td>
             <td colspan="5"></td>
           </tr>
         </tbody>
       </table></div>
     </div>
     <div class="totals" id="totalsBar">
-      <div class="tcell"><label>廠商報價總計</label><div class="tamt" style="color:var(--t1)">฿ ${fmt(totalQ)}</div><div class="tnote" style="color:var(--t3)">廠商開價</div></div>
+      <div class="tcell"><label>廠商報價總計</label><div class="tamt" style="color:var(--t1)" id="totalQBig">฿ ${fmt(totalQ)}</div><div class="tnote" style="color:var(--t3)">廠商開價</div></div>
       <div class="tcell"><label>建議目標價</label><div class="tamt" style="color:var(--gn)" id="totalS">฿ ${fmt(totalS)}</div><div class="tnote" style="color:var(--t3)">依最低價 / 工費預估</div></div>
-      <div class="tcell"><label>可節省金額</label><div class="tamt" style="color:var(--mg)" id="canSave">฿ ${fmt(canSave)}</div><div class="tnote" style="color:${canSave>0?'var(--mg)':'var(--t3)'}" id="savePct">${totalQ>0?'−'+((canSave/totalQ)*100).toFixed(1)+'%':'—'}</div></div>
+      <div class="tcell"><label>可節省金額</label><div class="tamt" style="color:var(--mg)" id="canSave">฿ ${fmt(canSave)}</div><div class="tnote" style="color:${canSave>0?'var(--mg)':'var(--t3)'};" id="savePct">${totalQ>0?'−'+((canSave/totalQ)*100).toFixed(1)+'%':'—'}</div></div>
     </div>
     ${advHtml?`<div style="margin-bottom:1rem"><div class="clabel" style="margin-bottom:.75rem">AI 議價建議</div>${advHtml}</div>`:''}
     <div style="font-family:var(--mono);font-size:10px;color:var(--t3);padding:.75rem 0;border-top:1px solid var(--rim2)">
-      燈號：±10% 為正常區間 ／ 工費：請在各品項列下方填入預估值 ／ Gemini AI 自動生成 ／ ${curRptId}
+      燈號：±10% 為正常區間 ／ 工費：直接在欄位填入預估總金額 ／ Gemini AI 自動生成 ／ ${curRptId}
     </div>`;
-
-  // backup
-  try {
-    await api('saveReport',{reportId:curRptId,reportData:{reportId:curRptId,vendor,project,date:window._aiDate,generatedAt:new Date().toISOString(),items:parsedItems}});
-    toast('報告已備份至 Google Drive','info');
-  } catch(_){}
 }
 
-// ═══ EDITABLE REPORT ═══
-function editRpt(i,field,val){
-  const it=parsedItems[i];
-  if(!it) return;
-  if(field==='unitPrice'){
-    const n=parseFloat(val.replace(/[^0-9.]/g,''));
-    if(!isNaN(n)) it.unitPrice=n;
-  } else if(field==='qty'){
-    const n=parseFloat(val.replace(/[^0-9.]/g,''));
-    if(!isNaN(n)) it.qty=n;
-  } else {
-    it[field]=val;
-  }
-  // 重新計算此列
-  const sub=it.qty?it.unitPrice*it.qty:null;
-  const subEl=document.getElementById(`sub-${i}`);
-  if(subEl) subEl.textContent=sub!=null?'฿ '+fmt(sub):'—';
-  // 重新算燈號
-  const f=getF(it);
-  const pillEl=document.getElementById(`pill-${i}`);
-  if(pillEl){pillEl.textContent=f.lbl;pillEl.className='pill '+f.cls;}
-  // 重新算差異
-  const diffEl=document.getElementById(`diff-${i}`);
-  if(diffEl&&it.masterLowestPrice&&it.flag!=='labor_package'){
-    const dv=(it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice*100;
-    diffEl.innerHTML=`<span class="${dv>1?'cup':dv<-1?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;
-  }
-  recalcTotals();
-}
+function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ═══ LABOR INLINE CALC ═══
-function calcLInline(i){
-  const it=parsedItems[i];if(!it) return;
-  const d=parseFloat(document.getElementById(`ld${i}`)?.value)||0;
-  const r=parseFloat(document.getElementById(`lr${i}`)?.value)||0;
-  const w=parseFloat(document.getElementById(`lw${i}`)?.value)||0;
-  const resEl=document.getElementById(`lres${i}`);
-  if(!d||!r||!w){if(resEl) resEl.innerHTML='預估合理工費：<strong>請填入上方數值</strong>';it._est=null;return;}
-  const est=d*r*w;
-  Object.assign(it,{_est:est,_days:d,_rate:r,_workers:w});
-  const dv=(it.unitPrice-est)/est;const pct=(dv*100).toFixed(1);
-  let lbl,col;
-  if(Math.abs(dv)<=.1){lbl=`🟢 正常 (${dv>=0?'+':''}${pct}%)`;col='var(--gn)';}
-  else if(dv>.1){lbl=`🔴 偏高 (+${pct}%)`;col='var(--rd)';}
-  else{lbl=`🟣 偏低 (${pct}%)`;col='var(--pu)';}
-  if(resEl) resEl.innerHTML=`預估合理工費：<strong>฿ ${fmt(est)}</strong> <span style="color:${col};font-weight:600">${lbl}</span>`;
-  const baseEl=document.getElementById(`base-${i}`);
-  const diffEl=document.getElementById(`diff-${i}`);
-  if(diffEl){const dv2=dv*100;diffEl.innerHTML=`<span class="${dv2>0?'cup':dv2<0?'cdn':'cok'}">${dv2>=0?'+':''}${dv2.toFixed(1)}%</span>`;}
-  const f=getF(it);
-  const pillEl=document.getElementById(`pill-${i}`);
-  if(pillEl){pillEl.textContent=f.lbl;pillEl.className='pill '+f.cls;}
-  recalcTotals();
-}
-
-function recalcTotals(){
-  const totalQ=parsedItems.reduce((s,it)=>s+(it.subtotal??it.unitPrice*(it.qty??1)),0);
-  let totalS=0,canSave=0;
+// ─── 計算 totals ───
+function calcTotals(){
+  let totalQ=0,totalS=0,canSave=0;
   parsedItems.forEach(it=>{
-    const sub=it.subtotal??it.unitPrice*(it.qty??1);
-    if(it.flag==='labor_package'&&it._est!=null){totalS+=it._est;if(it.unitPrice>it._est*1.1)canSave+=(it.unitPrice-it._est);}
-    else if(it.flag==='high'&&it.masterLowestPrice){totalS+=it.masterLowestPrice*(it.qty??1);canSave+=(it.unitPrice-it.masterLowestPrice)*(it.qty??1);}
-    else totalS+=sub;
+    const sub = it.subtotal!=null ? it.subtotal : it.unitPrice*(it.qty??1);
+    totalQ += sub;
+    if(it.flag==='labor_package'&&it._est!=null){
+      totalS+=it._est;
+      if(it.unitPrice>it._est*1.1) canSave+=(it.unitPrice-it._est);
+    } else if(it.flag==='high'&&it.masterLowestPrice){
+      totalS+=it.masterLowestPrice*(it.qty??1);
+      canSave+=(it.unitPrice-it.masterLowestPrice)*(it.qty??1);
+    } else totalS+=sub;
   });
-  const tq=document.getElementById('totalQ');if(tq) tq.textContent='฿ '+fmt(totalQ);
-  const ts=document.getElementById('totalS');if(ts) ts.textContent='฿ '+fmt(totalS);
-  const cs=document.getElementById('canSave');if(cs) cs.textContent='฿ '+fmt(canSave);
-  const sp=document.getElementById('savePct');if(sp) sp.textContent=totalQ>0?'−'+((canSave/totalQ)*100).toFixed(1)+'%':'—';
+  return {totalQ,totalS,canSave};
+}
+
+// ─── 動態更新 totals 顯示 ───
+function recalcTotals(){
+  const {totalQ,totalS,canSave}=calcTotals();
+  ['totalQ','totalQBig'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='฿ '+fmt(totalQ);});
+  const ts=document.getElementById('totalS');if(ts)ts.textContent='฿ '+fmt(totalS);
+  const cs=document.getElementById('canSave');if(cs)cs.textContent='฿ '+fmt(canSave);
+  const sp=document.getElementById('savePct');
+  if(sp){sp.textContent=totalQ>0?'−'+((canSave/totalQ)*100).toFixed(1)+'%':'—';sp.style.color=canSave>0?'var(--mg)':'var(--t3)';}
+}
+
+// ─── 工費：單格填入 ───
+function setLaborEst(i, val){
+  const it=parsedItems[i]; if(!it) return;
+  const n=parseFloat(val)||0;
+  it._est = n>0 ? n : null;
+  // 更新顯示
+  const resEl=document.getElementById(`lres${i}`);
+  const diffEl=document.getElementById(`diff-${i}`);
+  const pillEl=document.getElementById(`pill-${i}`);
+  if(n>0){
+    const dv=(it.unitPrice-n)/n;
+    const pct=(dv*100).toFixed(1);
+    let col,lbl;
+    if(Math.abs(dv)<=.1){col='var(--gn)';lbl=`🟢 正常 (${dv>=0?'+':''}${pct}%)`;}
+    else if(dv>.1){col='var(--rd)';lbl=`🔴 偏高 (+${pct}%)`;}
+    else{col='var(--pu)';lbl=`🟣 偏低 (${pct}%)`;}
+    if(resEl) resEl.innerHTML=`<span style="color:${col}">≈ ฿${fmt(n)}&nbsp;&nbsp;${lbl}</span>`;
+    if(diffEl) diffEl.innerHTML=`<span class="${dv*100>0?'cup':dv*100<0?'cdn':'cok'}">${dv*100>=0?'+':''}${pct}%</span>`;
+    if(pillEl){pillEl.textContent=lbl;pillEl.className='pill '+(Math.abs(dv)<=.1?'pg':dv>.1?'pr':'pp');}
+  } else {
+    if(resEl) resEl.innerHTML='<span style="color:var(--am)">請填入預估工費</span>';
+    if(diffEl) diffEl.innerHTML='<span class="cna">—</span>';
+    if(pillEl){pillEl.textContent='工費/整包';pillEl.className='pill py';}
+  }
+  recalcTotals();
+}
+
+// ─── 編輯儲存格 ───
+function editRpt(i,field,val){
+  const it=parsedItems[i]; if(!it) return;
+  const clean=val.replace(/[฿,\s]/g,'').trim();
+  if(field==='unitPrice'||field==='qty'){
+    const n=parseFloat(clean); if(!isNaN(n)&&n>=0) it[field]=n;
+  } else it[field]=val.trim();
+  // 重算小計
+  const sub=it.qty!=null?it.unitPrice*it.qty:null;
+  it.subtotal=sub;
+  const subEl=document.getElementById(`sub-${i}`);if(subEl)subEl.textContent=sub!=null?'฿ '+fmt(sub):'—';
+  // 重算燈號
+  const f=getF(it);
+  const pillEl=document.getElementById(`pill-${i}`);if(pillEl){pillEl.textContent=f.lbl;pillEl.className='pill '+f.cls;}
+  // 重算差異
+  if(it.masterLowestPrice&&it.flag!=='labor_package'){
+    const dv=(it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice*100;
+    const diffEl=document.getElementById(`diff-${i}`);
+    if(diffEl)diffEl.innerHTML=`<span class="${dv>1?'cup':dv<-1?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;
+  }
+  recalcTotals();
+}
+
+// ─── 新增品項 ───
+function addNewRow(){
+  parsedItems.push({spec:'新品項',unit:'EA',qty:1,unitPrice:0,subtotal:0,category:'material',masterSpec:null,masterLowestPrice:null,matchConfidence:'none',flag:'no_basis'});
+  refreshReport();
+}
+
+// ─── 刪除品項 ───
+function deleteRow(i){
+  if(!confirm(`確定刪除「${parsedItems[i]?.spec}」？`))return;
+  parsedItems.splice(i,1);
+  refreshReport();
+}
+
+// ─── 上下移動 ───
+function moveRow(i,dir){
+  const j=i+dir;
+  if(j<0||j>=parsedItems.length)return;
+  [parsedItems[i],parsedItems[j]]=[parsedItems[j],parsedItems[i]];
+  refreshReport();
+}
+
+// ─── 拖曳 ───
+let dragIdx=null;
+function dragStart(e,i){dragIdx=i;e.dataTransfer.effectAllowed='move';}
+function dragDrop(e,i){
+  e.preventDefault();if(dragIdx===null||dragIdx===i)return;
+  const item=parsedItems.splice(dragIdx,1)[0];
+  parsedItems.splice(i,0,item);
+  dragIdx=null;
+  refreshReport();
+}
+
+// ─── 重新渲染報告（保留 scroll 位置）───
+function refreshReport(){
+  const rptEl=document.getElementById('rptInner');
+  if(!rptEl)return;
+  const scrollY=window.scrollY;
+  rptEl.innerHTML=buildRptHTML();
+  window.scrollTo(0,scrollY);
+  recalcTotals();
 }
 
 // ═══ CORRECTION ═══
 function openCorr(i){
-  const it=parsedItems[i];if(!it) return;
+  const it=parsedItems[i]; if(!it)return;
   corrTarget=i;
-  document.getElementById('corr-spec').textContent=it.spec;
-  document.getElementById('corr-ai').textContent=`單價: ฿${fmt(it.unitPrice)} ／ 比對: ${it.masterSpec||'無'}`;
-  document.getElementById('corr-correct').value='';
-  document.getElementById('corr-note').value='';
-  // 預設 category
+  // 填入現有資料讓使用者可以看到並修改
+  document.getElementById('corr-spec').textContent = it.spec;
+  document.getElementById('corr-ai').textContent   = `單價: ฿${fmt(it.unitPrice)} ／ 數量: ${it.qty??'—'} ／ 單位: ${it.unit||'—'} ／ 比對: ${it.masterSpec||'無'}`;
+  // 讓使用者可以直接修改所有欄位
+  document.getElementById('corr-spec-edit').value  = it.spec;
+  document.getElementById('corr-unit-edit').value  = it.unit||'';
+  document.getElementById('corr-qty-edit').value   = it.qty!=null?it.qty:'';
+  document.getElementById('corr-price-edit').value = it.unitPrice;
+  document.getElementById('corr-correct').value    = '';
+  document.getElementById('corr-note').value       = '';
   const catSel=document.getElementById('corr-cat');
-  if(catSel) catSel.value=selectedCat==='all'?'common':selectedCat;
+  if(catSel) catSel.value = selectedCat==='all'?'common':selectedCat;
   document.getElementById('corrModal').classList.remove('h');
 }
+
 async function submitCorrection(){
+  const i=corrTarget;
+  const it=parsedItems[i]; if(!it)return;
+  // 1. 套用手動修改到 parsedItems
+  const newSpec  = document.getElementById('corr-spec-edit').value.trim();
+  const newUnit  = document.getElementById('corr-unit-edit').value.trim();
+  const newQty   = parseFloat(document.getElementById('corr-qty-edit').value);
+  const newPrice = parseFloat(document.getElementById('corr-price-edit').value);
+  if(newSpec)  it.spec=newSpec;
+  if(newUnit)  it.unit=newUnit;
+  if(!isNaN(newQty))   it.qty=newQty;
+  if(!isNaN(newPrice)) it.unitPrice=newPrice;
+  it.subtotal = it.qty!=null ? it.unitPrice*it.qty : null;
+
+  // 2. 儲存修正紀錄（如果有填正確答案）
   const correct=document.getElementById('corr-correct').value.trim();
-  if(!correct){toast('請填入正確答案','err');return;}
-  const it=parsedItems[corrTarget];
-  const corr={
-    aiRead: `${it.spec} → 單價 ฿${fmt(it.unitPrice)}`,
-    correct,
-    note: document.getElementById('corr-note').value.trim(),
-    category: document.getElementById('corr-cat').value,
-    createdAt: new Date().toISOString(),
-    reportId: curRptId
-  };
-  try {
-    await api('saveCorrection',{correction:corr});
-    toast('修正已儲存，下次同類分析自動帶入 ✓','ok');
-    document.getElementById('corrModal').classList.add('h');
-  } catch(e){
-    // fallback: 本機暫存
-    toast('後端未連線，修正暫存於本機（重新整理後消失）','info',4000);
-    document.getElementById('corrModal').classList.add('h');
+  if(correct){
+    const corr={
+      aiRead: `${it.spec} → 單價 ฿${fmt(it.unitPrice)}`,
+      correct,
+      note:     document.getElementById('corr-note').value.trim(),
+      category: document.getElementById('corr-cat').value,
+      createdAt:new Date().toISOString(),
+      reportId: curRptId
+    };
+    try { await api('saveCorrection',{correction:corr}); toast('修正紀錄已儲存至 Drive，下次自動帶入 ✓','ok'); }
+    catch(_){ toast('修正已套用，紀錄暫存於本機','info',3000); }
   }
+
+  document.getElementById('corrModal').classList.add('h');
+  // 3. 重新渲染報告，立即看到修改
+  refreshReport();
+  toast('已更新報告','ok');
 }
+
 
 // ═══ EXPORT ═══
 function expJSON(){
