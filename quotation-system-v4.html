@@ -331,6 +331,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
     <div class="ntabs">
       <button class="ntab on" id="tab-analyze" onclick="showPg('analyze')">比價分析</button>
       <button class="ntab" id="tab-master" onclick="goMaster()">主檔管理</button>
+      <button class="ntab" id="tab-guide" onclick="showPg('guide')">使用說明</button>
     </div>
     <div class="nr">
       <span class="nbadge" id="mBadge">主檔 — 筆</span>
@@ -417,6 +418,372 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
       <button class="btn btn-c" onclick="window.print()">列印 / PDF</button>
     </div>
   </div>
+</div>
+
+
+<!-- ══ PAGE: GUIDE ══ -->
+<div class="pg" id="pg-guide">
+<style>
+.guide-hero{text-align:center;padding:2.5rem 0 2rem}
+.guide-section{background:#fff;border:1.5px solid var(--rim2);border-radius:var(--r2);margin-bottom:1.5rem;overflow:hidden;box-shadow:0 2px 12px rgba(0,168,157,0.06)}
+.guide-sec-header{background:var(--cy);padding:.9rem 1.5rem;display:flex;align-items:center;gap:.75rem}
+.guide-sec-icon{font-size:22px;flex-shrink:0}
+.guide-sec-title{font-family:var(--head);font-size:16px;font-weight:800;color:#fff}
+.guide-sec-sub{font-size:12px;color:rgba(255,255,255,0.8);margin-top:1px}
+.guide-body{padding:1.25rem 1.5rem}
+.guide-step{display:flex;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--rim2);align-items:flex-start}
+.guide-step:last-child{border-bottom:none}
+.guide-step-num{width:28px;height:28px;border-radius:50%;background:var(--cy);color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.guide-step-content{flex:1}
+.guide-step-title{font-size:14px;font-weight:600;color:var(--t1);margin-bottom:.3rem}
+.guide-step-desc{font-size:13px;color:var(--t2);line-height:1.65}
+.guide-step-tip{margin-top:.5rem;padding:.5rem .75rem;background:var(--cyf);border-left:3px solid var(--cy);border-radius:0 var(--r) var(--r) 0;font-size:12px;color:var(--t2)}
+.guide-badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:4px;margin:0 2px;vertical-align:middle}
+.gb-cy{background:var(--cyf);color:var(--cy);border:1px solid var(--cyb)}
+.gb-gn{background:var(--gnf);color:var(--gn);border:1px solid rgba(0,137,123,.3)}
+.gb-rd{background:var(--rdf);color:var(--rd);border:1px solid rgba(211,47,47,.3)}
+.gb-pu{background:var(--puf);color:var(--pu);border:1px solid rgba(124,92,191,.3)}
+.gb-am{background:var(--amf);color:var(--am);border:1px solid rgba(224,136,0,.3)}
+.gb-gr{background:rgba(92,95,132,.1);color:var(--t3);border:1px solid var(--rim2)}
+.gb-yw{background:var(--ywf);color:var(--yw);border:1px solid rgba(199,122,0,.3)}
+.flag-table{width:100%;border-collapse:collapse;margin-top:.75rem;font-size:13px}
+.flag-table th{background:var(--bg3);padding:7px 12px;text-align:left;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--cy);border-bottom:2px solid var(--cy)}
+.flag-table td{padding:8px 12px;border-bottom:1px solid var(--rim2);vertical-align:middle}
+.flag-table tr:last-child td{border-bottom:none}
+.flag-table tr:hover td{background:var(--cyf)}
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-top:.75rem}
+.guide-card{background:var(--bg3);border-radius:var(--r);padding:.9rem 1rem;border:1px solid var(--rim2)}
+.guide-card-icon{font-size:24px;margin-bottom:.5rem}
+.guide-card-title{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:.25rem}
+.guide-card-desc{font-size:12px;color:var(--t2);line-height:1.5}
+.setup-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:.75rem}
+.setup-table th{background:var(--bg3);padding:7px 12px;font-family:var(--mono);font-size:10px;color:var(--cy);text-align:left;border-bottom:2px solid var(--cy)}
+.setup-table td{padding:8px 12px;border-bottom:1px solid var(--rim2);vertical-align:top}
+.setup-table tr:last-child td{border-bottom:none}
+.setup-table td:first-child{font-family:var(--mono);font-size:11px;color:var(--cy);white-space:nowrap;width:160px}
+.faq-item{padding:.9rem 0;border-bottom:1px solid var(--rim2)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-size:14px;font-weight:600;color:var(--t1);margin-bottom:.4rem;display:flex;gap:.5rem;align-items:flex-start}
+.faq-q::before{content:"Q";font-family:var(--mono);font-size:11px;background:var(--cy);color:#fff;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px}
+.faq-a{font-size:13px;color:var(--t2);line-height:1.65;padding-left:1.75rem}
+</style>
+
+<div class="guide-hero">
+  <div class="eyebrow">User Manual</div>
+  <h1 class="h1" style="font-size:clamp(28px,4vw,44px)">ProcureAI <span class="hl">使用說明</span></h1>
+  <p class="hsub">AI 智能比價系統完整操作指南</p>
+</div>
+
+<!-- ══ 系統概覽 ══ -->
+<div class="guide-section">
+  <div class="guide-sec-header">
+    <span class="guide-sec-icon">🗺</span>
+    <div><div class="guide-sec-title">系統概覽</div><div class="guide-sec-sub">了解整個系統的架構與三大功能</div></div>
+  </div>
+  <div class="guide-body">
+    <div class="guide-grid">
+      <div class="guide-card">
+        <div class="guide-card-icon">📊</div>
+        <div class="guide-card-title">比價分析</div>
+        <div class="guide-card-desc">上傳報價單（PDF / Excel / Word / 照片），AI 自動解析品項並與主檔最低價比對，輸出完整燈號報告</div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">📦</div>
+        <div class="guide-card-title">主檔管理</div>
+        <div class="guide-card-desc">維護材料最低價資料庫，分類管理配管、儀電、土木、鋼構、共用材料，支援 CSV 批量匯入匯出</div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">🧠</div>
+        <div class="guide-card-title">AI 學習修正</div>
+        <div class="guide-card-desc">每次修正 AI 讀取錯誤後存入 Google Drive，下次分析同類工程時自動帶入，AI 越用越準</div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">☁</div>
+        <div class="guide-card-title">Google Drive 備份</div>
+        <div class="guide-card-desc">原始報價單、分析報告 JSON、修正紀錄、主檔，全部自動備份至 Google Drive 指定資料夾</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 比價分析流程 ══ -->
+<div class="guide-section">
+  <div class="guide-sec-header">
+    <span class="guide-sec-icon">📋</span>
+    <div><div class="guide-sec-title">比價分析 — 完整操作流程</div><div class="guide-sec-sub">從上傳到輸出報告，共 4 個步驟</div></div>
+  </div>
+  <div class="guide-body">
+    <div class="guide-step">
+      <div class="guide-step-num">1</div>
+      <div class="guide-step-content">
+        <div class="guide-step-title">上傳報價單</div>
+        <div class="guide-step-desc">支援 <span class="guide-badge gb-cy">PDF</span> <span class="guide-badge gb-cy">Excel</span> <span class="guide-badge gb-cy">Word</span> <span class="guide-badge gb-cy">JPG / PNG</span> <span class="guide-badge gb-cy">HEIC</span> 等格式。手機可直接拍照上傳。檔案大小建議在 10MB 以內，掃描件請確認清晰度足夠。</div>
+        <div class="guide-step-tip">💡 拖曳檔案到上傳區域，或點擊選擇檔案。上傳後可在左下角的「📄 查看原始檔」按鈕隨時開啟浮動預覽視窗，對照確認 AI 讀取正確性。</div>
+      </div>
+    </div>
+    <div class="guide-step">
+      <div class="guide-step-num">2</div>
+      <div class="guide-step-content">
+        <div class="guide-step-title">選擇工程類別</div>
+        <div class="guide-step-desc">按下「開始 AI 分析」後會跳出類別選擇視窗。選擇正確類別可大幅節省分析時間和費用，因為 AI 只會比對對應類別的主檔品項：
+          <br>• <strong>ALL</strong> — 不確定時選此項，使用全部主檔（較慢但最完整）
+          <br>• <strong>⚙ 配管</strong> — 比對配管類 + 共用類主檔
+          <br>• <strong>⚡ 儀電</strong> — 比對儀電類 + 共用類主檔
+          <br>• <strong>🏗 土木</strong> — 比對土木類 + 共用類主檔
+          <br>• <strong>🔩 鋼構</strong> — 比對鋼構類 + 共用類主檔
+        </div>
+        <div class="guide-step-tip">💡 螺栓、型鋼等跨工程常用材料歸類在「共用（Common）」，選任何工程類別都會自動帶入。</div>
+      </div>
+    </div>
+    <div class="guide-step">
+      <div class="guide-step-num">3</div>
+      <div class="guide-step-content">
+        <div class="guide-step-title">檢視與編輯報告</div>
+        <div class="guide-step-desc">AI 分析完成後立即顯示完整報告。報告中所有欄位皆可直接點擊編輯：
+          <br>• 品項名稱、單位、數量、廠商單價 — 點擊直接修改
+          <br>• 工費欄位 — 直接填入預估總金額（฿），系統自動計算燈號
+          <br>• ▲ ▼ — 上下移動品項順序
+          <br>• ✕ — 刪除此列
+          <br>• ＋ 新增品項 — 在最下方新增空白列
+          <br>• ✏️ 修正 — 修改品項資料並可選擇回報 AI 學習
+        </div>
+        <div class="guide-step-tip">💡 所有修改後，報告底部的廠商總價、建議目標價、可節省金額會即時自動重新計算。</div>
+      </div>
+    </div>
+    <div class="guide-step">
+      <div class="guide-step-num">4</div>
+      <div class="guide-step-content">
+        <div class="guide-step-title">匯出報告</div>
+        <div class="guide-step-desc">確認報告內容正確後，可選擇：
+          <br>• <span class="guide-badge gb-gr">匯出 JSON</span> — 結構化資料，用於系統整合或存檔
+          <br>• <span class="guide-badge gb-cy">📊 匯出 Excel</span> — 彩色格式化 Excel 檔案，同時自動存入 Google Drive
+          <br>• <span class="guide-badge gb-cy">列印 / PDF</span> — 開啟瀏覽器列印對話框，可選擇「另存為 PDF」
+        </div>
+        <div class="guide-step-tip">💡 原始報價單和報告 JSON 在分析完成後即自動備份至 Google Drive，無需手動儲存。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 燈號說明 ══ -->
+<div class="guide-section">
+  <div class="guide-sec-header">
+    <span class="guide-sec-icon">🚦</span>
+    <div><div class="guide-sec-title">燈號判斷標準</div><div class="guide-sec-sub">以主檔歷史最低價為基準，±10% 為正常區間</div></div>
+  </div>
+  <div class="guide-body">
+    <table class="flag-table">
+      <thead><tr><th>燈號</th><th>條件</th><th>建議動作</th><th>備註</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="guide-badge gb-gn">🟢 正常</span></td>
+          <td>廠商單價在歷史最低價 ±10% 以內</td>
+          <td>直接簽核，無需議價</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><span class="guide-badge gb-rd">🔴 偏高</span></td>
+          <td>廠商單價 &gt; 歷史最低價 × 110%</td>
+          <td>優先議價，要求對齊歷史低價</td>
+          <td>差異欄顯示超出百分比</td>
+        </tr>
+        <tr>
+          <td><span class="guide-badge gb-pu">🟣 偏低</span></td>
+          <td>廠商單價 &lt; 歷史最低價 × 90%</td>
+          <td>確認規格是否與主檔一致，防止以低規格品替代</td>
+          <td>不一定是好事</td>
+        </tr>
+        <tr>
+          <td><span class="guide-badge gb-am">🟠 待確認</span></td>
+          <td>AI 比對到相似品項，但匹配度 50–79%</td>
+          <td>人工確認品名/規格是否正確</td>
+          <td>可能是廠商用不同寫法</td>
+        </tr>
+        <tr>
+          <td><span class="guide-badge gb-gr">⚪ 無基準</span></td>
+          <td>主檔中無此品項</td>
+          <td>本次採購完成後，將最終成交價加入主檔</td>
+          <td>建議補充主檔</td>
+        </tr>
+        <tr>
+          <td><span class="guide-badge gb-yw">🟡 工費/整包</span></td>
+          <td>工費或整包項目（無材料單價可比對）</td>
+          <td>填入預估工費，系統自動套用燈號</td>
+          <td>需人工填入預估金額</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="guide-step-tip" style="margin-top:.75rem">💡 工費/整包項目的燈號判斷基準是你填入的「預估合理工費」，而非主檔材料價格。填入後同樣套用 ±10% 規則。</div>
+  </div>
+</div>
+
+<!-- ══ 主檔管理 ══ -->
+<div class="guide-section">
+  <div class="guide-sec-header">
+    <span class="guide-sec-icon">📦</span>
+    <div><div class="guide-sec-title">主檔管理</div><div class="guide-sec-sub">維護材料最低價資料庫的方法</div></div>
+  </div>
+  <div class="guide-body">
+    <div class="guide-step">
+      <div class="guide-step-num" style="background:var(--t3)">A</div>
+      <div class="guide-step-content">
+        <div class="guide-step-title">分頁切換</div>
+        <div class="guide-step-desc">主檔依工程類別分頁顯示：全部 / ⚙ 配管 / ⚡ 儀電 / 🏗 土木 / 🔩 鋼構 / 📦 共用 / 👷 工費。每個 Tab 旁顯示該類別的品項數量，方便快速定位。</div>
+      </div>
+    </div>
+    <div class="guide-step">
+      <div class="guide-step-num" style="background:var(--t3)">B</div>
+      <div class="guide-step-content">
+        <div class="guide-step-title">編輯品項</div>
+        <div class="guide-step-desc">需要先登入管理員帳號才能編輯。點擊任意欄位直接修改，<strong>Updated 欄位自動記錄修改時間</strong>，不需手動輸入。橘色列代表有未儲存的變更。</div>
+        <div class="guide-step-tip">⚠ 修改完成後記得按「儲存至 Drive」，否則重新整理後變更會消失。</div>
+      </div>
+    </div>
+    <div class="guide-step">
+      <div class="guide-step-num" style="background:var(--t3)">C</div>
+      <div class="guide-step-content">
+        <div class="guide-step-title">批量匯入 CSV</div>
+        <div class="guide-step-desc">
+          按「匯出 CSV」先取得目前主檔格式，用 Excel 編輯後再按「匯入覆蓋 CSV」整批覆蓋。
+          CSV 欄位格式：<br>
+          <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:4px 8px;border-radius:4px;display:inline-block;margin-top:.4rem">Material Specification, Unit, Unit Price (THB), Category, Keywords, Remark, Updated At</code>
+        </div>
+        <div class="guide-step-tip">⚠ 匯入會完整覆蓋現有主檔，操作前建議先匯出備份。Category 欄位值：piping / electrical / civil / structural / common / labor</div>
+      </div>
+    </div>
+    <div class="guide-step">
+      <div class="guide-step-num" style="background:var(--t3)">D</div>
+      <div class="guide-step-content">
+        <div class="guide-step-title">共用（Common）類別的使用原則</div>
+        <div class="guide-step-desc">跨工程都會用到的材料（螺栓、型鋼、焊材、錨栓等）請歸類為「共用」。選擇任何工程類別分析時，共用類別會自動帶入，不需要在每個類別重複建立同一品項。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ AI 學習修正 ══ -->
+<div class="guide-section">
+  <div class="guide-sec-header">
+    <span class="guide-sec-icon">🧠</span>
+    <div><div class="guide-sec-title">AI 學習修正</div><div class="guide-sec-sub">讓 AI 越用越準的方法</div></div>
+  </div>
+  <div class="guide-body">
+    <div class="guide-step">
+      <div class="guide-step-num">1</div>
+      <div class="guide-step-content">
+        <div class="guide-step-title">發現 AI 讀取錯誤</div>
+        <div class="guide-step-desc">在報告中發現 AI 讀取不正確的品項（如品名誤讀、單價解析錯誤、泰文縮寫未識別），點擊該列右側的 <span class="guide-badge gb-cy">✏️ 修正</span> 按鈕。</div>
+      </div>
+    </div>
+    <div class="guide-step">
+      <div class="guide-step-num">2</div>
+      <div class="guide-step-content">
+        <div class="guide-step-title">填寫修正內容</div>
+        <div class="guide-step-desc">
+          修正視窗分為兩個區塊：
+          <br>• <strong>上半部（必填）</strong> — 直接修改品項名稱、單位、數量、單價，按「套用並更新報告」後立即生效
+          <br>• <strong>下半部（選填）</strong> — 填寫「AI 讀取哪裡錯」的說明，這部分才會存入 Drive 供下次學習
+        </div>
+        <div class="guide-step-tip">💡 只想修正這次報告不需要 AI 學習 → 只填上半部即可。想讓 AI 下次自動修正 → 同時填下半部的說明欄。</div>
+      </div>
+    </div>
+    <div class="guide-step">
+      <div class="guide-step-num">3</div>
+      <div class="guide-step-content">
+        <div class="guide-step-title">下次自動生效</div>
+        <div class="guide-step-desc">修正紀錄存入 Drive 的 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">corrections.json</code>。下次分析同類工程時，AI 的 Prompt 裡會自動附上最近 30 筆修正紀錄，在分析前告知 AI「上次這樣讀是錯的，正確應該是這樣」。</div>
+        <div class="guide-step-tip">💡 修正紀錄依工程類別篩選帶入，「共用（common）」類別的修正每次都會帶入。費用影響極小（約每份報告多 $0.0003）。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 系統設定 ══ -->
+<div class="guide-section">
+  <div class="guide-sec-header">
+    <span class="guide-sec-icon">⚙</span>
+    <div><div class="guide-sec-title">系統設定與部署</div><div class="guide-sec-sub">首次設定與維護說明</div></div>
+  </div>
+  <div class="guide-body">
+    <table class="setup-table">
+      <thead><tr><th>設定項目</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Apps Script 後端</td>
+          <td>整個系統的後端，負責呼叫 Gemini API、存取 Google Drive、驗證管理員登入。部署後將網址填入 HTML 第一行 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.BACKEND_URL</code></td>
+        </tr>
+        <tr>
+          <td>Gemini API Key</td>
+          <td>填入 Apps Script 的 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.GEMINI_API_KEY</code>。Key 永遠只存在伺服器端，不會暴露給使用者。費用約 $0.02 / 份報告。</td>
+        </tr>
+        <tr>
+          <td>Google Drive 資料夾</td>
+          <td>在 Drive 建立一個 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">ProcureAI</code> 資料夾，將資料夾 ID 填入 Apps Script 的 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.DRIVE_FOLDER_ID</code></td>
+        </tr>
+        <tr>
+          <td>管理員帳密</td>
+          <td>帳號密碼設定在 HTML 第一行 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.ADMIN_USER / ADMIN_PW</code> 和 Apps Script 的同名欄位。兩處需保持一致。</td>
+        </tr>
+        <tr>
+          <td>部署更新方式</td>
+          <td>修改 HTML 後上傳至 GitHub 覆蓋 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">index.html</code> 即生效。修改 Apps Script 後需重新部署（管理部署 → 編輯 → 新版本）並更新 CONFIG.BACKEND_URL。</td>
+        </tr>
+        <tr>
+          <td>Drive 資料夾結構</td>
+          <td>
+            系統自動建立以下結構：<br>
+            <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:4px 8px;border-radius:4px;display:block;margin-top:.4rem;line-height:1.8">
+              ProcureAI/<br>
+              ├── master_list.json（主檔）<br>
+              ├── corrections.json（AI 修正紀錄）<br>
+              ├── uploads/YYYY-MM/（原始報價單）<br>
+              └── reports/YYYY-MM/（分析報告 JSON + Excel）
+            </code>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ FAQ ══ -->
+<div class="guide-section">
+  <div class="guide-sec-header">
+    <span class="guide-sec-icon">❓</span>
+    <div><div class="guide-sec-title">常見問題</div><div class="guide-sec-sub">FAQ</div></div>
+  </div>
+  <div class="guide-body">
+    <div class="faq-item">
+      <div class="faq-q">後端連線失敗怎麼辦？</div>
+      <div class="faq-a">按 F12 開啟開發者工具 → Console 頁籤查看錯誤訊息。常見原因：①Apps Script 網址填錯 ②部署時存取權未設為「所有人」③Apps Script 有新增功能需要重新授權（去 script.google.com 點「執行」任一函數觸發授權）。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">AI 分析時間很長怎麼辦？</div>
+      <div class="faq-a">選擇特定工程類別（而非 ALL）可以大幅縮短時間，因為主檔比對的品項數量減少。掃描 PDF 解析速度通常比原始數位 PDF 慢，建議使用高解析度（300 DPI 以上）的掃描件。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">AI 讀取的品項順序跟原始報價單不同？</div>
+      <div class="faq-a">報告中的品項順序完全依照 AI 讀取的原始順序。如果順序有誤，可使用 ▲ ▼ 按鈕手動調整，或拖曳品項列到正確位置。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">主檔沒有這個品項，燈號顯示「⚪ 無基準」？</div>
+      <div class="faq-a">這次採購完成並確認成交價後，用「主檔管理」頁面新增這個品項，下次分析時就有基準可以比對。建議同時填入 Keywords 欄位（英文關鍵字），這樣 AI 在模糊比對時更容易找到對應品項。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">多人同時使用主檔編輯會衝突嗎？</div>
+      <div class="faq-a">目前系統採用「最後儲存者覆蓋」的方式，若多人同時編輯再分別儲存，後儲存的會覆蓋先儲存的。建議主檔管理由固定的管理員負責，或協調好時間分批編輯。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">一般使用者（非管理員）可以做什麼？</div>
+      <div class="faq-a">一般使用者（不登入）可以：上傳報價單進行比價分析、查看報告、手動修改報告內容、匯出 Excel / JSON / PDF、查看主檔（唯讀）。<br>需要管理員登入才能：編輯主檔品項、新增刪除主檔品項、儲存主檔至 Drive、開啟系統設定。</div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:1.5rem 0;font-family:var(--mono);font-size:11px;color:var(--t3)">
+  ProcureAI v4 ｜ Powered by Gemini AI ｜ Built on Google Apps Script + GitHub Pages
+</div>
+
 </div>
 
 <!-- ══ PAGE: MASTER ══ -->
@@ -700,6 +1067,7 @@ function showPg(p){
   document.getElementById('pg-'+p).classList.add('on');
   document.getElementById('tab-analyze').classList.toggle('on',p==='analyze');
   document.getElementById('tab-master').classList.toggle('on',p==='master');
+  document.getElementById('tab-guide').classList.toggle('on',p==='guide');
   if(p==='master') renderM();
 }
 function setStep(n){
