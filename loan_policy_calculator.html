@@ -523,7 +523,7 @@ tfoot td { padding:13px 12px; font-weight:500; font-size:14px; }
 
     <div class="ig">
       <label class="il">信貸額度</label>
-      <div class="ir"><input type="number" id="loanAmount" value="1000000" min="1"><span class="iu">元</span></div>
+      <div class="ir"><input type="number" id="loanAmount" value="1000000" min="1" oninput="syncPolicyAmount()"><span class="iu">元</span></div>
     </div>
     <div class="ig">
       <label class="il">年利率</label>
@@ -542,8 +542,11 @@ tfoot td { padding:13px 12px; font-weight:500; font-size:14px; }
     <p class="sec-label">投資型保單條件</p>
 
     <div class="ig">
-      <label class="il">保單投入本金（不含自備款）</label>
-      <div class="ir"><input type="number" id="policyAmount" value="1000000" min="1" oninput="updateLoanMaxPreview()"><span class="iu">元</span></div>
+      <label class="il">保單投入本金（等於信貸額度）</label>
+      <div class="ir" style="background:var(--surface2);cursor:not-allowed;">
+        <span id="policyAmountDisplay" style="font-family:'DM Mono',monospace;font-size:17px;color:var(--tiffany);padding:12px 0;flex:1;">1,000,000</span>
+        <span class="iu">元</span>
+      </div>
     </div>
     <div class="ig">
       <label class="il">每年投資報酬率</label>
@@ -755,7 +758,7 @@ function calculate(){
   const loanAmount    = parseFloat(document.getElementById('loanAmount').value)||0;
   const loanRate      = parseFloat(document.getElementById('loanRate').value)/100||0;
   const loanYears     = parseInt(document.getElementById('loanYears').value)||7;
-  const policyBase    = parseFloat(document.getElementById('policyAmount').value)||0;
+  const policyBase    = loanAmount;  // 保單本金 = 信貸額度
   const policyReturn  = parseFloat(document.getElementById('policyReturn').value)/100||0;
   const policyLoanPct = parseFloat(document.getElementById('policyLoanPct').value)||0;
   const policyLoanRate= parseFloat(document.getElementById('policyLoanRate').value)/100||0;
@@ -1030,8 +1033,15 @@ function switchTab(idx, btn){
   });
 }
 
+function syncPolicyAmount(){
+  const v = parseFloat(document.getElementById('loanAmount').value)||0;
+  const el = document.getElementById('policyAmountDisplay');
+  if(el) el.textContent = Math.round(v).toLocaleString('zh-TW');
+  updateLoanMaxPreview();
+}
+
 function updateLoanMaxPreview(){
-  const policyBase = parseFloat(document.getElementById('policyAmount').value)||0;
+  const policyBase = parseFloat(document.getElementById('loanAmount').value)||0;
   const selfFund   = parseFloat(document.getElementById('selfFund').value)||0;
   const pct        = parseFloat(document.getElementById('policyLoanPct').value)||0;
   const maxA = policyBase * (pct / 100);
