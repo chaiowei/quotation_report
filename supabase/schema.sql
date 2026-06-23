@@ -1,5 +1,6 @@
 -- ProcureAI v5 Database Schema
 -- 在 Supabase Dashboard → SQL Editor 執行此檔案
+-- 可重複執行（所有語句均為 idempotent）
 
 -- ============================================================
 -- 1. materials 主檔料料庫
@@ -54,18 +55,27 @@ alter table public.materials  enable row level security;
 alter table public.quotations enable row level security;
 alter table public.corrections enable row level security;
 
--- materials：登入者皆可讀，登入者皆可寫
+-- materials
+drop policy if exists "materials_select" on public.materials;
+drop policy if exists "materials_insert" on public.materials;
+drop policy if exists "materials_update" on public.materials;
+drop policy if exists "materials_delete" on public.materials;
 create policy "materials_select" on public.materials for select using (auth.role() = 'authenticated');
 create policy "materials_insert" on public.materials for insert with check (auth.role() = 'authenticated');
 create policy "materials_update" on public.materials for update using (auth.role() = 'authenticated');
 create policy "materials_delete" on public.materials for delete using (auth.role() = 'authenticated');
 
--- quotations：只能看自己的，或全員可看（依需求選一）
+-- quotations
+drop policy if exists "quotations_select" on public.quotations;
+drop policy if exists "quotations_insert" on public.quotations;
+drop policy if exists "quotations_update" on public.quotations;
 create policy "quotations_select" on public.quotations for select using (auth.role() = 'authenticated');
 create policy "quotations_insert" on public.quotations for insert with check (auth.uid() = created_by);
 create policy "quotations_update" on public.quotations for update using (auth.uid() = created_by);
 
--- corrections：登入者皆可讀寫
+-- corrections
+drop policy if exists "corrections_select" on public.corrections;
+drop policy if exists "corrections_insert" on public.corrections;
 create policy "corrections_select" on public.corrections for select using (auth.role() = 'authenticated');
 create policy "corrections_insert" on public.corrections for insert with check (auth.role() = 'authenticated');
 
@@ -83,7 +93,10 @@ insert into storage.buckets (id, name, public)
 values ('quotations', 'quotations', false)
 on conflict (id) do nothing;
 
--- Storage RLS：登入者可上傳/讀取自己的檔案
+-- Storage RLS
+drop policy if exists "storage_select" on storage.objects;
+drop policy if exists "storage_insert" on storage.objects;
+drop policy if exists "storage_delete" on storage.objects;
 create policy "storage_select" on storage.objects for select using (
   bucket_id = 'quotations' and auth.role() = 'authenticated'
 );
