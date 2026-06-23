@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>ProcureAI</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Noto+Sans+TC:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 :root{
   /* ── Tiffany Blue Light Theme ── */
@@ -364,13 +366,13 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
     <div class="card">
       <div class="clabel">上傳報價單</div>
       <div class="dz" id="dz">
-        <input type="file" id="fi" accept=".pdf,.xlsx,.xls,.docx,.doc,.jpg,.jpeg,.png,.heic,.webp">
+        <input type="file" id="fi" accept=".pdf,.xlsx,.xls,.docx,.doc,.jpg,.jpeg,.png,.heic,.webp,.md">
         <div class="dz-ico">⬆</div>
         <div class="dz-t">拖曳或點選上傳</div>
         <div class="dz-s">手機支援相機直拍</div>
         <div class="dz-tags">
           <span class="dtag">PDF</span><span class="dtag">Excel</span><span class="dtag">Word</span>
-          <span class="dtag">JPG · PNG</span><span class="dtag">HEIC</span>
+          <span class="dtag">JPG · PNG</span><span class="dtag">HEIC</span><span class="dtag">Markdown</span>
         </div>
       </div>
       <div class="fpill" id="fp">
@@ -415,7 +417,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
       <button class="btn btn-g" onclick="resetAll()">← 新報價單</button>
       <button class="btn btn-g" onclick="expJSON()">匯出 JSON</button>
       <button class="btn btn-g" onclick="expExcel()">📊 匯出 Excel</button>
-      <button class="btn btn-c" onclick="window.print()">列印 / PDF</button>
+      <button class="btn btn-c" onclick="exportPDF()">匯出 PDF</button>
     </div>
   </div>
 </div>
@@ -1254,7 +1256,7 @@ function impCSV(inp){
 }
 
 // ═══ FILE UPLOAD ═══
-const ICONS={pdf:'📋',xlsx:'📊',xls:'📊',docx:'📝',doc:'📝',jpg:'🖼',jpeg:'🖼',png:'🖼',heic:'🖼',webp:'🖼'};
+const ICONS={pdf:'📋',xlsx:'📊',xls:'📊',docx:'📝',doc:'📝',jpg:'🖼',jpeg:'🖼',png:'🖼',heic:'🖼',webp:'🖼',md:'📄'};
 const dz=document.getElementById('dz');
 const fi=document.getElementById('fi');
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
@@ -1281,6 +1283,13 @@ function setF(f){
       const ifr=document.createElement('iframe');
       ifr.src=curFileUrl;ifr.style.cssText='width:100%;height:600px;border:none';
       body.appendChild(ifr);
+    } else if(ext==='md'){
+      const tr=new FileReader();
+      tr.onload=ev=>{
+        const lines=ev.target.result;
+        body.innerHTML=`<pre style="padding:1.2rem;font-family:var(--mono);font-size:12px;line-height:1.7;white-space:pre-wrap;word-break:break-word;color:var(--t1);margin:0;height:600px;overflow:auto">${escH(lines)}</pre>`;
+      };
+      tr.readAsText(f,'utf-8');
     } else {
       body.innerHTML=`<div style="padding:2rem;text-align:center;color:var(--t3);font-size:13px">
         <div style="font-size:32px;margin-bottom:1rem">📄</div>
@@ -1356,6 +1365,8 @@ async function doAnalyze(){
     const mimeMap={pdf:'application/pdf',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',heic:'image/heic',webp:'image/webp'};
     const mime=mimeMap[ext]||'application/pdf';
     const isMedia=['jpg','jpeg','png','heic','webp','pdf'].includes(ext);
+    let mdText='';
+    if(ext==='md') mdText=await new Promise(ok=>{const r=new FileReader();r.onload=e=>ok(e.target.result);r.readAsText(curFile,'utf-8');});
     const today=new Date().toISOString().slice(0,10);
 
     // 依類別篩選 Master List
@@ -1404,7 +1415,8 @@ FLAG: normal=±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis=n
     if(isMedia) parts=[{text:prompt},{inline_data:{mime_type:mime,data:b64}}];
     else parts=[{text:prompt+'\n\n['+ext+' file]'}];
 
-    const geminiResp=await api('callGemini',{prompt,base64Data:isMedia?b64:null,mimeType:isMedia?mime:null});
+    const finalPrompt=mdText?prompt+'\n\n[Markdown 報價單內容如下]\n'+mdText:prompt;
+    const geminiResp=await api('callGemini',{prompt:finalPrompt,base64Data:isMedia?b64:null,mimeType:isMedia?mime:null});
     const raw=geminiResp.text||'';
     const clean=raw.replace(/```json|```/g,'').trim();
     const parsed=JSON.parse(clean);
@@ -1797,9 +1809,7 @@ function refreshReport(){
 function openCorr(i){
   const it=parsedItems[i]; if(!it)return;
   corrTarget=i;
-  // 填入現有資料讓使用者可以看到並修改
-  document.getElementById('corr-spec').textContent = it.spec;
-  document.getElementById('corr-ai').textContent   = `單價: ฿${fmt(it.unitPrice)} ／ 數量: ${it.qty??'—'} ／ 單位: ${it.unit||'—'} ／ 比對: ${it.masterSpec||'無'}`;
+  document.getElementById('corr-ai').textContent   = `規格: ${it.spec} ／ 單價: ฿${fmt(it.unitPrice)} ／ 數量: ${it.qty??'—'} ／ 單位: ${it.unit||'—'} ／ 比對: ${it.masterSpec||'無'}`;
   // 讓使用者可以直接修改所有欄位
   document.getElementById('corr-spec-edit').value  = it.spec;
   document.getElementById('corr-unit-edit').value  = it.unit||'';
@@ -1849,6 +1859,68 @@ async function submitCorrection(){
 
 
 // ═══ EXPORT ═══
+function exportPDF(){
+  if(!parsedItems||!parsedItems.length){toast('尚無報告資料','err');return;}
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  const cy=[10,186,181]; // #0ABAB5 in RGB
+
+  // Header block
+  doc.setFillColor(...cy);
+  doc.rect(0,0,297,22,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(16);doc.setFont('helvetica','bold');
+  doc.text('ProcureAI  報價比對報告',14,13);
+  doc.setFontSize(9);doc.setFont('helvetica','normal');
+  const hdr=`廠商: ${window._aiVendor||'—'}   專案: ${window._aiProject||'—'}   日期: ${window._aiDate||'—'}   報告ID: ${curRptId||'—'}`;
+  doc.text(hdr,14,20,{maxWidth:270});
+
+  // Items table
+  const flagMap={normal:'正常',high:'偏高',low:'偏低',pending:'待確認',no_basis:'無基準',labor_package:'工費包'};
+  const rows=parsedItems.map((it,i)=>{
+    const sub=it.subtotal!=null?it.subtotal:it.unitPrice*(it.qty??1);
+    const diff=it.masterLowestPrice&&it.qty!=null
+      ?((it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice*100).toFixed(1)+'%':'—';
+    return[i+1,it.spec||'',it.unit||'—',it.qty!=null?it.qty:'—',
+      '฿'+fmt(it.unitPrice),'฿'+fmt(sub),
+      it.masterLowestPrice?'฿'+fmt(it.masterLowestPrice):'—',
+      diff,flagMap[it.flag]||it.flag||'—'];
+  });
+
+  doc.autoTable({
+    startY:26,
+    head:[['#','品項規格','單位','數量','廠商單價','小計','主檔基準','差異%','燈號']],
+    body:rows,
+    styles:{fontSize:8,cellPadding:2,font:'helvetica',overflow:'linebreak'},
+    headStyles:{fillColor:cy,textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[240,253,250]},
+    columnStyles:{0:{cellWidth:8,halign:'center'},1:{cellWidth:70},2:{cellWidth:14,halign:'center'},3:{cellWidth:16,halign:'right'},4:{cellWidth:24,halign:'right'},5:{cellWidth:24,halign:'right'},6:{cellWidth:24,halign:'right'},7:{cellWidth:18,halign:'right'},8:{cellWidth:18,halign:'center'}},
+    didParseCell:d=>{
+      if(d.section==='body'&&d.column.index===8){
+        const v=d.cell.raw;
+        if(v==='偏高')d.cell.styles.textColor=[220,38,38];
+        else if(v==='偏低')d.cell.styles.textColor=[5,150,105];
+        else if(v==='待確認')d.cell.styles.textColor=[180,83,9];
+      }
+    }
+  });
+
+  // Totals footer
+  const {totalQ,totalS,canSave}=calcTotals();
+  const y=doc.lastAutoTable.finalY+6;
+  doc.setFillColor(...cy);doc.rect(0,y-2,297,10,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(9);doc.setFont('helvetica','bold');
+  doc.text(`廠商報價合計: ฿${fmt(totalQ)}   最佳基準合計: ฿${fmt(totalS)}   可節省空間: ฿${fmt(canSave)}`,14,y+5);
+
+  // Footer bar
+  doc.setFillColor(240,253,250);doc.rect(0,200,297,10,'F');
+  doc.setTextColor(100,100,100);doc.setFontSize(7);doc.setFont('helvetica','normal');
+  doc.text(`Generated by ProcureAI  ·  ${new Date().toLocaleString('zh-TW',{hour12:false})}`,14,207);
+
+  doc.save((curRptId||'report')+'.pdf');
+  toast('PDF 已匯出','ok');
+}
+
 function expJSON(){
   const d={reportId:curRptId,generatedAt:new Date().toISOString(),vendor:window._aiVendor,project:window._aiProject,items:parsedItems};
   dl(JSON.stringify(d,null,2),curRptId+'.json','application/json');toast('JSON 已匯出','ok');
