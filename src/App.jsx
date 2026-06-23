@@ -46,7 +46,7 @@ export default function App() {
       }>
         <Route index element={<DashboardPage />} />
         <Route path="upload" element={<UploadPage session={session} />} />
-        <Route path="materials" element={<MaterialsPage />} />
+        <Route path="materials" element={<MaterialsPage session={session} />} />
         <Route path="reports" element={<ReportsPage />} />
       </Route>
     </Routes>
