@@ -1,12 +1,14 @@
 import { useState, useRef } from 'react'
-import { Upload, FileText, X, Loader, CheckCircle, AlertCircle, Lock, CloudUpload } from 'lucide-react'
+import { Upload, FileText, X, Loader, CheckCircle, AlertCircle, Lock, CloudUpload, RefreshCw } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
 
-const ACCEPTED = '.pdf,.xlsx,.xls,.docx,.doc,.jpg,.jpeg,.png'
+const ACCEPTED_EXT = ['pdf', 'xlsx', 'xls', 'docx', 'doc', 'jpg', 'jpeg', 'png']
+const ACCEPTED = '.' + ACCEPTED_EXT.join(',.')
+const MAX_SIZE_MB = 50
 
 const FILE_ICON_COLOR = ext => {
-  if (['pdf'].includes(ext)) return 'text-red-500 bg-red-50'
+  if (ext === 'pdf') return 'text-red-500 bg-red-50'
   if (['xlsx', 'xls'].includes(ext)) return 'text-emerald-600 bg-emerald-50'
   if (['docx', 'doc'].includes(ext)) return 'text-blue-600 bg-blue-50'
   return 'text-violet-600 bg-violet-50'
@@ -19,6 +21,7 @@ export default function UploadPage({ session, guestMode }) {
   const [uploading, setUploading] = useState(false)
   const [projectName, setProjectName] = useState('')
   const [vendor, setVendor] = useState('')
+  const [showNameError, setShowNameError] = useState(false)
   const inputRef = useRef()
 
   if (guestMode) return (
@@ -41,18 +44,44 @@ export default function UploadPage({ session, guestMode }) {
     </div>
   )
 
-  function addFiles(newFiles) {
-    const arr = Array.from(newFiles).map(f => ({ file: f, status: 'pending', error: null }))
-    setFiles(prev => [...prev, ...arr])
+  function validateAndAddFiles(rawFiles) {
+    const valid = []
+    const rejected = []
+    Array.from(rawFiles).forEach(f => {
+      const ext = f.name.split('.').pop()?.toLowerCase() || ''
+      if (!ACCEPTED_EXT.includes(ext)) {
+        rejected.push(`${f.name}（不支援的格式）`)
+      } else if (f.size > MAX_SIZE_MB * 1024 * 1024) {
+        rejected.push(`${f.name}（超過 ${MAX_SIZE_MB}MB 限制）`)
+      } else if (files.some(x => x.file.name === f.name && x.file.size === f.size)) {
+        rejected.push(`${f.name}（已在列表中）`)
+      } else {
+        valid.push({ file: f, status: 'pending', error: null })
+      }
+    })
+    if (rejected.length) alert('以下檔案已略過：\n' + rejected.join('\n'))
+    if (valid.length) setFiles(prev => [...prev, ...valid])
   }
+
   function removeFile(idx) { setFiles(prev => prev.filter((_, i) => i !== idx)) }
-  function onDrop(e) { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files) }
+
+  function onDrop(e) {
+    e.preventDefault(); setDragging(false)
+    validateAndAddFiles(e.dataTransfer.files)
+  }
+
   function updateFileStatus(idx, status, error = null) {
     setFiles(prev => prev.map((f, i) => i === idx ? { ...f, status, error } : f))
   }
 
+  function resetAll() {
+    setFiles([]); setProjectName(''); setVendor(''); setShowNameError(false)
+  }
+
   async function handleUpload() {
-    if (!files.length || !projectName.trim()) return
+    if (!projectName.trim()) { setShowNameError(true); return }
+    if (!files.length) return
+    setShowNameError(false)
     setUploading(true)
     const userId = session?.user?.id
     const now = Date.now()
@@ -61,7 +90,8 @@ export default function UploadPage({ session, guestMode }) {
       updateFileStatus(i, 'uploading')
       const { file } = files[i]
       const storagePath = `${userId}/${now}_${file.name}`
-      const { error: storageError } = await supabase.storage.from('quotations').upload(storagePath, file, { cacheControl: '3600', upsert: false })
+      const { error: storageError } = await supabase.storage
+        .from('quotations').upload(storagePath, file, { cacheControl: '3600', upsert: false })
       if (storageError) { updateFileStatus(i, 'error', storageError.message); continue }
       const { error: dbError } = await supabase.from('quotations').insert({
         project_name: projectName.trim(), vendor: vendor.trim() || null,
@@ -84,9 +114,16 @@ export default function UploadPage({ session, guestMode }) {
 
   return (
     <div className="max-w-2xl mx-auto space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">上傳報價單</h1>
-        <p className="text-slate-500 text-sm mt-1">上傳後存入資料庫，AI 解析將自動比對主檔材料庫</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">上傳報價單</h1>
+          <p className="text-slate-500 text-sm mt-1">上傳後存入資料庫，可在報告頁觸發 AI 解析</p>
+        </div>
+        {files.length > 0 && (
+          <button onClick={resetAll} className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 border border-slate-200 bg-white px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-all">
+            <RefreshCw size={13} /> 重設
+          </button>
+        )}
       </div>
 
       {/* Project info */}
@@ -94,11 +131,15 @@ export default function UploadPage({ session, guestMode }) {
         <h2 className="text-sm font-semibold text-slate-700">報價單資訊</h2>
         <div>
           <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
-            專案名稱 <span className="text-red-500 normal-case font-normal">（必填）</span>
+            專案名稱 <span className="text-red-400 normal-case font-normal">（必填）</span>
           </label>
-          <input type="text" value={projectName} onChange={e => setProjectName(e.target.value)}
+          <input type="text" value={projectName}
+            onChange={e => { setProjectName(e.target.value); if (e.target.value.trim()) setShowNameError(false) }}
             placeholder="例：春武里廠 N2 管線工程 2026-06"
-            className="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all" />
+            className={`w-full px-4 py-2.5 text-sm border rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 transition-all ${
+              showNameError ? 'border-red-300 focus:ring-red-500/30 focus:border-red-400' : 'border-slate-200 focus:ring-blue-500/30 focus:border-blue-400'
+            }`} />
+          {showNameError && <p className="text-red-500 text-xs mt-1.5">請輸入專案名稱後再上傳</p>}
         </div>
         <div>
           <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">廠商名稱</label>
@@ -115,17 +156,16 @@ export default function UploadPage({ session, guestMode }) {
         onDrop={onDrop}
         onClick={() => inputRef.current.click()}
         className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all ${
-          dragging
-            ? 'border-blue-400 bg-blue-50 scale-[1.01]'
-            : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
+          dragging ? 'border-blue-400 bg-blue-50 scale-[1.01]' : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
         }`}
       >
-        <input ref={inputRef} type="file" multiple accept={ACCEPTED} className="hidden" onChange={e => addFiles(e.target.files)} />
+        <input ref={inputRef} type="file" multiple accept={ACCEPTED} className="hidden"
+          onChange={e => validateAndAddFiles(e.target.files)} />
         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-colors ${dragging ? 'bg-blue-100' : 'bg-slate-100'}`}>
           <CloudUpload size={26} className={dragging ? 'text-blue-500' : 'text-slate-400'} />
         </div>
         <p className="font-semibold text-slate-700">拖曳檔案到這裡，或點擊選擇</p>
-        <p className="text-slate-400 text-sm mt-1.5">PDF · Excel · Word · JPG / PNG</p>
+        <p className="text-slate-400 text-sm mt-1.5">PDF · Excel · Word · JPG / PNG（最大 {MAX_SIZE_MB}MB）</p>
       </div>
 
       {/* File list */}
@@ -133,17 +173,19 @@ export default function UploadPage({ session, guestMode }) {
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           {files.map(({ file, status, error }, idx) => {
             const ext = file.name.split('.').pop()?.toLowerCase() || ''
-            const iconCls = FILE_ICON_COLOR(ext)
             return (
               <div key={idx} className="flex items-center gap-3 px-5 py-3.5 border-b border-slate-100 last:border-0">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${iconCls}`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${FILE_ICON_COLOR(ext)}`}>
                   <FileText size={14} />
                 </div>
-                <span className="text-sm text-slate-700 flex-1 truncate" title={error || file.name}>{file.name}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-slate-700 truncate" title={file.name}>{file.name}</p>
+                  {error && <p className="text-xs text-red-500 mt-0.5 truncate">{error}</p>}
+                </div>
                 <span className="text-xs text-slate-400 font-mono shrink-0">{(file.size / 1024).toFixed(0)} KB</span>
                 {statusIcon(status, error)}
                 {status !== 'uploading' && status !== 'done' && (
-                  <button onClick={() => removeFile(idx)} className="text-slate-300 hover:text-red-500 transition-colors ml-1">
+                  <button onClick={() => removeFile(idx)} className="text-slate-300 hover:text-red-400 transition-colors ml-1 shrink-0">
                     <X size={14} />
                   </button>
                 )}
@@ -154,14 +196,20 @@ export default function UploadPage({ session, guestMode }) {
       )}
 
       {allDone && (
-        <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-4 text-sm text-emerald-700">
+        <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-4">
           <CheckCircle size={18} className="text-emerald-500 shrink-0" />
-          <span>所有檔案已上傳完成！前往<button onClick={() => navigate('/reports')} className="font-semibold underline ml-1">比對報告</button>頁面點擊「AI 解析」。</span>
+          <div className="text-sm text-emerald-700 flex-1">
+            所有檔案已上傳完成！
+            <button onClick={() => navigate('/reports')} className="font-semibold underline ml-1">前往比對報告 →</button>
+          </div>
+          <button onClick={resetAll} className="text-xs text-emerald-600 hover:text-emerald-700 border border-emerald-300 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition-all shrink-0">
+            繼續上傳
+          </button>
         </div>
       )}
 
       {files.length > 0 && hasPending && (
-        <button onClick={handleUpload} disabled={uploading || !projectName.trim()}
+        <button onClick={handleUpload} disabled={uploading}
           className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white font-semibold text-sm transition-all shadow-sm shadow-blue-500/25 disabled:opacity-50 flex items-center justify-center gap-2">
           {uploading ? <><Loader size={16} className="animate-spin" /> 上傳中...</> : <><Upload size={16} /> 上傳到資料庫</>}
         </button>

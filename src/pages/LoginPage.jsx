@@ -121,7 +121,7 @@ export default function LoginPage({ session, onGuest }) {
           </div>
 
           <div className="mt-6 pt-6 border-t border-slate-100">
-            <button onClick={onGuest}
+            <button onClick={() => { onGuest(); navigate('/') }}
               className="w-full py-2.5 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-500 hover:text-slate-700 rounded-xl text-sm transition-all">
               以訪客身份試用（展示資料）
             </button>

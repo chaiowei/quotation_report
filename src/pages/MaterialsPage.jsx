@@ -165,7 +165,7 @@ export default function MaterialsPage({ session, guestMode }) {
                 {materials.length === 0 && <p className="text-slate-400 text-xs mt-1">請按「新增材料」或「匯入 CSV」</p>}
               </td></tr>
             ) : filtered.map(m => (
-              <tr key={m.id} className="hover:bg-slate-50/80 transition-colors">
+              <tr key={m.id} className="group hover:bg-slate-50/80 transition-colors">
                 <td className="px-4 py-3">
                   <span className={`text-xs px-2 py-1 rounded-lg font-medium ${CAT_COLOR[m.category] || 'bg-slate-100 text-slate-600'}`}>{m.category}</span>
                 </td>
