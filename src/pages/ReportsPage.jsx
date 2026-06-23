@@ -72,10 +72,12 @@ export default function ReportsPage({ guestMode }) {
       const { data, error } = await supabase.functions.invoke('analyze-quotation', {
         body: { quotation_id: q.id, storage_path: q.storage_path, file_name: q.file_name },
       })
-      if (error) throw error
+      // Surface the actual server-side error message
+      const serverErr = data?.error || error?.message
+      if (serverErr) throw new Error(serverErr)
       setQuotations(prev => prev.map(item => item.id === q.id ? { ...item, status: 'analyzed', parsed_items: data.parsed_items } : item))
     } catch (err) {
-      alert('解析失敗：' + (err.message || '請確認 Edge Function 已部署'))
+      alert('AI 解析失敗：\n\n' + err.message)
       setQuotations(prev => prev.map(item => item.id === q.id ? { ...item, status: 'error' } : item))
     }
     setAnalyzing(null)

@@ -13,109 +13,131 @@ Each item must have:
 Return ONLY a valid JSON array, no markdown, no explanation.
 Example: [{"spec":"2\\" SCH40 CS Pipe ASTM A106","unit":"M","qty":100,"price":450}]`
 
-Deno.serve(async (req) => {
-  // CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-      },
-    })
+// Safe base64 for large files — avoids spread operator stack overflow
+function toBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer)
+  let binary = ''
+  const chunk = 8192
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk))
   }
+  return btoa(binary)
+}
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+function ok(body: object) {
+  return new Response(JSON.stringify(body), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json', ...corsHeaders },
+  })
+}
+
+function fail(message: string, status = 500) {
+  console.error('[analyze-quotation]', message)
+  return new Response(JSON.stringify({ error: message }), {
+    status,
+    headers: { 'Content-Type': 'application/json', ...corsHeaders },
+  })
+}
+
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders })
+  }
+
+  const geminiKey = Deno.env.get('GEMINI_API_KEY')
+  if (!geminiKey) return fail('GEMINI_API_KEY secret is not set in Supabase → Project Settings → Edge Functions → Secrets')
+
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL') ?? '',
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+  )
+
+  let quotation_id: string
+  let storage_path: string
+  let file_name: string
 
   try {
-    const geminiKey = Deno.env.get('GEMINI_API_KEY')
-    if (!geminiKey) throw new Error('GEMINI_API_KEY not configured')
-
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-    )
-
-    const { quotation_id, storage_path, file_name } = await req.json()
-    if (!quotation_id) throw new Error('quotation_id is required')
-
-    // Download file from Supabase Storage
-    const { data: fileData, error: dlError } = await supabase.storage
-      .from('quotations')
-      .download(storage_path)
-    if (dlError) throw new Error('Storage download failed: ' + dlError.message)
-
-    const ext = (file_name || storage_path || '').split('.').pop()?.toLowerCase()
-    const isImage = ['jpg', 'jpeg', 'png'].includes(ext)
-
-    let geminiBody: object
-
-    if (isImage) {
-      const arrayBuffer = await fileData.arrayBuffer()
-      const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
-      geminiBody = {
-        contents: [{
-          parts: [
-            { text: PROMPT },
-            { inline_data: { mime_type: isImage ? `image/${ext === 'jpg' ? 'jpeg' : ext}` : 'application/pdf', data: base64 } },
-          ],
-        }],
-        generationConfig: { temperature: 0.1, maxOutputTokens: 8192 },
-      }
-    } else {
-      // For PDF/Word/Excel: convert to base64 and use Gemini file API
-      const arrayBuffer = await fileData.arrayBuffer()
-      const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
-      const mimeMap: Record<string, string> = {
-        pdf: 'application/pdf',
-        xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        xls: 'application/vnd.ms-excel',
-        docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        doc: 'application/msword',
-      }
-      geminiBody = {
-        contents: [{
-          parts: [
-            { text: PROMPT },
-            { inline_data: { mime_type: mimeMap[ext] || 'application/octet-stream', data: base64 } },
-          ],
-        }],
-        generationConfig: { temperature: 0.1, maxOutputTokens: 8192 },
-      }
-    }
-
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${geminiKey}`,
-      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(geminiBody) },
-    )
-    if (!geminiRes.ok) {
-      const errText = await geminiRes.text()
-      throw new Error('Gemini API error: ' + errText)
-    }
-
-    const geminiData = await geminiRes.json()
-    const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '[]'
-
-    let parsed_items
-    try {
-      const cleaned = rawText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
-      parsed_items = JSON.parse(cleaned)
-    } catch {
-      throw new Error('Failed to parse Gemini response as JSON: ' + rawText.slice(0, 200))
-    }
-
-    // Update quotations table
-    const { error: updateError } = await supabase
-      .from('quotations')
-      .update({ parsed_items, status: 'analyzed' })
-      .eq('id', quotation_id)
-    if (updateError) throw new Error('DB update failed: ' + updateError.message)
-
-    return new Response(JSON.stringify({ parsed_items }), {
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-    })
-  } catch (err) {
-    // Mark as error in DB if we have the ID
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-    })
+    const body = await req.json()
+    quotation_id = body.quotation_id
+    storage_path = body.storage_path
+    file_name = body.file_name
+  } catch {
+    return fail('Invalid JSON body', 400)
   }
+
+  if (!quotation_id) return fail('quotation_id is required', 400)
+
+  // Download from Supabase Storage
+  const { data: fileData, error: dlError } = await supabase.storage
+    .from('quotations')
+    .download(storage_path)
+  if (dlError) return fail('Storage download failed: ' + dlError.message)
+
+  const ext = (file_name || storage_path || '').split('.').pop()?.toLowerCase() || ''
+  const mimeMap: Record<string, string> = {
+    pdf:  'application/pdf',
+    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    xls:  'application/vnd.ms-excel',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    doc:  'application/msword',
+    jpg:  'image/jpeg',
+    jpeg: 'image/jpeg',
+    png:  'image/png',
+  }
+  const mimeType = mimeMap[ext] || 'application/octet-stream'
+
+  let base64: string
+  try {
+    const buf = await fileData.arrayBuffer()
+    base64 = toBase64(buf)
+  } catch (e) {
+    return fail('Failed to read file: ' + String(e))
+  }
+
+  const geminiBody = {
+    contents: [{
+      parts: [
+        { text: PROMPT },
+        { inline_data: { mime_type: mimeType, data: base64 } },
+      ],
+    }],
+    generationConfig: { temperature: 0.1, maxOutputTokens: 8192 },
+  }
+
+  const geminiRes = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${geminiKey}`,
+    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(geminiBody) },
+  )
+
+  if (!geminiRes.ok) {
+    const errText = await geminiRes.text()
+    return fail(`Gemini API error (${geminiRes.status}): ${errText}`)
+  }
+
+  const geminiData = await geminiRes.json()
+  const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || ''
+
+  if (!rawText) return fail('Gemini returned empty response. Check if the file is readable.')
+
+  let parsed_items: object[]
+  try {
+    const cleaned = rawText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    parsed_items = JSON.parse(cleaned)
+    if (!Array.isArray(parsed_items)) parsed_items = [parsed_items]
+  } catch {
+    return fail('Gemini did not return valid JSON. Raw: ' + rawText.slice(0, 300))
+  }
+
+  const { error: updateError } = await supabase
+    .from('quotations')
+    .update({ parsed_items, status: 'analyzed' })
+    .eq('id', quotation_id)
+  if (updateError) return fail('DB update failed: ' + updateError.message)
+
+  return ok({ parsed_items })
 })
