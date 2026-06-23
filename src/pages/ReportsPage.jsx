@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { GUEST_MATERIALS, GUEST_QUOTATION } from '../lib/guestData'
 import { FileText, Loader, ChevronDown, ChevronUp, Zap } from 'lucide-react'
 
 const INDICATOR = {
@@ -46,7 +47,7 @@ function summarizeCounts(parsedItems, materials) {
   return counts
 }
 
-export default function ReportsPage() {
+export default function ReportsPage({ guestMode }) {
   const [quotations, setQuotations] = useState([])
   const [materials, setMaterials] = useState([])
   const [loading, setLoading] = useState(true)
@@ -54,6 +55,13 @@ export default function ReportsPage() {
   const [analyzing, setAnalyzing] = useState(null)
 
   useEffect(() => {
+    if (guestMode) {
+      setQuotations([GUEST_QUOTATION])
+      setMaterials(GUEST_MATERIALS)
+      setExpanded(GUEST_QUOTATION.id)
+      setLoading(false)
+      return
+    }
     Promise.all([
       supabase.from('quotations').select('*').order('upload_date', { ascending: false }),
       supabase.from('materials').select('id,name,spec,ref_price,category'),
@@ -62,7 +70,7 @@ export default function ReportsPage() {
       if (!mRes.error) setMaterials(mRes.data || [])
       setLoading(false)
     })
-  }, [])
+  }, [guestMode])
 
   async function handleAnalyze(q) {
     setAnalyzing(q.id)
@@ -132,7 +140,7 @@ export default function ReportsPage() {
                       ))}
                     </div>
                   )}
-                  {q.status === 'pending' && (
+                  {q.status === 'pending' && !guestMode && (
                     <button
                       onClick={() => handleAnalyze(q)}
                       disabled={!!analyzing}

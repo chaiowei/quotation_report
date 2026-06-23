@@ -1,10 +1,31 @@
 import { useState, useRef } from 'react'
-import { Upload, FileText, X, Loader, CheckCircle, AlertCircle } from 'lucide-react'
+import { Upload, FileText, X, Loader, CheckCircle, AlertCircle, Lock } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { useNavigate } from 'react-router-dom'
 
 const ACCEPTED = '.pdf,.xlsx,.xls,.docx,.doc,.jpg,.jpeg,.png'
 
-export default function UploadPage({ session }) {
+export default function UploadPage({ session, guestMode }) {
+  const navigate = useNavigate()
+  if (guestMode) return (
+    <div className="max-w-2xl mx-auto space-y-6">
+      <div>
+        <h2 className="text-xl font-bold text-slate-800">上傳報價單</h2>
+        <p className="text-slate-500 text-sm mt-1">支援 PDF、Excel、Word、JPG/PNG</p>
+      </div>
+      <div className="bg-white rounded-xl border border-slate-200 p-16 text-center">
+        <Lock size={36} className="mx-auto text-slate-300 mb-4" />
+        <p className="font-medium text-slate-600">上傳功能需要登入正式帳號</p>
+        <p className="text-sm text-slate-400 mt-1 mb-5">訪客模式下無法儲存檔案</p>
+        <button
+          onClick={() => navigate('/login')}
+          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+        >
+          前往登入
+        </button>
+      </div>
+    </div>
+  )
   const [files, setFiles] = useState([])
   const [dragging, setDragging] = useState(false)
   const [uploading, setUploading] = useState(false)

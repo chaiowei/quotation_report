@@ -1,4 +1,4 @@
-import { Upload, Database, FileText, TrendingUp } from 'lucide-react'
+import { Upload, Database, FileText, TrendingUp, Eye } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 const INDICATORS = [
@@ -10,15 +10,27 @@ const INDICATORS = [
   { color: '⚪', label: '主檔無此料', desc: '新品項' },
 ]
 
-export default function DashboardPage() {
+export default function DashboardPage({ guestMode }) {
   const navigate = useNavigate()
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
         <h2 className="text-xl font-bold text-slate-800">總覽</h2>
-        <p className="text-slate-500 text-sm mt-1">工程報價比對分析系統 v5</p>
+        <p className="text-slate-500 text-sm mt-1">
+          {guestMode ? '訪客試用模式 — 以下為展示資料' : '工程報價比對分析系統 v5'}
+        </p>
       </div>
+
+      {guestMode && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+          <Eye size={18} className="text-amber-500 shrink-0 mt-0.5" />
+          <div className="text-sm text-amber-700">
+            <div className="font-medium mb-1">你正在使用訪客試用模式</div>
+            <div className="text-amber-600">可瀏覽主檔料料庫（20 筆展示材料）與一份示範比對報告。上傳功能及資料修改須登入正式帳號。</div>
+          </div>
+        </div>
+      )}
 
       {/* Quick actions */}
       <div className="grid grid-cols-3 gap-4">

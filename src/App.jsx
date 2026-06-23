@@ -8,14 +8,15 @@ import UploadPage from './pages/UploadPage'
 import MaterialsPage from './pages/MaterialsPage'
 import ReportsPage from './pages/ReportsPage'
 
-function ProtectedRoute({ session, children }) {
-  if (!session) return <Navigate to="/login" replace />
+function ProtectedRoute({ session, guestMode, children }) {
+  if (!session && !guestMode) return <Navigate to="/login" replace />
   return children
 }
 
 export default function App() {
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [guestMode, setGuestMode] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -24,6 +25,7 @@ export default function App() {
     })
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
+      if (session) setGuestMode(false)
     })
     return () => subscription.unsubscribe()
   }, [])
@@ -38,16 +40,16 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage session={session} />} />
+      <Route path="/login" element={<LoginPage session={session} onGuest={() => setGuestMode(true)} />} />
       <Route path="/" element={
-        <ProtectedRoute session={session}>
-          <Layout session={session} />
+        <ProtectedRoute session={session} guestMode={guestMode}>
+          <Layout session={session} guestMode={guestMode} onExitGuest={() => setGuestMode(false)} />
         </ProtectedRoute>
       }>
-        <Route index element={<DashboardPage />} />
-        <Route path="upload" element={<UploadPage session={session} />} />
-        <Route path="materials" element={<MaterialsPage session={session} />} />
-        <Route path="reports" element={<ReportsPage />} />
+        <Route index element={<DashboardPage guestMode={guestMode} />} />
+        <Route path="upload" element={<UploadPage session={session} guestMode={guestMode} />} />
+        <Route path="materials" element={<MaterialsPage session={session} guestMode={guestMode} />} />
+        <Route path="reports" element={<ReportsPage guestMode={guestMode} />} />
       </Route>
     </Routes>
   )

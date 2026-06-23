@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
+import { GUEST_MATERIALS } from '../lib/guestData'
 import { Plus, Search, Loader, Pencil, Trash2, Download, Upload as UploadIcon, X, Check } from 'lucide-react'
 
 const CATEGORIES = ['配管', '儀電', '土木', '鋼構', '共用', '工費']
 const EMPTY_FORM = { category: '配管', name: '', spec: '', unit: 'EA', ref_price: '', supplier: '' }
 
-export default function MaterialsPage({ session }) {
+export default function MaterialsPage({ session, guestMode }) {
   const [materials, setMaterials] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -16,10 +17,15 @@ export default function MaterialsPage({ session }) {
   const [editId, setEditId] = useState(null)
   const fileRef = useRef()
 
-  useEffect(() => { fetchMaterials() }, [])
+  useEffect(() => { fetchMaterials() }, [guestMode])
 
   async function fetchMaterials() {
     setLoading(true)
+    if (guestMode) {
+      setMaterials(GUEST_MATERIALS)
+      setLoading(false)
+      return
+    }
     const { data, error } = await supabase.from('materials').select('*').order('category').order('name')
     if (!error) setMaterials(data || [])
     setLoading(false)
@@ -118,15 +124,19 @@ export default function MaterialsPage({ session }) {
           <p className="text-slate-500 text-sm mt-1">管理材料基準價格與規格（{materials.length} 筆）</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => fileRef.current.click()} className="flex items-center gap-2 px-3 py-2 border border-slate-200 hover:bg-slate-50 rounded-lg text-sm transition-colors">
-            <UploadIcon size={14} /> 匯入 CSV
-          </button>
+          {!guestMode && (
+            <button onClick={() => fileRef.current.click()} className="flex items-center gap-2 px-3 py-2 border border-slate-200 hover:bg-slate-50 rounded-lg text-sm transition-colors">
+              <UploadIcon size={14} /> 匯入 CSV
+            </button>
+          )}
           <button onClick={exportCSV} className="flex items-center gap-2 px-3 py-2 border border-slate-200 hover:bg-slate-50 rounded-lg text-sm transition-colors">
             <Download size={14} /> 匯出 CSV
           </button>
-          <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
-            <Plus size={16} /> 新增材料
-          </button>
+          {!guestMode && (
+            <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
+              <Plus size={16} /> 新增材料
+            </button>
+          )}
         </div>
       </div>
 
@@ -171,10 +181,12 @@ export default function MaterialsPage({ session }) {
                 <td className="px-4 py-3 text-slate-500">{m.supplier}</td>
                 <td className="px-4 py-3 text-slate-500">{m.updated_at?.slice(0, 10)}</td>
                 <td className="px-4 py-3">
-                  <div className="flex gap-2">
-                    <button onClick={() => openEdit(m)} className="text-slate-400 hover:text-blue-500 transition-colors"><Pencil size={14} /></button>
-                    <button onClick={() => handleDelete(m.id)} className="text-slate-400 hover:text-red-500 transition-colors"><Trash2 size={14} /></button>
-                  </div>
+                  {!guestMode && (
+                    <div className="flex gap-2">
+                      <button onClick={() => openEdit(m)} className="text-slate-400 hover:text-blue-500 transition-colors"><Pencil size={14} /></button>
+                      <button onClick={() => handleDelete(m.id)} className="text-slate-400 hover:text-red-500 transition-colors"><Trash2 size={14} /></button>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}

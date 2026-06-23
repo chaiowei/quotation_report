@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
-export default function LoginPage({ session }) {
+export default function LoginPage({ session, onGuest }) {
   const navigate = useNavigate()
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
@@ -85,7 +85,16 @@ export default function LoginPage({ session }) {
             {mode === 'login' ? '還沒有帳號？點此註冊' : '已有帳號？點此登入'}
           </button>
         </div>
-        <p className="text-xs text-slate-400 text-center mt-4">僅限授權團隊成員使用</p>
+        <div className="mt-6 pt-5 border-t border-slate-100 text-center">
+          <p className="text-xs text-slate-400 mb-3">想先看看系統功能？</p>
+          <button
+            onClick={onGuest}
+            className="w-full py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-sm transition-colors"
+          >
+            訪客試用模式（展示資料）
+          </button>
+        </div>
+        <p className="text-xs text-slate-400 text-center mt-4">正式使用須為授權團隊成員</p>
       </div>
     </div>
   )
