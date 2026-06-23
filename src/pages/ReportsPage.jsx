@@ -4,18 +4,18 @@ import { GUEST_MATERIALS, GUEST_QUOTATION } from '../lib/guestData'
 import { FileText, Loader, ChevronDown, ChevronUp, Zap, BarChart3 } from 'lucide-react'
 
 const INDICATOR = {
-  green:  { emoji: '🟢', label: '優秀', textClass: 'text-emerald-700', bgClass: 'bg-emerald-50',  badgeCls: 'bg-emerald-100 text-emerald-700' },
-  yellow: { emoji: '🟡', label: '合理', textClass: 'text-yellow-700', bgClass: 'bg-yellow-50/60', badgeCls: 'bg-yellow-100 text-yellow-700' },
-  orange: { emoji: '🟠', label: '略高', textClass: 'text-orange-700', bgClass: 'bg-orange-50/60', badgeCls: 'bg-orange-100 text-orange-700' },
-  red:    { emoji: '🔴', label: '偏貴', textClass: 'text-red-700',    bgClass: 'bg-red-50/60',    badgeCls: 'bg-red-100 text-red-700' },
-  purple: { emoji: '🟣', label: '無基準',textClass: 'text-purple-700',bgClass: 'bg-purple-50/40', badgeCls: 'bg-purple-100 text-purple-700' },
-  white:  { emoji: '⚪', label: '未比對',textClass: 'text-slate-500', bgClass: 'bg-slate-50/60',  badgeCls: 'bg-slate-100 text-slate-600' },
+  green:  { emoji: '🟢', label: '優秀',  textColor: '#059669', rowBg: '#f0fdf4', badgeBg: '#d1fae5', badgeText: '#065f46' },
+  yellow: { emoji: '🟡', label: '合理',  textColor: '#a16207', rowBg: '#fefce8', badgeBg: '#fef9c3', badgeText: '#713f12' },
+  orange: { emoji: '🟠', label: '略高',  textColor: '#c2410c', rowBg: '#fff7ed', badgeBg: '#fed7aa', badgeText: '#9a3412' },
+  red:    { emoji: '🔴', label: '偏貴',  textColor: '#dc2626', rowBg: '#fff1f2', badgeBg: '#fecdd3', badgeText: '#9f1239' },
+  purple: { emoji: '🟣', label: '無基準', textColor: '#7c3aed', rowBg: '#faf5ff', badgeBg: '#e9d5ff', badgeText: '#5b21b6' },
+  white:  { emoji: '⚪', label: '未比對', textColor: '#64748b', rowBg: '#f8fafc', badgeBg: '#e2e8f0', badgeText: '#475569' },
 }
 
 const STATUS = {
-  pending:  { label: '待解析', cls: 'bg-amber-100 text-amber-700' },
-  analyzed: { label: '已解析', cls: 'bg-emerald-100 text-emerald-700' },
-  error:    { label: '解析失敗', cls: 'bg-red-100 text-red-700' },
+  pending:  { label: '待解析', bg: '#fff9e6', text: '#92400e', border: '#fde68a' },
+  analyzed: { label: '已解析', bg: '#ecfdf5', text: '#065f46', border: '#a7f3d0' },
+  error:    { label: '解析失敗', bg: '#fff1f2', text: '#9f1239', border: '#fecdd3' },
 }
 
 function getIndicator(quotedPrice, refPrice) {
@@ -82,35 +82,38 @@ export default function ReportsPage({ guestMode }) {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-5">
+    <div className="max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">比對報告</h1>
-        <p className="text-slate-500 text-sm mt-1">AI 解析後的燈號比對結果</p>
+        <h1 className="text-3xl font-bold" style={{ color: '#082a28' }}>比對報告</h1>
+        <p className="text-base text-slate-500 mt-1.5">AI 解析後的燈號比對結果</p>
       </div>
 
       {/* Legend */}
-      <div className="flex gap-3 flex-wrap">
-        {Object.entries(INDICATOR).map(([k, { emoji, label }]) => (
-          <span key={k} className="flex items-center gap-1.5 text-xs text-slate-500 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg shadow-sm">
-            {emoji} <span className="font-medium">{label}</span>
+      <div className="flex gap-2 flex-wrap">
+        {Object.entries(INDICATOR).map(([k, { emoji, label, badgeBg, badgeText }]) => (
+          <span key={k} className="flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-xl border"
+            style={{ background: badgeBg, color: badgeText, borderColor: badgeBg }}>
+            <span className="text-base">{emoji}</span> {label}
           </span>
         ))}
       </div>
 
       {loading ? (
-        <div className="py-20 text-center text-slate-400">
-          <Loader size={26} className="animate-spin mx-auto mb-3" />載入中...
+        <div className="py-24 text-center text-slate-400">
+          <Loader size={28} className="animate-spin mx-auto mb-3" style={{ color: '#0ABAB5' }} />
+          <span className="text-[15px]">載入中...</span>
         </div>
       ) : quotations.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm py-20 text-center">
-          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <BarChart3 size={28} className="text-slate-400" />
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm py-24 text-center">
+          <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-5"
+            style={{ background: '#e0f7f6' }}>
+            <BarChart3 size={34} style={{ color: '#0ABAB5' }} />
           </div>
-          <p className="font-semibold text-slate-600">尚無報告</p>
-          <p className="text-slate-400 text-sm mt-1">先到「上傳報價單」頁面上傳檔案</p>
+          <p className="text-lg font-semibold text-slate-600">尚無報告</p>
+          <p className="text-[15px] text-slate-400 mt-1.5">先到「上傳報價單」頁面上傳檔案</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {quotations.map(q => {
             const badge = STATUS[q.status] || STATUS.pending
             const counts = summarizeCounts(q.parsed_items, materials)
@@ -120,75 +123,85 @@ export default function ReportsPage({ guestMode }) {
             return (
               <div key={q.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 {/* Card header */}
-                <div className="flex items-center gap-3 px-5 py-4">
-                  <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-violet-600 rounded-xl flex items-center justify-center shrink-0">
-                    <FileText size={16} className="text-white" />
+                <div className="flex items-center gap-4 px-6 py-5">
+                  <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-md"
+                    style={{ background: 'linear-gradient(135deg, #0ABAB5 0%, #068884 100%)' }}>
+                    <FileText size={18} className="text-white" />
                   </div>
                   <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setExpanded(isOpen ? null : q.id)}>
-                    <div className="font-semibold text-slate-800 truncate">{q.project_name}</div>
-                    <div className="text-xs text-slate-400 mt-0.5">{q.vendor || '未填廠商'} · {q.file_name} · {q.upload_date?.slice(0, 10)}</div>
+                    <div className="text-base font-semibold text-slate-800 truncate">{q.project_name}</div>
+                    <div className="text-sm text-slate-400 mt-0.5 truncate">{q.vendor || '未填廠商'} · {q.file_name} · {q.upload_date?.slice(0, 10)}</div>
                   </div>
-                  <span className={`text-xs px-2.5 py-1 rounded-lg font-semibold shrink-0 ${badge.cls}`}>{badge.label}</span>
+                  <span className="text-sm font-semibold px-3 py-1.5 rounded-lg shrink-0 border"
+                    style={{ background: badge.bg, color: badge.text, borderColor: badge.border }}>
+                    {badge.label}
+                  </span>
                   {counts && (
-                    <div className="flex gap-1 text-sm shrink-0">
+                    <div className="flex gap-1.5 shrink-0">
                       {Object.entries(counts).filter(([, v]) => v > 0).map(([k, v]) => (
-                        <span key={k} className="flex items-center gap-0.5">{INDICATOR[k].emoji}<span className="text-xs text-slate-500">{v}</span></span>
+                        <span key={k} className="flex items-center gap-0.5">
+                          <span className="text-base">{INDICATOR[k].emoji}</span>
+                          <span className="text-sm text-slate-500 font-medium">{v}</span>
+                        </span>
                       ))}
                     </div>
                   )}
                   {q.status === 'pending' && !guestMode && (
                     <button onClick={() => handleAnalyze(q)} disabled={!!analyzing}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white rounded-lg text-xs font-semibold transition-all disabled:opacity-60 shrink-0 shadow-sm shadow-blue-500/25">
-                      {isAnalyzing ? <Loader size={12} className="animate-spin" /> : <Zap size={12} />}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-60 shrink-0 whitespace-nowrap"
+                      style={{ background: 'linear-gradient(135deg, #0ABAB5 0%, #068884 100%)', boxShadow: '0 3px 10px rgba(10,186,181,0.3)' }}>
+                      {isAnalyzing ? <Loader size={14} className="animate-spin" /> : <Zap size={14} />}
                       AI 解析
                     </button>
                   )}
-                  <button onClick={() => setExpanded(isOpen ? null : q.id)} className="text-slate-400 hover:text-slate-600 transition-colors shrink-0">
-                    {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  <button onClick={() => setExpanded(isOpen ? null : q.id)} className="text-slate-400 hover:text-slate-600 transition-colors shrink-0 p-1">
+                    {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
                 </div>
 
                 {/* Expanded */}
                 {isOpen && (
-                  <div className="border-t border-slate-100 bg-slate-50/50 px-5 py-4">
+                  <div className="border-t border-slate-100 px-6 py-5" style={{ background: '#f8fffe' }}>
                     {!q.parsed_items?.length ? (
-                      <div className="text-center py-8">
-                        <Zap size={24} className="mx-auto text-slate-300 mb-2" />
-                        <p className="text-slate-400 text-sm">
+                      <div className="text-center py-10">
+                        <Zap size={28} className="mx-auto mb-3" style={{ color: '#99e7e5' }} />
+                        <p className="text-[15px] text-slate-400">
                           {q.status === 'analyzed' ? '無解析項目' : '點擊「AI 解析」按鈕後，燈號比對結果將顯示在這裡'}
                         </p>
                       </div>
                     ) : (
                       <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
+                        <table className="w-full">
                           <thead>
-                            <tr className="text-xs text-slate-500">
+                            <tr className="text-sm font-semibold text-slate-500 border-b border-slate-200">
                               <th className="text-left pb-3 pr-3 w-8"></th>
-                              <th className="text-left pb-3 pr-4 font-semibold uppercase tracking-wide">規格</th>
-                              <th className="text-left pb-3 pr-4 font-semibold uppercase tracking-wide">單位</th>
-                              <th className="text-right pb-3 pr-4 font-semibold uppercase tracking-wide">數量</th>
-                              <th className="text-right pb-3 pr-4 font-semibold uppercase tracking-wide">報價單價</th>
-                              <th className="text-right pb-3 pr-4 font-semibold uppercase tracking-wide">基準價</th>
-                              <th className="text-right pb-3 font-semibold uppercase tracking-wide">差異%</th>
+                              <th className="text-left pb-3 pr-4">規格</th>
+                              <th className="text-left pb-3 pr-4">單位</th>
+                              <th className="text-right pb-3 pr-4">數量</th>
+                              <th className="text-right pb-3 pr-4">報價單價</th>
+                              <th className="text-right pb-3 pr-4">基準價</th>
+                              <th className="text-right pb-3">差異 %</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-slate-100">
+                          <tbody>
                             {q.parsed_items.map((item, i) => {
                               const mat = matchMaterial(item, materials)
                               const ind = getIndicator(item.price, mat?.ref_price)
-                              const { emoji, textClass } = INDICATOR[ind]
+                              const { emoji, textColor, rowBg } = INDICATOR[ind]
                               const pct = mat?.ref_price && item.price
                                 ? (((item.price - mat.ref_price) / mat.ref_price) * 100).toFixed(1)
                                 : null
                               return (
-                                <tr key={i} className="hover:bg-white/80 transition-colors">
-                                  <td className="py-2.5 pr-3 text-lg leading-none">{emoji}</td>
-                                  <td className={`py-2.5 pr-4 font-medium ${textClass}`}>{item.spec || item.name}</td>
-                                  <td className="py-2.5 pr-4 text-slate-500">{item.unit}</td>
-                                  <td className="py-2.5 pr-4 text-right text-slate-600">{item.qty}</td>
-                                  <td className="py-2.5 pr-4 text-right font-mono font-semibold text-slate-800">{item.price?.toLocaleString()}</td>
-                                  <td className="py-2.5 pr-4 text-right font-mono text-slate-400">{mat?.ref_price?.toLocaleString() ?? '—'}</td>
-                                  <td className={`py-2.5 text-right font-mono font-semibold text-xs ${pct > 0 ? 'text-red-500' : pct < 0 ? 'text-emerald-600' : 'text-slate-400'}`}>
+                                <tr key={i} className="border-b border-slate-50 last:border-0 transition-colors"
+                                  onMouseEnter={e => e.currentTarget.style.background = rowBg}
+                                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                  <td className="py-3.5 pr-3 text-lg leading-none">{emoji}</td>
+                                  <td className="py-3.5 pr-4 text-[15px] font-semibold" style={{ color: textColor }}>{item.spec || item.name}</td>
+                                  <td className="py-3.5 pr-4 text-[15px] text-slate-500">{item.unit}</td>
+                                  <td className="py-3.5 pr-4 text-right text-[15px] text-slate-600">{item.qty}</td>
+                                  <td className="py-3.5 pr-4 text-right font-mono text-[15px] font-bold text-slate-800">{item.price?.toLocaleString()}</td>
+                                  <td className="py-3.5 pr-4 text-right font-mono text-[15px] text-slate-400">{mat?.ref_price?.toLocaleString() ?? '—'}</td>
+                                  <td className={`py-3.5 text-right font-mono text-sm font-bold ${pct > 0 ? 'text-red-500' : pct < 0 ? 'text-emerald-600' : 'text-slate-400'}`}>
                                     {pct !== null ? `${pct > 0 ? '+' : ''}${pct}%` : '—'}
                                   </td>
                                 </tr>

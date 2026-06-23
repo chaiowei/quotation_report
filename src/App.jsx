@@ -32,8 +32,14 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="text-slate-500 text-lg">載入中...</div>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#f0fdfa' }}>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"
+            style={{ background: 'linear-gradient(135deg, #0ABAB5 0%, #068884 100%)' }}>
+            <span className="text-white text-2xl font-bold">P</span>
+          </div>
+          <div className="text-lg font-medium" style={{ color: '#0ABAB5' }}>載入中...</div>
+        </div>
       </div>
     )
   }

@@ -3,13 +3,15 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  background-color: #f1f5f9;
+  font-family: 'Inter', 'Noto Sans TC', 'Segoe UI', system-ui, sans-serif;
+  background-color: #f0fdfa;
   color: #0f172a;
   -webkit-font-smoothing: antialiased;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar-thumb { background: #99f6e4; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2dd4bf; }
