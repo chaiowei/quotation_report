@@ -45,7 +45,7 @@ export default function App() {
         </ProtectedRoute>
       }>
         <Route index element={<DashboardPage />} />
-        <Route path="upload" element={<UploadPage />} />
+        <Route path="upload" element={<UploadPage session={session} />} />
         <Route path="materials" element={<MaterialsPage />} />
         <Route path="reports" element={<ReportsPage />} />
       </Route>

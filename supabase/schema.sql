@@ -27,6 +27,7 @@ create table if not exists public.quotations (
   vendor        text,
   upload_date   timestamptz default now(),
   file_name     text,
+  storage_path  text,
   parsed_items  jsonb,
   status        text default 'pending' check (status in ('pending','analyzed','error')),
   created_by    uuid references auth.users(id),
@@ -74,3 +75,21 @@ create policy "corrections_insert" on public.corrections for insert with check (
 create index if not exists idx_materials_category on public.materials(category);
 create index if not exists idx_quotations_created_by on public.quotations(created_by);
 create index if not exists idx_quotations_upload_date on public.quotations(upload_date desc);
+
+-- ============================================================
+-- 4. Storage Bucket（報價單檔案儲存）
+-- ============================================================
+insert into storage.buckets (id, name, public)
+values ('quotations', 'quotations', false)
+on conflict (id) do nothing;
+
+-- Storage RLS：登入者可上傳/讀取自己的檔案
+create policy "storage_select" on storage.objects for select using (
+  bucket_id = 'quotations' and auth.role() = 'authenticated'
+);
+create policy "storage_insert" on storage.objects for insert with check (
+  bucket_id = 'quotations' and auth.role() = 'authenticated'
+);
+create policy "storage_delete" on storage.objects for delete using (
+  bucket_id = 'quotations' and auth.uid()::text = (storage.foldername(name))[1]
+);
