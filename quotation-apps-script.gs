@@ -18,7 +18,7 @@
 
 // ── 修改這裡 ──────────────────────────────────────
 const CONFIG = {
-  ADMIN_USER:      '123',
+  ADMIN_USER:      'AAA',
   ADMIN_PW:        '123',
   DRIVE_FOLDER_ID: '1XOQ5-lT6skQuzJwwarq2ppWdg0h-8DQK',
   MASTER_FILE_NAME: 'master_list.json',
