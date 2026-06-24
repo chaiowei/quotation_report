@@ -168,27 +168,42 @@ function handleCallGemini(body) {
     ? [{ text: prompt }, { inline_data: { mime_type: mimeType, data: base64Data } }]
     : [{ text: prompt }];
 
+  const payload = JSON.stringify({ contents: [{ parts }] });
   const fetchOptions = {
     method: 'post',
     contentType: 'application/json',
-    payload: JSON.stringify({ contents: [{ parts }] }),
+    payload: payload,
     muteHttpExceptions: true
   };
-  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${key}`;
 
-  // 429/503 自動重試，最多 3 次，間隔 3s / 6s
-  let response, code;
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    response = UrlFetchApp.fetch(url, fetchOptions);
-    code = response.getResponseCode();
-    if (code !== 429 && code !== 503) break;
-    if (attempt < 3) Utilities.sleep(attempt * 3000);
+  // 模型優先順序：2.5 Flash → 1.5 Flash → 2.0 Flash
+  const MODELS = [
+    'gemini-2.5-flash',
+    'gemini-1.5-flash',
+    'gemini-2.0-flash'
+  ];
+
+  let response, code, usedModel;
+  for (let m = 0; m < MODELS.length; m++) {
+    usedModel = MODELS[m];
+    const url = `https://generativelanguage.googleapis.com/v1/models/${usedModel}:generateContent?key=${key}`;
+    // 每個模型最多重試 2 次
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      response = UrlFetchApp.fetch(url, fetchOptions);
+      code = response.getResponseCode();
+      if (code !== 429 && code !== 503) break;
+      if (attempt < 2) Utilities.sleep(3000);
+    }
+    // 200 或 400/401/403（這些不是過載，換模型也沒用）就停止
+    if (code === 200 || code === 400 || code === 401 || code === 403) break;
+    // 仍是 429/503 → 試下一個模型
+    if (m < MODELS.length - 1) Utilities.sleep(2000);
   }
 
   if (code !== 200) {
     const errText = response.getContentText();
-    if (code === 429) return { ok: false, error: 'Gemini 請求次數超限（429）：免費版每分鐘上限 10 次、每日 250 次。請等 1 分鐘後重試，或升級 Google Cloud 配額。' };
-    if (code === 503) return { ok: false, error: 'Gemini 服務暫時過載（503），請等 1 分鐘後重試。' };
+    if (code === 429) return { ok: false, error: 'Gemini 請求次數超限（429）：免費版每分鐘上限 10 次、每日 250 次。請稍後再試或升級配額。' };
+    if (code === 503) return { ok: false, error: 'Gemini 所有模型目前過載（503），這是 Google 暫時性問題，請等 5 分鐘後重試。' };
     return { ok: false, error: `Gemini API 錯誤 ${code}: ${errText.slice(0, 200)}` };
   }
  
