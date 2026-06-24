@@ -195,7 +195,18 @@ function handleCallGemini(body) {
   }
  
   const result = JSON.parse(response.getContentText());
-  const text = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const candidate = result.candidates?.[0];
+
+  // 安全過濾或 token 超限
+  if (!candidate || !candidate.content) {
+    const reason = candidate?.finishReason || 'UNKNOWN';
+    if (reason === 'SAFETY') return { ok: false, error: '內容被 Gemini 安全過濾攔截，請確認上傳檔案內容合規' };
+    if (reason === 'MAX_TOKENS') return { ok: false, error: 'Gemini Token 超限，報價單或主檔資料過大，請縮短內容再試' };
+    return { ok: false, error: `Gemini 未回傳內容（${reason}），請重試` };
+  }
+
+  const text = candidate.content.parts?.[0]?.text || '';
+  if (!text.trim()) return { ok: false, error: 'Gemini 回傳空白內容，請重試' };
   return { ok: true, text };
 }
  

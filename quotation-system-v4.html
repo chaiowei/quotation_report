@@ -1403,7 +1403,8 @@ async function doAnalyze(){
       xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       xls:'application/vnd.ms-excel',
       docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      doc:'application/msword'
+      doc:'application/msword',
+      md:'text/markdown'
     };
     const mime=mimeMap[ext]||'application/octet-stream';
     const isMedia=['jpg','jpeg','png','heic','webp','pdf'].includes(ext);
@@ -1419,7 +1420,10 @@ async function doAnalyze(){
       ? ['piping','electrical','civil','structural','common','labor']
       : CATS[selectedCat].related;
     const filteredMaster=masterData.filter(r=>!r._del&&(!r.category||relatedCats.includes(r.category)));
-    const masterJson=JSON.stringify(filteredMaster.map(r=>({spec:r.spec,unit:r.unit,price:r.price,keywords:r.keywords})));
+    const masterArr=filteredMaster.map(r=>({spec:r.spec,unit:r.unit,price:r.price,keywords:r.keywords}));
+    // 主檔超過 500 筆時截取前 500，避免 prompt 超過 token 限制
+    const masterJson=JSON.stringify(masterArr.length>500?masterArr.slice(0,500):masterArr);
+    if(masterArr.length>500) toast(`主檔共 ${masterArr.length} 筆，本次比對取前 500 筆（該類別）`,'info',4000);
 
     // 撈修正紀錄（最多 30 筆，same category + common）
     let corrText='';
@@ -1456,17 +1460,18 @@ Return ONLY a single valid JSON (no markdown):
 }
 FLAG: normal=±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis=no match, labor_package=labor/package`;
 
-    let parts;
-    if(isMedia) parts=[{text:prompt},{inline_data:{mime_type:mime,data:b64}}];
-    else parts=[{text:prompt+'\n\n['+ext+' file]'}];
-
     const finalPrompt=mdText?prompt+'\n\n[Markdown 報價單內容如下]\n'+mdText:prompt;
     const geminiResp=await api('callGemini',{prompt:finalPrompt,base64Data:isMedia?b64:null,mimeType:isMedia?mime:null});
     const raw=geminiResp.text||'';
-    const clean=raw.replace(/```json|```/g,'').trim();
-    const parsed=JSON.parse(clean);
+    if(!raw.trim()) throw new Error('AI 未回傳任何內容，請重試');
+    // 去掉 code block 標記後，用 regex 抽取第一個完整 JSON 物件（避免 Gemini 夾帶說明文字）
+    const stripped=raw.replace(/```[\w]*\n?/g,'').trim();
+    const jsonMatch=stripped.match(/\{[\s\S]*\}/);
+    if(!jsonMatch) throw new Error('AI 回傳格式異常（找不到 JSON），請重試');
+    const parsed=JSON.parse(jsonMatch[0]);
     clearInterval(tick);
-    parsedItems=parsed.items||[];
+    parsedItems=Array.isArray(parsed.items)?parsed.items:[];
+    if(!parsedItems.length) throw new Error('AI 未解析出任何品項，請確認檔案含有報價明細，或改用 PDF 格式重試');
     curRptId='RPT-'+today.replace(/-/g,'')+'-'+Math.floor(Math.random()*900+100);
     window._aiVendor=parsed.vendor||'—';
     window._aiProject=parsed.project||'—';
@@ -1488,7 +1493,8 @@ FLAG: normal=±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis=n
     document.getElementById('pnl-ld').style.display='none';
     document.getElementById('pnl-up').style.display='';
     setStep(1);
-    toast(e.message.includes('JSON')?'AI 回傳格式異常，請重試':'錯誤：'+e.message,'err',5000);
+    const msg=e.message||'未知錯誤';
+    toast(msg.length>80?msg.slice(0,80)+'…':msg,'err',7000);
   }
 }
 function f2b64(file){return new Promise((ok,fail)=>{const r=new FileReader();r.onload=()=>ok(r.result.split(',')[1]);r.onerror=fail;r.readAsDataURL(file);});}
