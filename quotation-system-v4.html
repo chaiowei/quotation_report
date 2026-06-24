@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Noto+Sans+TC:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root{
   /* ── Tiffany Blue Light Theme ── */
@@ -953,7 +954,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
     <h3>✏️ 修正品項資料</h3>
     <p style="font-size:13px;color:var(--t2);margin-bottom:1rem">修改後按「套用並更新」— 報告立即更新。如同時填入「AI 說明」欄位，還會存入 Drive 供下次 AI 學習。</p>
 
-    <div class="corr-row"><span class="corr-label">AI 讀取</span><div class="corr-val" id="corr-ai" style="color:var(--rd);font-size:12px">—</div></div>
+    <div class="corr-row"><span class="corr-label">AI 讀取</span><div class="corr-val" id="corr-ai" style="color:var(--rd);font-size:12px;background:var(--bg3);border:1.5px solid var(--rim2);border-radius:6px;padding:.5rem .75rem;line-height:1.6;flex:1">—</div></div>
 
     <div style="background:var(--bg3);border-radius:var(--r);padding:1rem;margin:.75rem 0">
       <div style="font-family:var(--mono);font-size:10px;color:var(--cy);margin-bottom:.75rem;letter-spacing:.08em">修改為正確值</div>
@@ -1052,7 +1053,10 @@ async function api(action, extra={}) {
   if (!res.ok) throw new Error('HTTP ' + res.status);
   let data;
   try { data = await res.json(); } catch(_) { throw new Error('回應格式錯誤'); }
-  if (!data.ok) throw new Error(data.error || 'API 錯誤');
+  if (!data.ok) {
+    if(data.error==='未授權'){authToken='';sessionStorage.removeItem('tok');showAdminUI(false);setTimeout(openLogin,300);throw new Error('登入已過期，請重新登入');}
+    throw new Error(data.error || 'API 錯誤');
+  }
   return data;
 }
 
@@ -1362,9 +1366,16 @@ async function doAnalyze(){
   try {
     const b64=await f2b64(curFile);
     const ext=curFile.name.split('.').pop().toLowerCase();
-    const mimeMap={pdf:'application/pdf',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',heic:'image/heic',webp:'image/webp'};
-    const mime=mimeMap[ext]||'application/pdf';
-    const isMedia=['jpg','jpeg','png','heic','webp','pdf'].includes(ext);
+    const mimeMap={
+      pdf:'application/pdf',
+      jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',heic:'image/heic',webp:'image/webp',
+      xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      xls:'application/vnd.ms-excel',
+      docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      doc:'application/msword'
+    };
+    const mime=mimeMap[ext]||'application/octet-stream';
+    const isMedia=['jpg','jpeg','png','heic','webp','pdf','xlsx','xls','docx','doc'].includes(ext);
     let mdText='';
     if(ext==='md') mdText=await new Promise(ok=>{const r=new FileReader();r.onload=e=>ok(e.target.result);r.readAsText(curFile,'utf-8');});
     const today=new Date().toISOString().slice(0,10);
@@ -1595,7 +1606,7 @@ function buildRptHTML(){
       <td id="flag-${i}" style="text-align:center"><span class="pill ${f.cls}" id="pill-${i}">${f.lbl}</span></td>
       <td style="text-align:center;padding:0 6px">
         <button title="修改此列資料並回報 AI 錯誤" onclick="openCorr(${i})"
-          style="background:none;border:1px solid var(--rim2);border-radius:4px;cursor:pointer;font-size:12px;padding:3px 7px;color:var(--cy);transition:all .15s"
+          style="background:none;border:1px solid var(--rim2);border-radius:4px;cursor:pointer;font-size:12px;padding:6px 10px;color:var(--cy);transition:all .15s;min-height:36px;min-width:58px;touch-action:manipulation"
           onmouseover="this.style.background='var(--cyf)'" onmouseout="this.style.background='none'">✏️ 修正</button>
       </td>
     </tr>`;
@@ -1859,66 +1870,25 @@ async function submitCorrection(){
 
 
 // ═══ EXPORT ═══
-function exportPDF(){
+async function exportPDF(){
   if(!parsedItems||!parsedItems.length){toast('尚無報告資料','err');return;}
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-  const cy=[10,186,181]; // #0ABAB5 in RGB
-
-  // Header block
-  doc.setFillColor(...cy);
-  doc.rect(0,0,297,22,'F');
-  doc.setTextColor(255,255,255);
-  doc.setFontSize(16);doc.setFont('helvetica','bold');
-  doc.text('ProcureAI  報價比對報告',14,13);
-  doc.setFontSize(9);doc.setFont('helvetica','normal');
-  const hdr=`廠商: ${window._aiVendor||'—'}   專案: ${window._aiProject||'—'}   日期: ${window._aiDate||'—'}   報告ID: ${curRptId||'—'}`;
-  doc.text(hdr,14,20,{maxWidth:270});
-
-  // Items table
-  const flagMap={normal:'正常',high:'偏高',low:'偏低',pending:'待確認',no_basis:'無基準',labor_package:'工費包'};
-  const rows=parsedItems.map((it,i)=>{
-    const sub=it.subtotal!=null?it.subtotal:it.unitPrice*(it.qty??1);
-    const diff=it.masterLowestPrice&&it.qty!=null
-      ?((it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice*100).toFixed(1)+'%':'—';
-    return[i+1,it.spec||'',it.unit||'—',it.qty!=null?it.qty:'—',
-      '฿'+fmt(it.unitPrice),'฿'+fmt(sub),
-      it.masterLowestPrice?'฿'+fmt(it.masterLowestPrice):'—',
-      diff,flagMap[it.flag]||it.flag||'—'];
-  });
-
-  doc.autoTable({
-    startY:26,
-    head:[['#','品項規格','單位','數量','廠商單價','小計','主檔基準','差異%','燈號']],
-    body:rows,
-    styles:{fontSize:8,cellPadding:2,font:'helvetica',overflow:'linebreak'},
-    headStyles:{fillColor:cy,textColor:[255,255,255],fontStyle:'bold'},
-    alternateRowStyles:{fillColor:[240,253,250]},
-    columnStyles:{0:{cellWidth:8,halign:'center'},1:{cellWidth:70},2:{cellWidth:14,halign:'center'},3:{cellWidth:16,halign:'right'},4:{cellWidth:24,halign:'right'},5:{cellWidth:24,halign:'right'},6:{cellWidth:24,halign:'right'},7:{cellWidth:18,halign:'right'},8:{cellWidth:18,halign:'center'}},
-    didParseCell:d=>{
-      if(d.section==='body'&&d.column.index===8){
-        const v=d.cell.raw;
-        if(v==='偏高')d.cell.styles.textColor=[220,38,38];
-        else if(v==='偏低')d.cell.styles.textColor=[5,150,105];
-        else if(v==='待確認')d.cell.styles.textColor=[180,83,9];
-      }
-    }
-  });
-
-  // Totals footer
-  const {totalQ,totalS,canSave}=calcTotals();
-  const y=doc.lastAutoTable.finalY+6;
-  doc.setFillColor(...cy);doc.rect(0,y-2,297,10,'F');
-  doc.setTextColor(255,255,255);doc.setFontSize(9);doc.setFont('helvetica','bold');
-  doc.text(`廠商報價合計: ฿${fmt(totalQ)}   最佳基準合計: ฿${fmt(totalS)}   可節省空間: ฿${fmt(canSave)}`,14,y+5);
-
-  // Footer bar
-  doc.setFillColor(240,253,250);doc.rect(0,200,297,10,'F');
-  doc.setTextColor(100,100,100);doc.setFontSize(7);doc.setFont('helvetica','normal');
-  doc.text(`Generated by ProcureAI  ·  ${new Date().toLocaleString('zh-TW',{hour12:false})}`,14,207);
-
-  doc.save((curRptId||'report')+'.pdf');
-  toast('PDF 已匯出','ok');
+  if(!window.html2canvas){toast('PDF 函式庫載入中，請稍後再試','err',4000);return;}
+  toast('PDF 生成中，請稍候…','info',8000);
+  try{
+    const {jsPDF}=window.jspdf;
+    const el=document.getElementById('rptInner');
+    const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false,scrollX:0,scrollY:-window.scrollY});
+    const imgData=canvas.toDataURL('image/jpeg',0.92);
+    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const pageW=210,pageH=297;
+    const imgW=pageW;
+    const imgH=canvas.height*imgW/canvas.width;
+    let y=0,left=imgH;
+    pdf.addImage(imgData,'JPEG',0,y,imgW,imgH);left-=pageH;
+    while(left>0){y-=pageH;pdf.addPage();pdf.addImage(imgData,'JPEG',0,y,imgW,imgH);left-=pageH;}
+    pdf.save((curRptId||'report')+'.pdf');
+    toast('PDF 已匯出','ok');
+  }catch(e){toast('PDF 生成失敗：'+e.message,'err',5000);}
 }
 
 function expJSON(){
