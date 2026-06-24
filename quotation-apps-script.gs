@@ -164,33 +164,31 @@ function handleCallGemini(body) {
     return { ok: false, error: 'Gemini API Key 尚未設定，請在 Apps Script CONFIG.GEMINI_API_KEY 填入' };
   }
  
-  let parts;
-  if (base64Data && mimeType) {
-    parts = [
-      { text: prompt },
-      { inline_data: { mime_type: mimeType, data: base64Data } }
-    ];
-  } else {
-    parts = [{ text: prompt }];
+  const parts = (base64Data && mimeType)
+    ? [{ text: prompt }, { inline_data: { mime_type: mimeType, data: base64Data } }]
+    : [{ text: prompt }];
+
+  const fetchOptions = {
+    method: 'post',
+    contentType: 'application/json',
+    payload: JSON.stringify({ contents: [{ parts }] }),
+    muteHttpExceptions: true
+  };
+  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${key}`;
+
+  // 429/503 自動重試，最多 3 次，間隔 3s / 6s
+  let response, code;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    response = UrlFetchApp.fetch(url, fetchOptions);
+    code = response.getResponseCode();
+    if (code !== 429 && code !== 503) break;
+    if (attempt < 3) Utilities.sleep(attempt * 3000);
   }
- 
-  const payload = JSON.stringify({
-    contents: [{ parts }]
-  });
- 
-  const response = UrlFetchApp.fetch(
-    `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${key}`,
-    {
-      method: 'post',
-      contentType: 'application/json',
-      payload: payload,
-      muteHttpExceptions: true
-    }
-  );
- 
-  const code = response.getResponseCode();
+
   if (code !== 200) {
     const errText = response.getContentText();
+    if (code === 429) return { ok: false, error: 'Gemini 請求次數超限（429）：免費版每分鐘上限 10 次、每日 250 次。請等 1 分鐘後重試，或升級 Google Cloud 配額。' };
+    if (code === 503) return { ok: false, error: 'Gemini 服務暫時過載（503），請等 1 分鐘後重試。' };
     return { ok: false, error: `Gemini API 錯誤 ${code}: ${errText.slice(0, 200)}` };
   }
  
