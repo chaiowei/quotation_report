@@ -22,7 +22,7 @@ const CONFIG = {
   ADMIN_PW:        '123',
   DRIVE_FOLDER_ID: '1XOQ5-lT6skQuzJwwarq2ppWdg0h-8DQK',
   MASTER_FILE_NAME: 'master_list.json',
-  GEMINI_API_KEY:  'AIzaSyDzKb9KsNV1Z3ARRQUjZJi5F-69-g9WHMk',    // ★ 唯一還需要填的：貼上你的 Gemini API Key
+  GEMINI_API_KEY:  'YOUR_GEMINI_API_KEY_HERE',  // ★ 只在 script.google.com 裡填入，絕對不要上傳到 GitHub
 };
 // ──────────────────────────────────────────────────
  
