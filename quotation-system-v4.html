@@ -148,7 +148,9 @@ nav{position:sticky;top:0;z-index:200;border-bottom:2px solid var(--rim2);backgr
 
 /* ── TABLE ── */
 .tc{background:var(--bg2);border:2px solid var(--rim2);border-radius:var(--r2);overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 16px rgba(0,168,157,0.08)}
-.tsc{overflow-x:auto}
+.tsc{overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative}
+.tsc-hint{display:none;text-align:center;font-size:11px;color:var(--t3);padding:4px 0 6px;font-family:var(--mono);letter-spacing:.04em}
+@media(max-width:768px){.tsc-hint{display:block}}
 table{width:100%;border-collapse:collapse;font-size:12.5px}
 thead th{background:var(--cy);padding:10px 12px;font-family:var(--mono);font-size:11px;font-weight:600;color:#FFFFFF;letter-spacing:.07em;text-align:right;white-space:nowrap;border-bottom:2px solid rgba(0,0,0,0.1);border-right:1px solid rgba(255,255,255,0.2)}
 thead th:first-child{text-align:left;min-width:200px;padding-left:16px;border-right:1px solid var(--rim2)}
@@ -792,13 +794,16 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 <!-- ══ PAGE: MASTER ══ -->
 <div class="pg" id="pg-master">
   <div class="mtool">
-    <input class="msearch" id="ms" placeholder="搜尋品項規格、關鍵字…" oninput="renderM()">
+    <input class="msearch" id="ms" placeholder="搜尋品項規格、關鍵字…" oninput="renderM()" onchange="renderM()" onsearch="renderM()">
     <span class="mcnt" id="mc">共 0 筆</span>
     <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="openAdd()">+ 新增</button>
     <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="saveM()">儲存至 Drive</button>
     <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="expCSV()">匯出 CSV</button>
     <label class="btn btn-g" style="font-size:12px;padding:7px 14px;cursor:pointer">
       匯入覆蓋 CSV <input type="file" accept=".csv" id="csvIn" style="display:none" onchange="impCSV(this)">
+    </label>
+    <label class="btn btn-g" style="font-size:12px;padding:7px 14px;cursor:pointer">
+      匯入覆蓋 JSON <input type="file" accept=".json" id="jsonIn" style="display:none" onchange="impJSON(this)">
     </label>
   </div>
   <!-- 分頁 tabs -->
@@ -994,7 +999,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-g" onclick="document.getElementById('corrModal').classList.add('h')">取消</button>
+      <button class="btn btn-g" onclick="document.getElementById('corrModal').classList.add('h');document.getElementById('corr-correct').value='';document.getElementById('corr-note').value=''">取消</button>
       <button class="btn btn-c" onclick="submitCorrection()">套用並更新報告 →</button>
     </div>
   </div>
@@ -1063,10 +1068,18 @@ async function api(action, extra={}) {
 // ═══ UTIL ═══
 const fmt  = n => n==null?'—':Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtN = n => n==null?'—':Number(n).toLocaleString('th-TH',{maximumFractionDigits:0});
+let _toastQ=[];let _toasting=false;
 function toast(msg,type='ok',dur=3000){
+  _toastQ.push({msg,type,dur});
+  if(!_toasting)_nextToast();
+}
+function _nextToast(){
+  if(!_toastQ.length){_toasting=false;return;}
+  _toasting=true;
+  const {msg,type,dur}=_toastQ.shift();
   const t=document.getElementById('toast');
   t.textContent=msg;t.className='toast on '+type;
-  setTimeout(()=>t.className='toast',dur);
+  setTimeout(()=>{t.className='toast';setTimeout(_nextToast,350);},dur);
 }
 function showPg(p){
   document.querySelectorAll('.pg').forEach(el=>el.classList.remove('on'));
@@ -1238,11 +1251,26 @@ function expCSV(){
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   dl('\uFEFF'+csv,'master_item_list.csv','text/csv;charset=utf-8');toast('CSV 已匯出','ok');
 }
+function impJSON(inp){
+  const f=inp.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result.replace(/^﻿/,''));
+      const arr=Array.isArray(data)?data:(data.data||[]);
+      if(!arr.length){toast('JSON 格式有誤或無資料','err');return;}
+      if(!confirm(`確定用匯入的 ${arr.length} 筆覆蓋現有主檔 ${masterData.length} 筆？`))return;
+      masterData=arr.map(r=>({...r,_d:false,_n:false}));
+      renderM();toast(`已匯入 ${arr.length} 筆，請按「儲存至 Drive」同步`,'ok');
+    }catch(ex){toast('JSON 解析失敗：'+ex.message,'err',5000);}
+  };
+  reader.readAsText(f,'utf-8');inp.value='';
+}
 function impCSV(inp){
   const f=inp.files[0];if(!f)return;
   const reader=new FileReader();
   reader.onload=e=>{
-    const lines=e.target.result.split('\n').filter(l=>l.trim());
+    const lines=e.target.result.replace(/^﻿/,'').split('\n').filter(l=>l.trim());
     const parse=l=>{const cells=[];let cur='',inQ=false;for(const ch of l){if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){cells.push(cur.trim());cur='';}else cur+=ch;}cells.push(cur.trim());return cells.map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"'));};
     const rows=lines.map(parse);
     const h=rows[0].map(x=>x.toLowerCase().trim());
@@ -1269,6 +1297,9 @@ dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if
 fi.addEventListener('change',e=>{if(e.target.files[0])setF(e.target.files[0]);fi.value='';});
 function setF(f){
   curFile=f;
+  const _ext=f.name.split('.').pop().toLowerCase();
+  if(['xlsx','xls','docx','doc'].includes(_ext))
+    toast('Excel/Word 格式：AI 僅能解析檔名與文字結構，建議轉存 PDF 再上傳以取得最佳分析效果','info',6000);
   // 用 FileReader 轉成 data URL，相容所有開啟方式（file://、GitHub Pages 等）
   const reader=new FileReader();
   reader.onload=e=>{
@@ -1375,9 +1406,12 @@ async function doAnalyze(){
       doc:'application/msword'
     };
     const mime=mimeMap[ext]||'application/octet-stream';
-    const isMedia=['jpg','jpeg','png','heic','webp','pdf','xlsx','xls','docx','doc'].includes(ext);
+    const isMedia=['jpg','jpeg','png','heic','webp','pdf'].includes(ext);
     let mdText='';
-    if(ext==='md') mdText=await new Promise(ok=>{const r=new FileReader();r.onload=e=>ok(e.target.result);r.readAsText(curFile,'utf-8');});
+    if(ext==='md'){
+      mdText=await new Promise(ok=>{const r=new FileReader();r.onload=e=>ok(e.target.result);r.readAsText(curFile,'utf-8');});
+      if(mdText.length>6000){mdText=mdText.slice(0,6000)+'\n\n[... 內容已截斷，僅傳入前 6000 字元]';toast('Markdown 檔案過長，已截取前 6000 字元進行分析','info',4000);}
+    }
     const today=new Date().toISOString().slice(0,10);
 
     // 依類別篩選 Master List
@@ -1662,6 +1696,7 @@ function buildRptHTML(){
           <span style="font-family:var(--mono);font-size:11px;color:var(--t3)">所有欄位可直接點擊編輯 ｜ ▲▼ 可上下移動 ｜ ✕ 刪除</span>
         </div>
       </div>
+      <div class="tsc-hint">← 左右滑動查看完整欄位 →</div>
       <div class="tsc"><table id="rptTable">
         <thead><tr>
           <th style="text-align:center;min-width:70px">操作</th>
@@ -1873,11 +1908,17 @@ async function submitCorrection(){
 async function exportPDF(){
   if(!parsedItems||!parsedItems.length){toast('尚無報告資料','err');return;}
   if(!window.html2canvas){toast('PDF 函式庫載入中，請稍後再試','err',4000);return;}
-  toast('PDF 生成中，請稍候…','info',8000);
+  const btn=document.querySelector('button[onclick="exportPDF()"]');
+  const origTxt=btn?btn.textContent:'';
+  if(btn){btn.disabled=true;btn.textContent='⏳ 生成中…';}
+  toast('PDF 生成中，請稍候（大型報告約 5 秒）…','info',12000);
   try{
     const {jsPDF}=window.jspdf;
     const el=document.getElementById('rptInner');
-    const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false,scrollX:0,scrollY:-window.scrollY});
+    const prevW=el.style.width;const prevOv=el.style.overflow;
+    el.style.width=el.scrollWidth+'px';el.style.overflow='visible';
+    const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false,scrollX:0,scrollY:0,width:el.scrollWidth,height:el.scrollHeight,windowWidth:el.scrollWidth});
+    el.style.width=prevW;el.style.overflow=prevOv;
     const imgData=canvas.toDataURL('image/jpeg',0.92);
     const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
     const pageW=210,pageH=297;
@@ -1889,6 +1930,7 @@ async function exportPDF(){
     pdf.save((curRptId||'report')+'.pdf');
     toast('PDF 已匯出','ok');
   }catch(e){toast('PDF 生成失敗：'+e.message,'err',5000);}
+  finally{if(btn){btn.disabled=false;btn.textContent=origTxt;}}
 }
 
 function expJSON(){
