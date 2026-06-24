@@ -399,6 +399,22 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
     </div>
   </div>
 
+  <!-- ERROR PANEL -->
+  <div id="pnl-err" style="display:none">
+    <div style="background:#fff;border:2px solid var(--rd);border-radius:var(--r2);padding:1.5rem;margin-top:1rem">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+        <span style="font-size:22px">⚠️</span>
+        <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--rd)">AI 分析失敗</span>
+      </div>
+      <div id="errMsg" style="font-family:var(--mono);font-size:12px;color:var(--t1);background:var(--bg3);border:1px solid var(--rim2);border-radius:6px;padding:.85rem 1rem;line-height:1.8;white-space:pre-wrap;word-break:break-all;margin-bottom:1rem">—</div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+        <button class="btn btn-c" onclick="hideErr();openCatModal()">重新分析 →</button>
+        <button class="btn btn-g" onclick="copyErr()">複製錯誤訊息</button>
+        <button class="btn btn-g" onclick="hideErr()">關閉</button>
+      </div>
+    </div>
+  </div>
+
   <!-- LABOR -->
   <div id="pnl-lb" style="display:none">
     <div class="hero" style="padding:1.5rem 0 1rem">
@@ -1355,7 +1371,7 @@ function clrF(){
 }
 function resetAll(){
   clrF();
-  ['pnl-rpt','pnl-ld'].forEach(id=>document.getElementById(id).style.display='none');
+  ['pnl-rpt','pnl-ld','pnl-err'].forEach(id=>document.getElementById(id).style.display='none');
   document.getElementById('pnl-up').style.display='';
   setStep(1);
   document.getElementById('fpFloat').classList.remove('show');
@@ -1491,11 +1507,26 @@ FLAG: normal=±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis=n
   } catch(e){
     clearInterval(tick);
     document.getElementById('pnl-ld').style.display='none';
-    document.getElementById('pnl-up').style.display='';
     setStep(1);
-    const msg=e.message||'未知錯誤';
-    toast(msg.length>80?msg.slice(0,80)+'…':msg,'err',7000);
+    showErr(e);
   }
+}
+function showErr(e){
+  const msg = e?.message || String(e) || '未知錯誤';
+  console.error('[ProcureAI]', msg, e);
+  document.getElementById('pnl-up').style.display='none';
+  document.getElementById('pnl-err').style.display='';
+  document.getElementById('errMsg').textContent = msg;
+}
+function hideErr(){
+  document.getElementById('pnl-err').style.display='none';
+  document.getElementById('pnl-up').style.display='';
+}
+function copyErr(){
+  const msg = document.getElementById('errMsg').textContent;
+  navigator.clipboard?.writeText(msg).then(()=>toast('已複製錯誤訊息','ok')).catch(()=>{
+    prompt('請手動複製以下錯誤訊息：', msg);
+  });
 }
 function f2b64(file){return new Promise((ok,fail)=>{const r=new FileReader();r.onload=()=>ok(r.result.split(',')[1]);r.onerror=fail;r.readAsDataURL(file);});}
 
