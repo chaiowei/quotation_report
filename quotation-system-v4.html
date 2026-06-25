@@ -1183,11 +1183,12 @@ function renderM(){
   const q=(document.getElementById('ms').value||'').toLowerCase();
   const canEdit=!!authToken;
   // 分頁篩選
-  let rows=masterData.filter(r=>{
-    if(r._del) return false;
-    if(currentMTabVal!=='all' && r.category!==currentMTabVal) return false;
-    if(q && !r.spec.toLowerCase().includes(q) && !(r.keywords||'').toLowerCase().includes(q)) return false;
-    return true;
+  let rows=[];
+  masterData.forEach((r,i)=>{
+    if(r._del) return;
+    if(currentMTabVal!=='all' && r.category!==currentMTabVal) return;
+    if(q && !r.spec.toLowerCase().includes(q) && !(r.keywords||'').toLowerCase().includes(q)) return;
+    rows.push([r,i]);
   });
   // 更新 tab 計數
   const catKeys=['piping','electrical','civil','structural','common','labor'];
@@ -1201,8 +1202,7 @@ function renderM(){
 
   const catOpts=['piping','electrical','civil','structural','common','labor'];
   const catLabels={piping:'⚙ 配管',electrical:'⚡ 儀電',civil:'🏗 土木',structural:'🔩 鋼構',common:'📦 共用',labor:'👷 工費'};
-  document.getElementById('mBody').innerHTML=rows.map(r=>{
-    const i=masterData.indexOf(r);
+  document.getElementById('mBody').innerHTML=rows.map(([r,i])=>{
     const ce=canEdit?'true':'false';
     const cur=canEdit?'':'cursor:default';
     const clk=canEdit?'':'onclick="openLogin()"';
