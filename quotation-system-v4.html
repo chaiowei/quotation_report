@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>ProcureAI</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Noto+Sans+TC:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/lihbs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
@@ -1949,19 +1949,40 @@ async function exportPDF(){
   try{
     if(!window.jspdf||!window.jspdf.jsPDF){
       await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';s.onload=res;s.onerror=()=>rej(new Error('jsPDF 載入失敗'));document.head.appendChild(s);});
-      await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s);});
     }
+    if(!window.html2canvas){
+      await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';s.onload=res;s.onerror=()=>rej(new Error('html2canvas 載入失敗'));document.head.appendChild(s);});
+    }
+    const inner=document.getElementById('rptInner');
+    if(!inner||!inner.querySelector('table')){toast('請先產生報告再匯出','err');return;}
     const {jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-    const tables=document.querySelectorAll('#rptInner table');
-    if(!tables.length){toast('請先產生報告再匯出','err');return;}
-    let y=15;
-    doc.setFontSize(14);doc.text('比價評估報告',148,y,{align:'center'});y+=8;
-    doc.setFontSize(9);doc.text(new Date().toLocaleDateString('zh-TW'),148,y,{align:'center'});y+=6;
-    tables.forEach(tbl=>{
-      doc.autoTable({html:tbl,startY:y,styles:{fontSize:7,cellPadding:1.5},headStyles:{fillColor:[0,168,157]},margin:{left:8,right:8}});
-      y=doc.lastAutoTable.finalY+6;
-    });
+    const pageW=doc.internal.pageSize.getWidth();
+    const pageH=doc.internal.pageSize.getHeight();
+    const margin=8;
+    const usableW=pageW-margin*2;
+    const canvas=await html2canvas(inner,{scale:2,useCORS:true,backgroundColor:'#ffffff'});
+    const imgData=canvas.toDataURL('image/jpeg',0.92);
+    const imgW=usableW;
+    const imgH=canvas.height*(usableW/canvas.width);
+    let posY=margin;
+    let remaining=imgH;
+    let srcY=0;
+    const sliceH=pageH-margin*2;
+    let first=true;
+    while(remaining>0){
+      if(!first)doc.addPage();
+      first=false;
+      const chunk=Math.min(remaining,sliceH);
+      const chunkCanvas=document.createElement('canvas');
+      chunkCanvas.width=canvas.width;
+      chunkCanvas.height=Math.round(chunk*(canvas.width/imgW));
+      const ctx=chunkCanvas.getContext('2d');
+      ctx.drawImage(canvas,0,Math.round(srcY*(canvas.width/imgW)),canvas.width,chunkCanvas.height,0,0,chunkCanvas.width,chunkCanvas.height);
+      doc.addImage(chunkCanvas.toDataURL('image/jpeg',0.92),'JPEG',margin,margin,imgW,chunk);
+      srcY+=chunk;
+      remaining-=chunk;
+    }
     doc.save('比價報告_'+new Date().toISOString().slice(0,10)+'.pdf');
     toast('PDF 已下載','ok');
   }catch(e){toast('PDF 匯出失敗：'+e.message,'err',5000);}
@@ -1984,7 +2005,7 @@ async function expExcel(){
     const wb=XLSX.utils.book_new();
     tables.forEach((tbl,i)=>{
       const ws=XLSX.utils.table_to_sheet(tbl);
-      XLSX.utils.book_append_sheet(wb,'Sheet'+(i+1),ws);
+      XLSX.utils.book_append_sheet(wb,ws,'Sheet'+(i+1));
     });
     const fname='比價報告_'+new Date().toISOString().slice(0,10)+'.xlsx';
     XLSX.writeFile(wb,fname);
