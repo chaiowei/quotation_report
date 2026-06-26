@@ -10,7 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root{
-  /* ââ Tiffany Blue Light Theme ââ */
+  /* ── Tiffany Blue Light Theme ── */
   --bg:#F5FFFE;--bg2:#FFFFFF;--bg3:#EBF8F7;--bg4:#D4F0EE;
   --rim:rgba(0,168,157,0.15);--rim2:rgba(0,168,157,0.28);--rim3:rgba(0,168,157,0.45);
   --t1:#0D3B38;--t2:#2A7A74;--t3:#5AABA4;
@@ -33,7 +33,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .b3{width:280px;height:280px;background:rgba(0,168,157,0.04);top:35%;left:38%;animation-delay:-14s}
 @keyframes drift{from{transform:translate(0,0)}to{transform:translate(28px,18px)}}
 
-/* ââ ADMIN LOGIN DRAWER ââ */
+/* ── ADMIN LOGIN DRAWER ── */
 .ldrawer-bg{position:fixed;inset:0;background:rgba(0,80,76,0.3);z-index:600;display:none;align-items:flex-start;justify-content:flex-end;backdrop-filter:blur(4px)}
 .ldrawer-bg.on{display:flex}
 .ldrawer{background:#FFFFFF;border-left:2px solid var(--rim2);padding:2.5rem 2rem;width:100%;max-width:360px;height:100%;position:relative;overflow-y:auto;animation:slideIn .25s ease;box-shadow:-8px 0 32px rgba(0,168,157,0.12)}
@@ -46,7 +46,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .lsub{font-size:12px;color:var(--t3);margin-bottom:2rem;line-height:1.5}
 .lerr{font-size:12px;color:var(--rd);min-height:16px;margin-bottom:.6rem}
 
-/* ââ NAV ââ */
+/* ── NAV ── */
 nav{position:sticky;top:0;z-index:200;border-bottom:2px solid var(--rim2);background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 2px 16px rgba(0,168,157,0.08)}
 .navi{max-width:1200px;margin:0 auto;padding:0 1.5rem;height:60px;display:flex;align-items:center;gap:1.25rem}
 .logo{font-family:var(--head);font-size:19px;font-weight:800;background:linear-gradient(135deg,#00A89D,#00897B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex-shrink:0;letter-spacing:-.01em}
@@ -61,18 +61,18 @@ nav{position:sticky;top:0;z-index:200;border-bottom:2px solid var(--rim2);backgr
 .nbtn{padding:6px 13px;border-radius:var(--r);font-size:12px;font-family:var(--body);cursor:pointer;border:1.5px solid var(--rim2);background:#FFFFFF;color:var(--cy);transition:all .2s}
 .nbtn:hover{border-color:var(--cy);color:var(--cy)}
 
-/* ââ LAYOUT ââ */
+/* ── LAYOUT ── */
 .pg{display:none;max-width:1200px;margin:0 auto;padding:2rem 1.5rem 6rem;position:relative;z-index:1}
 .pg.on{display:block}
 
-/* ââ HERO ââ */
+/* ── HERO ── */
 .hero{padding:2.5rem 0 2rem;text-align:center}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--cy);margin-bottom:1.25rem;text-transform:uppercase;opacity:.8}
 .h1{font-family:var(--head);font-size:clamp(34px,5.5vw,60px);font-weight:800;line-height:1.1;letter-spacing:-.03em;margin-bottom:1rem}
 .hl{background:linear-gradient(135deg,#00A89D,#00C4B8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hsub{font-size:16px;color:var(--t2);max-width:520px;margin:0 auto;line-height:1.7}
 
-/* ââ STEPS ââ */
+/* ── STEPS ── */
 .steps{display:flex;align-items:center;max-width:500px;margin:2rem auto 2.5rem}
 .si{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.05em}
 .si.on{color:var(--cy)}
@@ -82,13 +82,13 @@ nav{position:sticky;top:0;z-index:200;border-bottom:2px solid var(--rim2);backgr
 .si.done .snum{background:var(--bg4);border-color:var(--rim2)}
 .sline{flex:1;height:1px;background:var(--rim);margin:0 10px;min-width:24px}
 
-/* ââ CARD ââ */
+/* ── CARD ── */
 .card{background:var(--bg2);border:1.5px solid var(--rim2);border-radius:var(--r2);padding:1.5rem;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(0,168,157,0.06)}
 .card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,168,157,0.03),transparent 60%);pointer-events:none}
 .card+.card{margin-top:1rem}
 .clabel{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--cy);text-transform:uppercase;padding-bottom:.75rem;border-bottom:1.5px solid var(--rim2);margin-bottom:1rem}
 
-/* ââ DROP ZONE ââ */
+/* ── DROP ZONE ── */
 .dz{border:2px dashed var(--rim2);border-radius:var(--r2);padding:2.5rem 1.5rem;text-align:center;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;background:#FAFFFE}
 .dz::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(0,168,157,0.06),transparent 70%);opacity:0;transition:opacity .3s}
 .dz:hover::before,.dz.drag::before{opacity:1}
@@ -100,7 +100,7 @@ nav{position:sticky;top:0;z-index:200;border-bottom:2px solid var(--rim2);backgr
 .dz-tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:1.25rem;position:relative;z-index:1}
 .dtag{font-family:var(--mono);font-size:10px;padding:3px 9px;border:1.5px solid var(--rim2);border-radius:4px;color:var(--cy);background:#FFFFFF}
 
-/* ââ FILE PILL ââ */
+/* ── FILE PILL ── */
 .fpill{display:none;align-items:center;gap:10px;background:var(--bg3);border:1.5px solid var(--rim2);border-radius:var(--r);padding:.7rem 1rem;margin-top:.75rem}
 .fpill.on{display:flex}
 .fpill-ico{font-size:20px;flex-shrink:0}
@@ -109,7 +109,7 @@ nav{position:sticky;top:0;z-index:200;border-bottom:2px solid var(--rim2);backgr
 .fpill-rm{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;padding:0 2px;flex-shrink:0;transition:color .2s;line-height:1}
 .fpill-rm:hover{color:var(--rd)}
 
-/* ââ FIELDS ââ */
+/* ── FIELDS ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
 @media(max-width:640px){.g2,.g3{grid-template-columns:1fr}}
@@ -120,7 +120,7 @@ nav{position:sticky;top:0;z-index:200;border-bottom:2px solid var(--rim2);backgr
 .field input::placeholder{color:var(--t3)}
 .field select option{background:var(--bg3)}
 
-/* ââ BUTTONS ââ */
+/* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:7px;padding:11px 24px;border-radius:var(--r);font-size:14px;font-weight:500;font-family:var(--body);cursor:pointer;border:none;transition:all .18s;white-space:nowrap}
 .btn-c{background:var(--cy);color:#FFFFFF;font-weight:700;box-shadow:0 2px 12px rgba(0,168,157,0.25)}
 .btn-c:hover{background:#008F86;box-shadow:0 4px 20px rgba(0,168,157,0.35);transform:translateY(-1px)}
@@ -131,14 +131,14 @@ nav{position:sticky;top:0;z-index:200;border-bottom:2px solid var(--rim2);backgr
 .btn-r:hover{background:rgba(255,85,85,.2)}
 .btn-row{display:flex;justify-content:flex-end;gap:.75rem;margin-top:1.5rem;flex-wrap:wrap}
 
-/* ââ LOADING ââ */
+/* ── LOADING ── */
 .loading{text-align:center;padding:5rem 0}
 .spin{width:44px;height:44px;border:3px solid var(--rim2);border-top-color:var(--cy);border-right-color:var(--mg);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 1.5rem;box-shadow:0 0 20px rgba(0,168,157,0.2)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .load-t{font-family:var(--mono);font-size:13px;color:var(--t2)}
 .load-s{font-size:12px;color:var(--t3);margin-top:.4rem}
 
-/* ââ STAT STRIP ââ */
+/* ── STAT STRIP ── */
 .ss{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px;margin-bottom:1.25rem}
 .sbox{background:#FFFFFF;border:1.5px solid var(--rim2);border-radius:var(--r);padding:.8rem;text-align:center;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,168,157,0.08)}
 .sbox::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
@@ -146,7 +146,7 @@ nav{position:sticky;top:0;z-index:200;border-bottom:2px solid var(--rim2);backgr
 .sn{font-family:var(--mono);font-size:28px;font-weight:500;line-height:1}
 .sl{font-size:12px;color:var(--t3);margin-top:5px;font-weight:500}
 
-/* ââ TABLE ââ */
+/* ── TABLE ── */
 .tc{background:var(--bg2);border:2px solid var(--rim2);border-radius:var(--r2);overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 16px rgba(0,168,157,0.08)}
 .tsc{overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative}
 .tsc-hint{display:none;text-align:center;font-size:11px;color:var(--t3);padding:4px 0 6px;font-family:var(--mono);letter-spacing:.04em}
@@ -166,7 +166,7 @@ tbody tr:hover td{background:rgba(0,168,157,0.06)}
 .ttot td{border-top:2px solid var(--cy)!important;background:var(--bg4);font-weight:700;font-size:14px}
 .cup{color:var(--rd)}.cok{color:var(--gn)}.cdn{color:var(--pu)}.cna{color:var(--t3)}.cam{color:var(--am)}
 
-/* ââ PILLS ââ */
+/* ── PILLS ── */
 .pill{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;white-space:nowrap;letter-spacing:.02em}
 .pg{background:var(--gnf);color:var(--gn);border:1px solid rgba(0,255,148,.22)}
 .pr{background:var(--rdf);color:var(--rd);border:1px solid rgba(255,85,85,.22)}
@@ -175,7 +175,7 @@ tbody tr:hover td{background:rgba(0,168,157,0.06)}
 .pgr{background:rgba(92,95,132,.12);color:var(--t3);border:1px solid var(--rim)}
 .py{background:var(--ywf);color:var(--yw);border:1px solid rgba(241,250,140,.22)}
 
-/* ââ TOTALS ââ */
+/* ── TOTALS ── */
 .totals{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--rim2);border-radius:var(--r2);overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 16px rgba(0,168,157,0.08)}
 .tcell{background:#FFFFFF;padding:1.5rem;text-align:center;position:relative}
 .tcell::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
@@ -187,7 +187,7 @@ tbody tr:hover td{background:rgba(0,168,157,0.06)}
 .tnote{font-family:var(--mono);font-size:10px;margin-top:.4rem}
 @media(max-width:520px){.totals{grid-template-columns:1fr}}
 
-/* ââ LABOR ââ */
+/* ── LABOR ── */
 .lcard{background:#FFFDF0;border:1.5px solid rgba(224,136,0,.25);border-radius:var(--r2);padding:1.25rem 1.5rem;margin-bottom:.75rem;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(224,136,0,0.08)}
 .lcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--am),transparent)}
 .lhd{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
@@ -199,12 +199,12 @@ tbody tr:hover td{background:rgba(0,168,157,0.06)}
 .lest strong{font-family:var(--mono);font-weight:500;color:var(--t1)}
 .lflag{font-family:var(--mono);font-size:11px}
 
-/* ââ ADVICE ââ */
+/* ── ADVICE ── */
 .adv{border-left:3px solid;border-radius:0 var(--r) var(--r) 0;padding:.75rem 1rem;margin-bottom:.6rem;background:#FFFFFF;box-shadow:0 1px 6px rgba(0,0,0,0.06)}
 .adv-t{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:3px;font-family:var(--head)}
 .adv-b{font-size:12px;color:var(--t2);line-height:1.55}
 
-/* ââ MASTER ââ */
+/* ── MASTER ── */
 .mtool{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1.25rem}
 .msearch{flex:1;min-width:200px;background:#FFFFFF;border:1.5px solid var(--rim2);border-radius:var(--r);padding:9px 13px;color:var(--t1);font-family:var(--body);font-size:13px;outline:none;transition:all .2s;box-shadow:0 1px 4px rgba(0,168,157,0.06)}
 .msearch:focus{border-color:var(--cy)}
@@ -215,7 +215,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 .rn td{background:rgba(0,255,148,.04)!important}
 .rd td{background:rgba(255,179,0,.04)!important}
 
-/* ââ MODAL ââ */
+/* ── MODAL ── */
 .mbg{position:fixed;inset:0;background:rgba(0,80,76,0.25);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
 .mbg.h{display:none}
 .mbox{background:#FFFFFF;border:2px solid var(--rim2);border-radius:var(--r2);padding:2rem;width:100%;max-width:500px;position:relative;box-shadow:0 8px 32px rgba(0,168,157,0.15)}
@@ -227,7 +227,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 .ssub{font-size:11px;color:var(--t3);margin-top:2px}
 .sval{font-family:var(--mono);font-size:11px;color:var(--cy)}
 
-/* ââ TOAST ââ */
+/* ── TOAST ── */
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#FFFFFF;border:2px solid var(--rim2);border-radius:var(--r);padding:.8rem 1.25rem;font-size:13px;font-family:var(--mono);z-index:700;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;max-width:340px;line-height:1.5;box-shadow:0 4px 20px rgba(0,168,157,0.15)}
 .toast.on{opacity:1;transform:translateY(0)}
 .toast.ok{border-color:var(--gn);color:var(--gn)}
@@ -240,7 +240,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 
 @media(max-width:640px){.navi{padding:0 1rem}.pg{padding:1.5rem 1rem 4rem}}
 
-/* ââ CATEGORY SELECT MODAL ââ */
+/* ── CATEGORY SELECT MODAL ── */
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0}
 .cat-btn{background:#FFFFFF;border:2px solid var(--rim2);border-radius:var(--r);padding:.9rem .75rem;text-align:center;cursor:pointer;transition:all .2s;font-family:var(--body)}
 .cat-btn:hover{border-color:var(--cy);background:var(--cyf)}
@@ -249,7 +249,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 .cat-lbl{font-size:13px;font-weight:600;color:var(--t1)}
 .cat-sub{font-size:10px;color:var(--t3);margin-top:2px}
 
-/* ââ MASTER TABS ââ */
+/* ── MASTER TABS ── */
 .mtabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1rem}
 .mtab{padding:6px 14px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--rim2);background:#FFFFFF;color:var(--t2);transition:all .2s;font-family:var(--body)}
 .mtab:hover{border-color:var(--cy);color:var(--cy)}
@@ -257,7 +257,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 .mtab-cnt{font-size:10px;background:rgba(255,255,255,0.3);padding:1px 5px;border-radius:10px;margin-left:4px}
 .mtab.on .mtab-cnt{background:rgba(255,255,255,0.3)}
 
-/* ââ EDITABLE REPORT ââ */
+/* ── EDITABLE REPORT ── */
 .rpt-section{background:#FFFFFF;border:1.5px solid var(--rim2);border-radius:var(--r2);overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 12px rgba(0,168,157,0.07)}
 .rpt-toolbar{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg3);border-bottom:1.5px solid var(--rim2);flex-wrap:wrap;gap:.5rem}
 .rpt-toolbar-title{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--cy);letter-spacing:.08em;text-transform:uppercase}
@@ -278,7 +278,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 .labor-grid .field input{padding:7px 10px;font-size:12px}
 .labor-result-inline{font-family:var(--mono);font-size:12px;margin-top:.5rem;padding:.5rem .75rem;background:#FFFFFF;border:1px solid rgba(224,136,0,.2);border-radius:var(--r)}
 
-/* ââ FILE PREVIEW FLOAT ââ */
+/* ── FILE PREVIEW FLOAT ── */
 .fp-toggle{position:fixed;bottom:1.5rem;left:1.5rem;z-index:350;background:var(--cy);color:#fff;border:none;border-radius:50px;padding:10px 18px;font-size:13px;font-weight:600;font-family:var(--body);cursor:pointer;box-shadow:0 4px 20px rgba(0,168,157,0.35);transition:all .2s;display:none;align-items:center;gap:8px}
 .fp-toggle:hover{background:#008F86;transform:translateY(-2px)}
 .fp-toggle.show{display:flex}
@@ -292,14 +292,14 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 .fp-close{background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;padding:0 4px}
 .fp-close:hover{color:var(--rd)}
 
-/* ââ CORRECTION MODAL ââ */
+/* ── CORRECTION MODAL ── */
 .corr-row{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--rim2)}
 .corr-row:last-child{border-bottom:none}
 .corr-label{font-size:11px;color:var(--t3);font-family:var(--mono);flex-shrink:0;width:80px;padding-top:.25rem}
 .corr-val{font-size:13px;color:var(--t1);flex:1;line-height:1.5}
 
 
-/* ââ DRAG & DROP ROWS ââ */
+/* ── DRAG & DROP ROWS ── */
 #rptBody tr[draggable=true]{cursor:grab}
 #rptBody tr[draggable=true]:active{cursor:grabbing}
 #rptBody tr.drag-over td{background:rgba(0,168,157,0.08)!important;outline:2px dashed var(--cy)}
@@ -309,84 +309,84 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 <body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 
-<!-- ââ ADMIN LOGIN DRAWER ââ -->
+<!-- ══ ADMIN LOGIN DRAWER ══ -->
 <div class="ldrawer-bg" id="lo">
   <div class="ldrawer" onclick="event.stopPropagation()">
-    <button class="ldrawer-close" onclick="closeLogin()">â</button>
-    <span class="lico">ð</span>
-    <div class="ltitle">ç®¡çå¡ç»å¥</div>
-    <div class="lsub">ç»å¥å¾å¯ä¿®æ¹ä¸»æªæææ¸å®<br>ä¸è¬æ¯å¹åè½ç¡éç»å¥</div>
+    <button class="ldrawer-close" onclick="closeLogin()">✕</button>
+    <span class="lico">🔐</span>
+    <div class="ltitle">管理員登入</div>
+    <div class="lsub">登入後可修改主檔材料清單<br>一般比價功能無需登入</div>
     <div class="field" style="margin-bottom:.75rem">
-      <label>ä½¿ç¨èåç¨±</label>
+      <label>使用者名稱</label>
       <input id="lu" type="text" autocomplete="username" placeholder="admin">
     </div>
     <div class="field" style="margin-bottom:1rem">
-      <label>å¯ç¢¼</label>
+      <label>密碼</label>
       <input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
     <div class="lerr" id="le"></div>
-    <button class="btn btn-c" style="width:100%;justify-content:center;padding:12px" onclick="doLogin()">ç»å¥</button>
+    <button class="btn btn-c" style="width:100%;justify-content:center;padding:12px" onclick="doLogin()">登入</button>
   </div>
 </div>
 
-<!-- ââ NAV ââ -->
+<!-- ══ NAV ══ -->
 <nav>
   <div class="navi">
     <div class="logo">ProcureAI</div>
     <div class="ntabs">
-      <button class="ntab on" id="tab-analyze" onclick="showPg('analyze')">æ¯å¹åæ</button>
-      <button class="ntab" id="tab-master" onclick="goMaster()">ä¸»æªç®¡ç</button>
-      <button class="ntab" id="tab-guide" onclick="showPg('guide')">ä½¿ç¨èªªæ</button>
+      <button class="ntab on" id="tab-analyze" onclick="showPg('analyze')">比價分析</button>
+      <button class="ntab" id="tab-master" onclick="goMaster()">主檔管理</button>
+      <button class="ntab" id="tab-guide" onclick="showPg('guide')">使用說明</button>
     </div>
     <div class="nr">
-      <span class="nbadge" id="mBadge">ä¸»æª â ç­</span>
-      <span class="nbadge" id="driveBadge" title="Apps Script å¾ç«¯é£ç·çæ">å¾ç«¯ â</span>
-      <button class="nbtn" onclick="openSett()">â è¨­å®</button>
+      <span class="nbadge" id="mBadge">主檔 — 筆</span>
+      <span class="nbadge" id="driveBadge" title="Apps Script 後端連線狀態">後端 —</span>
+      <button class="nbtn" onclick="openSett()">⚙ 設定</button>
       <span id="adminBar" style="display:none;align-items:center;gap:.5rem">
-        <span class="nbadge ok">ç®¡çå¡</span>
-        <button class="nbtn" onclick="logout()">ç»åº</button>
+        <span class="nbadge ok">管理員</span>
+        <button class="nbtn" onclick="logout()">登出</button>
       </span>
     </div>
   </div>
 </nav>
 
-<!-- ââ PAGE: ANALYZE ââ -->
+<!-- ══ PAGE: ANALYZE ══ -->
 <div class="pg on" id="pg-analyze">
   <!-- UPLOAD -->
   <div id="pnl-up">
     <div class="hero">
-      <div class="eyebrow">AI-Powered Procurement Â· v4</div>
-      <h1 class="h1">æ¯å¹å ±å<br><span class="hl">ç§éçæ</span></h1>
-      <p class="hsub">PDFãExcelãWordãç§çå¨æ¯æ´ãAI èªåæ¯å°ä¸»æªæä½å¹ï¼è¼¸åºå®æ´çèå ±åä¸¦åä»½è³ Google Driveã</p>
+      <div class="eyebrow">AI-Powered Procurement · v4</div>
+      <h1 class="h1">比價報告<br><span class="hl">秒速生成</span></h1>
+      <p class="hsub">PDF、Excel、Word、照片全支援。AI 自動比對主檔最低價，輸出完整燈號報告並備份至 Google Drive。</p>
     </div>
     <div class="steps" id="stBar">
-      <div class="si on" id="si1"><div class="snum">1</div><span>ä¸å³</span></div>
+      <div class="si on" id="si1"><div class="snum">1</div><span>上傳</span></div>
       <div class="sline"></div>
-      <div class="si" id="si2"><div class="snum">2</div><span>å·¥è²»</span></div>
+      <div class="si" id="si2"><div class="snum">2</div><span>工費</span></div>
       <div class="sline"></div>
-      <div class="si" id="si3"><div class="snum">3</div><span>å ±å</span></div>
+      <div class="si" id="si3"><div class="snum">3</div><span>報告</span></div>
     </div>
     <div class="card">
-      <div class="clabel">ä¸å³å ±å¹å®</div>
+      <div class="clabel">上傳報價單</div>
       <div class="dz" id="dz">
         <input type="file" id="fi" accept=".pdf,.xlsx,.xls,.docx,.doc,.jpg,.jpeg,.png,.heic,.webp,.md">
-        <div class="dz-ico">â¬</div>
-        <div class="dz-t">ææ³æé»é¸ä¸å³</div>
-        <div class="dz-s">ææ©æ¯æ´ç¸æ©ç´æ</div>
+        <div class="dz-ico">⬆</div>
+        <div class="dz-t">拖曳或點選上傳</div>
+        <div class="dz-s">手機支援相機直拍</div>
         <div class="dz-tags">
           <span class="dtag">PDF</span><span class="dtag">Excel</span><span class="dtag">Word</span>
-          <span class="dtag">JPG Â· PNG</span><span class="dtag">HEIC</span><span class="dtag">Markdown</span>
+          <span class="dtag">JPG · PNG</span><span class="dtag">HEIC</span><span class="dtag">Markdown</span>
         </div>
       </div>
       <div class="fpill" id="fp">
-        <span class="fpill-ico" id="pico">ð</span>
+        <span class="fpill-ico" id="pico">📄</span>
         <span class="fpill-name" id="pnm"></span>
         <span class="fpill-sz" id="psz"></span>
-        <button class="fpill-rm" onclick="clrF()">â</button>
+        <button class="fpill-rm" onclick="clrF()">✕</button>
       </div>
     </div>
     <div class="btn-row">
-      <button class="btn btn-c" id="aBtn" onclick="openCatModal()" disabled>éå§ AI åæ â</button>
+      <button class="btn btn-c" id="aBtn" onclick="openCatModal()" disabled>開始 AI 分析 →</button>
     </div>
   </div>
 
@@ -394,8 +394,8 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
   <div id="pnl-ld" style="display:none">
     <div class="loading">
       <div class="spin"></div>
-      <div class="load-t" id="ldT">Gemini è§£æå ±å¹å®ä¸­â¦</div>
-      <div class="load-s" id="ldS">è¾¨è­åé è¦æ ¼èå» åè³è¨</div>
+      <div class="load-t" id="ldT">Gemini 解析報價單中…</div>
+      <div class="load-s" id="ldS">辨識品項規格與廠商資訊</div>
     </div>
   </div>
 
@@ -403,14 +403,14 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
   <div id="pnl-err" style="display:none">
     <div style="background:#fff;border:2px solid var(--rd);border-radius:var(--r2);padding:1.5rem;margin-top:1rem">
       <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
-        <span style="font-size:22px">â ï¸</span>
-        <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--rd)">AI åæå¤±æ</span>
+        <span style="font-size:22px">⚠️</span>
+        <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--rd)">AI 分析失敗</span>
       </div>
-      <div id="errMsg" style="font-family:var(--mono);font-size:12px;color:var(--t1);background:var(--bg3);border:1px solid var(--rim2);border-radius:6px;padding:.85rem 1rem;line-height:1.8;white-space:pre-wrap;word-break:break-all;margin-bottom:1rem">â</div>
+      <div id="errMsg" style="font-family:var(--mono);font-size:12px;color:var(--t1);background:var(--bg3);border:1px solid var(--rim2);border-radius:6px;padding:.85rem 1rem;line-height:1.8;white-space:pre-wrap;word-break:break-all;margin-bottom:1rem">—</div>
       <div style="display:flex;gap:.75rem;flex-wrap:wrap">
-        <button class="btn btn-c" onclick="hideErr();openCatModal()">éæ°åæ â</button>
-        <button class="btn btn-g" onclick="copyErr()">è¤è£½é¯èª¤è¨æ¯</button>
-        <button class="btn btn-g" onclick="hideErr()">éé</button>
+        <button class="btn btn-c" onclick="hideErr();openCatModal()">重新分析 →</button>
+        <button class="btn btn-g" onclick="copyErr()">複製錯誤訊息</button>
+        <button class="btn btn-g" onclick="hideErr()">關閉</button>
       </div>
     </div>
   </div>
@@ -419,13 +419,13 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
   <div id="pnl-lb" style="display:none">
     <div class="hero" style="padding:1.5rem 0 1rem">
       <div class="eyebrow">Step 2 of 3</div>
-      <h2 style="font-family:var(--head);font-size:28px;font-weight:800;letter-spacing:-.02em">å¡«å¥å·¥è²»é ä¼°</h2>
-      <p class="hsub" style="font-size:13px;margin-top:.5rem">AI å·²è­å¥ä»¥ä¸å·¥è²»ï¼æ´åé ç®ï¼è«äººå·¥å¡«å¥å·¥æèäººå·¥ææ¬</p>
+      <h2 style="font-family:var(--head);font-size:28px;font-weight:800;letter-spacing:-.02em">填入工費預估</h2>
+      <p class="hsub" style="font-size:13px;margin-top:.5rem">AI 已識別以下工費／整包項目，請人工填入工期與人工成本</p>
     </div>
     <div id="lbCards"></div>
     <div class="btn-row">
-      <button class="btn btn-g" onclick="resetAll()">â éæ°ä¸å³</button>
-      <button class="btn btn-c" onclick="goReport()">ç¢çå ±å â</button>
+      <button class="btn btn-g" onclick="resetAll()">← 重新上傳</button>
+      <button class="btn btn-c" onclick="goReport()">產生報告 →</button>
     </div>
   </div>
 
@@ -433,16 +433,16 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
   <div id="pnl-rpt" style="display:none">
     <div id="rptInner"></div>
     <div class="btn-row">
-      <button class="btn btn-g" onclick="resetAll()">â æ°å ±å¹å®</button>
-      <button class="btn btn-g" onclick="expJSON()">å¯åº JSON</button>
-      <button class="btn btn-g" onclick="expExcel()">ð å¯åº Excel</button>
-      <button class="btn btn-c" onclick="exportPDF()">å¯åº PDF</button>
+      <button class="btn btn-g" onclick="resetAll()">← 新報價單</button>
+      <button class="btn btn-g" onclick="expJSON()">匯出 JSON</button>
+      <button class="btn btn-g" onclick="expExcel()">📊 匯出 Excel</button>
+      <button class="btn btn-c" onclick="exportPDF()">匯出 PDF</button>
     </div>
   </div>
 </div>
 
 
-<!-- ââ PAGE: GUIDE ââ -->
+<!-- ══ PAGE: GUIDE ══ -->
 <div class="pg" id="pg-guide">
 <style>
 .guide-hero{text-align:center;padding:2.5rem 0 2rem}
@@ -491,274 +491,274 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 
 <div class="guide-hero">
   <div class="eyebrow">User Manual</div>
-  <h1 class="h1" style="font-size:clamp(28px,4vw,44px)">ProcureAI <span class="hl">ä½¿ç¨èªªæ</span></h1>
-  <p class="hsub">AI æºè½æ¯å¹ç³»çµ±å®æ´æä½æå</p>
+  <h1 class="h1" style="font-size:clamp(28px,4vw,44px)">ProcureAI <span class="hl">使用說明</span></h1>
+  <p class="hsub">AI 智能比價系統完整操作指南</p>
 </div>
 
-<!-- ââ ç³»çµ±æ¦è¦½ ââ -->
+<!-- ══ 系統概覽 ══ -->
 <div class="guide-section">
   <div class="guide-sec-header">
-    <span class="guide-sec-icon">ðº</span>
-    <div><div class="guide-sec-title">ç³»çµ±æ¦è¦½</div><div class="guide-sec-sub">äºè§£æ´åç³»çµ±çæ¶æ§èä¸å¤§åè½</div></div>
+    <span class="guide-sec-icon">🗺</span>
+    <div><div class="guide-sec-title">系統概覽</div><div class="guide-sec-sub">了解整個系統的架構與三大功能</div></div>
   </div>
   <div class="guide-body">
     <div class="guide-grid">
       <div class="guide-card">
-        <div class="guide-card-icon">ð</div>
-        <div class="guide-card-title">æ¯å¹åæ</div>
-        <div class="guide-card-desc">ä¸å³å ±å¹å®ï¼PDF / Excel / Word / ç§çï¼ï¼AI èªåè§£æåé ä¸¦èä¸»æªæä½å¹æ¯å°ï¼è¼¸åºå®æ´çèå ±å</div>
+        <div class="guide-card-icon">📊</div>
+        <div class="guide-card-title">比價分析</div>
+        <div class="guide-card-desc">上傳報價單（PDF / Excel / Word / 照片），AI 自動解析品項並與主檔最低價比對，輸出完整燈號報告</div>
       </div>
       <div class="guide-card">
-        <div class="guide-card-icon">ð¦</div>
-        <div class="guide-card-title">ä¸»æªç®¡ç</div>
-        <div class="guide-card-desc">ç¶­è­·æææä½å¹è³æåº«ï¼åé¡ç®¡çéç®¡ãåé»ãåæ¨ãé¼æ§ãå±ç¨ææï¼æ¯æ´ CSV æ¹éå¯å¥å¯åº</div>
+        <div class="guide-card-icon">📦</div>
+        <div class="guide-card-title">主檔管理</div>
+        <div class="guide-card-desc">維護材料最低價資料庫，分類管理配管、儀電、土木、鋼構、共用材料，支援 CSV 批量匯入匯出</div>
       </div>
       <div class="guide-card">
-        <div class="guide-card-icon">ð§ </div>
-        <div class="guide-card-title">AI å­¸ç¿ä¿®æ­£</div>
-        <div class="guide-card-desc">æ¯æ¬¡ä¿®æ­£ AI è®åé¯èª¤å¾å­å¥ Google Driveï¼ä¸æ¬¡åæåé¡å·¥ç¨æèªåå¸¶å¥ï¼AI è¶ç¨è¶æº</div>
+        <div class="guide-card-icon">🧠</div>
+        <div class="guide-card-title">AI 學習修正</div>
+        <div class="guide-card-desc">每次修正 AI 讀取錯誤後存入 Google Drive，下次分析同類工程時自動帶入，AI 越用越準</div>
       </div>
       <div class="guide-card">
-        <div class="guide-card-icon">â</div>
-        <div class="guide-card-title">Google Drive åä»½</div>
-        <div class="guide-card-desc">åå§å ±å¹å®ãåæå ±å JSONãä¿®æ­£ç´éãä¸»æªï¼å¨é¨èªååä»½è³ Google Drive æå®è³æå¤¾</div>
+        <div class="guide-card-icon">☁</div>
+        <div class="guide-card-title">Google Drive 備份</div>
+        <div class="guide-card-desc">原始報價單、分析報告 JSON、修正紀錄、主檔，全部自動備份至 Google Drive 指定資料夾</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ââ æ¯å¹åææµç¨ ââ -->
+<!-- ══ 比價分析流程 ══ -->
 <div class="guide-section">
   <div class="guide-sec-header">
-    <span class="guide-sec-icon">ð</span>
-    <div><div class="guide-sec-title">æ¯å¹åæ â å®æ´æä½æµç¨</div><div class="guide-sec-sub">å¾ä¸å³å°è¼¸åºå ±åï¼å± 4 åæ­¥é©</div></div>
+    <span class="guide-sec-icon">📋</span>
+    <div><div class="guide-sec-title">比價分析 — 完整操作流程</div><div class="guide-sec-sub">從上傳到輸出報告，共 4 個步驟</div></div>
   </div>
   <div class="guide-body">
     <div class="guide-step">
       <div class="guide-step-num">1</div>
       <div class="guide-step-content">
-        <div class="guide-step-title">ä¸å³å ±å¹å®</div>
-        <div class="guide-step-desc">æ¯æ´ <span class="guide-badge gb-cy">PDF</span> <span class="guide-badge gb-cy">Excel</span> <span class="guide-badge gb-cy">Word</span> <span class="guide-badge gb-cy">JPG / PNG</span> <span class="guide-badge gb-cy">HEIC</span> ç­æ ¼å¼ãææ©å¯ç´æ¥æç§ä¸å³ãæªæ¡å¤§å°å»ºè­°å¨ 10MB ä»¥å§ï¼ææä»¶è«ç¢ºèªæ¸æ°åº¦è¶³å¤ ã</div>
-        <div class="guide-step-tip">ð¡ ææ³æªæ¡å°ä¸å³ååï¼æé»æé¸ææªæ¡ãä¸å³å¾å¯å¨å·¦ä¸è§çãð æ¥çåå§æªãæéé¨æéåæµ®åé è¦½è¦çªï¼å°ç§ç¢ºèª AI è®åæ­£ç¢ºæ§ã</div>
+        <div class="guide-step-title">上傳報價單</div>
+        <div class="guide-step-desc">支援 <span class="guide-badge gb-cy">PDF</span> <span class="guide-badge gb-cy">Excel</span> <span class="guide-badge gb-cy">Word</span> <span class="guide-badge gb-cy">JPG / PNG</span> <span class="guide-badge gb-cy">HEIC</span> 等格式。手機可直接拍照上傳。檔案大小建議在 10MB 以內，掃描件請確認清晰度足夠。</div>
+        <div class="guide-step-tip">💡 拖曳檔案到上傳區域，或點擊選擇檔案。上傳後可在左下角的「📄 查看原始檔」按鈕隨時開啟浮動預覽視窗，對照確認 AI 讀取正確性。</div>
       </div>
     </div>
     <div class="guide-step">
       <div class="guide-step-num">2</div>
       <div class="guide-step-content">
-        <div class="guide-step-title">é¸æå·¥ç¨é¡å¥</div>
-        <div class="guide-step-desc">æä¸ãéå§ AI åæãå¾æè·³åºé¡å¥é¸æè¦çªãé¸ææ­£ç¢ºé¡å¥å¯å¤§å¹ç¯çåææéåè²»ç¨ï¼å çº AI åªææ¯å°å°æé¡å¥çä¸»æªåé ï¼
-          <br>â¢ <strong>ALL</strong> â ä¸ç¢ºå®æé¸æ­¤é ï¼ä½¿ç¨å¨é¨ä¸»æªï¼è¼æ¢ä½æå®æ´ï¼
-          <br>â¢ <strong>â éç®¡</strong> â æ¯å°éç®¡é¡ + å±ç¨é¡ä¸»æª
-          <br>â¢ <strong>â¡ åé»</strong> â æ¯å°åé»é¡ + å±ç¨é¡ä¸»æª
-          <br>â¢ <strong>ð åæ¨</strong> â æ¯å°åæ¨é¡ + å±ç¨é¡ä¸»æª
-          <br>â¢ <strong>ð© é¼æ§</strong> â æ¯å°é¼æ§é¡ + å±ç¨é¡ä¸»æª
+        <div class="guide-step-title">選擇工程類別</div>
+        <div class="guide-step-desc">按下「開始 AI 分析」後會跳出類別選擇視窗。選擇正確類別可大幅節省分析時間和費用，因為 AI 只會比對對應類別的主檔品項：
+          <br>• <strong>ALL</strong> — 不確定時選此項，使用全部主檔（較慢但最完整）
+          <br>• <strong>⚙ 配管</strong> — 比對配管類 + 共用類主檔
+          <br>• <strong>⚡ 儀電</strong> — 比對儀電類 + 共用類主檔
+          <br>• <strong>🏗 土木</strong> — 比對土木類 + 共用類主檔
+          <br>• <strong>🔩 鋼構</strong> — 比對鋼構類 + 共用類主檔
         </div>
-        <div class="guide-step-tip">ð¡ èºæ ãåé¼ç­è·¨å·¥ç¨å¸¸ç¨æææ­¸é¡å¨ãå±ç¨ï¼Commonï¼ãï¼é¸ä»»ä½å·¥ç¨é¡å¥é½æèªåå¸¶å¥ã</div>
+        <div class="guide-step-tip">💡 螺栓、型鋼等跨工程常用材料歸類在「共用（Common）」，選任何工程類別都會自動帶入。</div>
       </div>
     </div>
     <div class="guide-step">
       <div class="guide-step-num">3</div>
       <div class="guide-step-content">
-        <div class="guide-step-title">æª¢è¦èç·¨è¼¯å ±å</div>
-        <div class="guide-step-desc">AI åæå®æå¾ç«å³é¡¯ç¤ºå®æ´å ±åãå ±åä¸­æææ¬ä½çå¯ç´æ¥é»æç·¨è¼¯ï¼
-          <br>â¢ åé åç¨±ãå®ä½ãæ¸éãå» åå®å¹ â é»æç´æ¥ä¿®æ¹
-          <br>â¢ å·¥è²»æ¬ä½ â ç´æ¥å¡«å¥é ä¼°ç¸½éé¡ï¼à¸¿ï¼ï¼ç³»çµ±èªåè¨ç®çè
-          <br>â¢ â² â¼ â ä¸ä¸ç§»ååé é åº
-          <br>â¢ â â åªé¤æ­¤å
-          <br>â¢ ï¼ æ°å¢åé  â å¨æä¸æ¹æ°å¢ç©ºç½å
-          <br>â¢ âï¸ ä¿®æ­£ â ä¿®æ¹åé è³æä¸¦å¯é¸æåå ± AI å­¸ç¿
+        <div class="guide-step-title">檢視與編輯報告</div>
+        <div class="guide-step-desc">AI 分析完成後立即顯示完整報告。報告中所有欄位皆可直接點擊編輯：
+          <br>• 品項名稱、單位、數量、廠商單價 — 點擊直接修改
+          <br>• 工費欄位 — 直接填入預估總金額（฿），系統自動計算燈號
+          <br>• ▲ ▼ — 上下移動品項順序
+          <br>• ✕ — 刪除此列
+          <br>• ＋ 新增品項 — 在最下方新增空白列
+          <br>• ✏️ 修正 — 修改品項資料並可選擇回報 AI 學習
         </div>
-        <div class="guide-step-tip">ð¡ ææä¿®æ¹å¾ï¼å ±ååºé¨çå» åç¸½å¹ãå»ºè­°ç®æ¨å¹ãå¯ç¯çéé¡æå³æèªåéæ°è¨ç®ã</div>
+        <div class="guide-step-tip">💡 所有修改後，報告底部的廠商總價、建議目標價、可節省金額會即時自動重新計算。</div>
       </div>
     </div>
     <div class="guide-step">
       <div class="guide-step-num">4</div>
       <div class="guide-step-content">
-        <div class="guide-step-title">å¯åºå ±å</div>
-        <div class="guide-step-desc">ç¢ºèªå ±åå§å®¹æ­£ç¢ºå¾ï¼å¯é¸æï¼
-          <br>â¢ <span class="guide-badge gb-gr">å¯åº JSON</span> â çµæ§åè³æï¼ç¨æ¼ç³»çµ±æ´åæå­æª
-          <br>â¢ <span class="guide-badge gb-cy">ð å¯åº Excel</span> â å½©è²æ ¼å¼å Excel æªæ¡ï¼åæèªåå­å¥ Google Drive
-          <br>â¢ <span class="guide-badge gb-cy">åå° / PDF</span> â éåçè¦½å¨åå°å°è©±æ¡ï¼å¯é¸æãå¦å­çº PDFã
+        <div class="guide-step-title">匯出報告</div>
+        <div class="guide-step-desc">確認報告內容正確後，可選擇：
+          <br>• <span class="guide-badge gb-gr">匯出 JSON</span> — 結構化資料，用於系統整合或存檔
+          <br>• <span class="guide-badge gb-cy">📊 匯出 Excel</span> — 彩色格式化 Excel 檔案，同時自動存入 Google Drive
+          <br>• <span class="guide-badge gb-cy">列印 / PDF</span> — 開啟瀏覽器列印對話框，可選擇「另存為 PDF」
         </div>
-        <div class="guide-step-tip">ð¡ åå§å ±å¹å®åå ±å JSON å¨åæå®æå¾å³èªååä»½è³ Google Driveï¼ç¡éæåå²å­ã</div>
+        <div class="guide-step-tip">💡 原始報價單和報告 JSON 在分析完成後即自動備份至 Google Drive，無需手動儲存。</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ââ çèèªªæ ââ -->
+<!-- ══ 燈號說明 ══ -->
 <div class="guide-section">
   <div class="guide-sec-header">
-    <span class="guide-sec-icon">ð¦</span>
-    <div><div class="guide-sec-title">çèå¤æ·æ¨æº</div><div class="guide-sec-sub">ä»¥ä¸»æªæ­·å²æä½å¹çºåºæºï¼Â±10% çºæ­£å¸¸åé</div></div>
+    <span class="guide-sec-icon">🚦</span>
+    <div><div class="guide-sec-title">燈號判斷標準</div><div class="guide-sec-sub">以主檔歷史最低價為基準，±10% 為正常區間</div></div>
   </div>
   <div class="guide-body">
     <table class="flag-table">
-      <thead><tr><th>çè</th><th>æ¢ä»¶</th><th>å»ºè­°åä½</th><th>åè¨»</th></tr></thead>
+      <thead><tr><th>燈號</th><th>條件</th><th>建議動作</th><th>備註</th></tr></thead>
       <tbody>
         <tr>
-          <td><span class="guide-badge gb-gn">ð¢ æ­£å¸¸</span></td>
-          <td>å» åå®å¹å¨æ­·å²æä½å¹ Â±10% ä»¥å§</td>
-          <td>ç´æ¥ç°½æ ¸ï¼ç¡éè­°å¹</td>
-          <td>â</td>
+          <td><span class="guide-badge gb-gn">🟢 正常</span></td>
+          <td>廠商單價在歷史最低價 ±10% 以內</td>
+          <td>直接簽核，無需議價</td>
+          <td>—</td>
         </tr>
         <tr>
-          <td><span class="guide-badge gb-rd">ð´ åé«</span></td>
-          <td>å» åå®å¹ &gt; æ­·å²æä½å¹ Ã 110%</td>
-          <td>åªåè­°å¹ï¼è¦æ±å°é½æ­·å²ä½å¹</td>
-          <td>å·®ç°æ¬é¡¯ç¤ºè¶åºç¾åæ¯</td>
+          <td><span class="guide-badge gb-rd">🔴 偏高</span></td>
+          <td>廠商單價 &gt; 歷史最低價 × 110%</td>
+          <td>優先議價，要求對齊歷史低價</td>
+          <td>差異欄顯示超出百分比</td>
         </tr>
         <tr>
-          <td><span class="guide-badge gb-pu">ð£ åä½</span></td>
-          <td>å» åå®å¹ &lt; æ­·å²æä½å¹ Ã 90%</td>
-          <td>ç¢ºèªè¦æ ¼æ¯å¦èä¸»æªä¸è´ï¼é²æ­¢ä»¥ä½è¦æ ¼åæ¿ä»£</td>
-          <td>ä¸ä¸å®æ¯å¥½äº</td>
+          <td><span class="guide-badge gb-pu">🟣 偏低</span></td>
+          <td>廠商單價 &lt; 歷史最低價 × 90%</td>
+          <td>確認規格是否與主檔一致，防止以低規格品替代</td>
+          <td>不一定是好事</td>
         </tr>
         <tr>
-          <td><span class="guide-badge gb-am">ð  å¾ç¢ºèª</span></td>
-          <td>AI æ¯å°å°ç¸ä¼¼åé ï¼ä½å¹éåº¦ 50â79%</td>
-          <td>äººå·¥ç¢ºèªåå/è¦æ ¼æ¯å¦æ­£ç¢º</td>
-          <td>å¯è½æ¯å» åç¨ä¸åå¯«æ³</td>
+          <td><span class="guide-badge gb-am">🟠 待確認</span></td>
+          <td>AI 比對到相似品項，但匹配度 50–79%</td>
+          <td>人工確認品名/規格是否正確</td>
+          <td>可能是廠商用不同寫法</td>
         </tr>
         <tr>
-          <td><span class="guide-badge gb-gr">âª ç¡åºæº</span></td>
-          <td>ä¸»æªä¸­ç¡æ­¤åé </td>
-          <td>æ¬æ¬¡æ¡è³¼å®æå¾ï¼å°æçµæäº¤å¹å å¥ä¸»æª</td>
-          <td>å»ºè­°è£åä¸»æª</td>
+          <td><span class="guide-badge gb-gr">⚪ 無基準</span></td>
+          <td>主檔中無此品項</td>
+          <td>本次採購完成後，將最終成交價加入主檔</td>
+          <td>建議補充主檔</td>
         </tr>
         <tr>
-          <td><span class="guide-badge gb-yw">ð¡ å·¥è²»/æ´å</span></td>
-          <td>å·¥è²»ææ´åé ç®ï¼ç¡ææå®å¹å¯æ¯å°ï¼</td>
-          <td>å¡«å¥é ä¼°å·¥è²»ï¼ç³»çµ±èªåå¥ç¨çè</td>
-          <td>éäººå·¥å¡«å¥é ä¼°éé¡</td>
+          <td><span class="guide-badge gb-yw">🟡 工費/整包</span></td>
+          <td>工費或整包項目（無材料單價可比對）</td>
+          <td>填入預估工費，系統自動套用燈號</td>
+          <td>需人工填入預估金額</td>
         </tr>
       </tbody>
     </table>
-    <div class="guide-step-tip" style="margin-top:.75rem">ð¡ å·¥è²»/æ´åé ç®ççèå¤æ·åºæºæ¯ä½ å¡«å¥çãé ä¼°åçå·¥è²»ãï¼èéä¸»æªææå¹æ ¼ãå¡«å¥å¾åæ¨£å¥ç¨ Â±10% è¦åã</div>
+    <div class="guide-step-tip" style="margin-top:.75rem">💡 工費/整包項目的燈號判斷基準是你填入的「預估合理工費」，而非主檔材料價格。填入後同樣套用 ±10% 規則。</div>
   </div>
 </div>
 
-<!-- ââ ä¸»æªç®¡ç ââ -->
+<!-- ══ 主檔管理 ══ -->
 <div class="guide-section">
   <div class="guide-sec-header">
-    <span class="guide-sec-icon">ð¦</span>
-    <div><div class="guide-sec-title">ä¸»æªç®¡ç</div><div class="guide-sec-sub">ç¶­è­·æææä½å¹è³æåº«çæ¹æ³</div></div>
+    <span class="guide-sec-icon">📦</span>
+    <div><div class="guide-sec-title">主檔管理</div><div class="guide-sec-sub">維護材料最低價資料庫的方法</div></div>
   </div>
   <div class="guide-body">
     <div class="guide-step">
       <div class="guide-step-num" style="background:var(--t3)">A</div>
       <div class="guide-step-content">
-        <div class="guide-step-title">åé åæ</div>
-        <div class="guide-step-desc">ä¸»æªä¾å·¥ç¨é¡å¥åé é¡¯ç¤ºï¼å¨é¨ / â éç®¡ / â¡ åé» / ð åæ¨ / ð© é¼æ§ / ð¦ å±ç¨ / ð· å·¥è²»ãæ¯å Tab æé¡¯ç¤ºè©²é¡å¥çåé æ¸éï¼æ¹ä¾¿å¿«éå®ä½ã</div>
+        <div class="guide-step-title">分頁切換</div>
+        <div class="guide-step-desc">主檔依工程類別分頁顯示：全部 / ⚙ 配管 / ⚡ 儀電 / 🏗 土木 / 🔩 鋼構 / 📦 共用 / 👷 工費。每個 Tab 旁顯示該類別的品項數量，方便快速定位。</div>
       </div>
     </div>
     <div class="guide-step">
       <div class="guide-step-num" style="background:var(--t3)">B</div>
       <div class="guide-step-content">
-        <div class="guide-step-title">ç·¨è¼¯åé </div>
-        <div class="guide-step-desc">éè¦åç»å¥ç®¡çå¡å¸³èæè½ç·¨è¼¯ãé»æä»»ææ¬ä½ç´æ¥ä¿®æ¹ï¼<strong>Updated æ¬ä½èªåè¨éä¿®æ¹æé</strong>ï¼ä¸éæåè¼¸å¥ãæ©è²åä»£è¡¨ææªå²å­çè®æ´ã</div>
-        <div class="guide-step-tip">â  ä¿®æ¹å®æå¾è¨å¾æãå²å­è³ Driveãï¼å¦åéæ°æ´çå¾è®æ´ææ¶å¤±ã</div>
+        <div class="guide-step-title">編輯品項</div>
+        <div class="guide-step-desc">需要先登入管理員帳號才能編輯。點擊任意欄位直接修改，<strong>Updated 欄位自動記錄修改時間</strong>，不需手動輸入。橘色列代表有未儲存的變更。</div>
+        <div class="guide-step-tip">⚠ 修改完成後記得按「儲存至 Drive」，否則重新整理後變更會消失。</div>
       </div>
     </div>
     <div class="guide-step">
       <div class="guide-step-num" style="background:var(--t3)">C</div>
       <div class="guide-step-content">
-        <div class="guide-step-title">æ¹éå¯å¥ CSV</div>
+        <div class="guide-step-title">批量匯入 CSV</div>
         <div class="guide-step-desc">
-          æãå¯åº CSVãååå¾ç®åä¸»æªæ ¼å¼ï¼ç¨ Excel ç·¨è¼¯å¾åæãå¯å¥è¦è CSVãæ´æ¹è¦èã
-          CSV æ¬ä½æ ¼å¼ï¼<br>
+          按「匯出 CSV」先取得目前主檔格式，用 Excel 編輯後再按「匯入覆蓋 CSV」整批覆蓋。
+          CSV 欄位格式：<br>
           <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:4px 8px;border-radius:4px;display:inline-block;margin-top:.4rem">Material Specification, Unit, Unit Price (THB), Category, Keywords, Remark, Updated At</code>
         </div>
-        <div class="guide-step-tip">â  å¯å¥æå®æ´è¦èç¾æä¸»æªï¼æä½åå»ºè­°åå¯åºåä»½ãCategory æ¬ä½å¼ï¼piping / electrical / civil / structural / common / labor</div>
+        <div class="guide-step-tip">⚠ 匯入會完整覆蓋現有主檔，操作前建議先匯出備份。Category 欄位值：piping / electrical / civil / structural / common / labor</div>
       </div>
     </div>
     <div class="guide-step">
       <div class="guide-step-num" style="background:var(--t3)">D</div>
       <div class="guide-step-content">
-        <div class="guide-step-title">å±ç¨ï¼Commonï¼é¡å¥çä½¿ç¨åå</div>
-        <div class="guide-step-desc">è·¨å·¥ç¨é½æç¨å°çææï¼èºæ ãåé¼ãçæãé¨æ ç­ï¼è«æ­¸é¡çºãå±ç¨ããé¸æä»»ä½å·¥ç¨é¡å¥åææï¼å±ç¨é¡å¥æèªåå¸¶å¥ï¼ä¸éè¦å¨æ¯åé¡å¥éè¤å»ºç«åä¸åé ã</div>
+        <div class="guide-step-title">共用（Common）類別的使用原則</div>
+        <div class="guide-step-desc">跨工程都會用到的材料（螺栓、型鋼、焊材、錨栓等）請歸類為「共用」。選擇任何工程類別分析時，共用類別會自動帶入，不需要在每個類別重複建立同一品項。</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ââ AI å­¸ç¿ä¿®æ­£ ââ -->
+<!-- ══ AI 學習修正 ══ -->
 <div class="guide-section">
   <div class="guide-sec-header">
-    <span class="guide-sec-icon">ð§ </span>
-    <div><div class="guide-sec-title">AI å­¸ç¿ä¿®æ­£</div><div class="guide-sec-sub">è® AI è¶ç¨è¶æºçæ¹æ³</div></div>
+    <span class="guide-sec-icon">🧠</span>
+    <div><div class="guide-sec-title">AI 學習修正</div><div class="guide-sec-sub">讓 AI 越用越準的方法</div></div>
   </div>
   <div class="guide-body">
     <div class="guide-step">
       <div class="guide-step-num">1</div>
       <div class="guide-step-content">
-        <div class="guide-step-title">ç¼ç¾ AI è®åé¯èª¤</div>
-        <div class="guide-step-desc">å¨å ±åä¸­ç¼ç¾ AI è®åä¸æ­£ç¢ºçåé ï¼å¦ååèª¤è®ãå®å¹è§£æé¯èª¤ãæ³°æç¸®å¯«æªè­å¥ï¼ï¼é»æè©²åå³å´ç <span class="guide-badge gb-cy">âï¸ ä¿®æ­£</span> æéã</div>
+        <div class="guide-step-title">發現 AI 讀取錯誤</div>
+        <div class="guide-step-desc">在報告中發現 AI 讀取不正確的品項（如品名誤讀、單價解析錯誤、泰文縮寫未識別），點擊該列右側的 <span class="guide-badge gb-cy">✏️ 修正</span> 按鈕。</div>
       </div>
     </div>
     <div class="guide-step">
       <div class="guide-step-num">2</div>
       <div class="guide-step-content">
-        <div class="guide-step-title">å¡«å¯«ä¿®æ­£å§å®¹</div>
+        <div class="guide-step-title">填寫修正內容</div>
         <div class="guide-step-desc">
-          ä¿®æ­£è¦çªåçºå©ååå¡ï¼
-          <br>â¢ <strong>ä¸åé¨ï¼å¿å¡«ï¼</strong> â ç´æ¥ä¿®æ¹åé åç¨±ãå®ä½ãæ¸éãå®å¹ï¼æãå¥ç¨ä¸¦æ´æ°å ±åãå¾ç«å³çæ
-          <br>â¢ <strong>ä¸åé¨ï¼é¸å¡«ï¼</strong> â å¡«å¯«ãAI è®ååªè£¡é¯ãçèªªæï¼éé¨åææå­å¥ Drive ä¾ä¸æ¬¡å­¸ç¿
+          修正視窗分為兩個區塊：
+          <br>• <strong>上半部（必填）</strong> — 直接修改品項名稱、單位、數量、單價，按「套用並更新報告」後立即生效
+          <br>• <strong>下半部（選填）</strong> — 填寫「AI 讀取哪裡錯」的說明，這部分才會存入 Drive 供下次學習
         </div>
-        <div class="guide-step-tip">ð¡ åªæ³ä¿®æ­£éæ¬¡å ±åä¸éè¦ AI å­¸ç¿ â åªå¡«ä¸åé¨å³å¯ãæ³è® AI ä¸æ¬¡èªåä¿®æ­£ â åæå¡«ä¸åé¨çèªªææ¬ã</div>
+        <div class="guide-step-tip">💡 只想修正這次報告不需要 AI 學習 → 只填上半部即可。想讓 AI 下次自動修正 → 同時填下半部的說明欄。</div>
       </div>
     </div>
     <div class="guide-step">
       <div class="guide-step-num">3</div>
       <div class="guide-step-content">
-        <div class="guide-step-title">ä¸æ¬¡èªåçæ</div>
-        <div class="guide-step-desc">ä¿®æ­£ç´éå­å¥ Drive ç <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">corrections.json</code>ãä¸æ¬¡åæåé¡å·¥ç¨æï¼AI ç Prompt è£¡æèªåéä¸æè¿ 30 ç­ä¿®æ­£ç´éï¼å¨åæååç¥ AIãä¸æ¬¡éæ¨£è®æ¯é¯çï¼æ­£ç¢ºæè©²æ¯éæ¨£ãã</div>
-        <div class="guide-step-tip">ð¡ ä¿®æ­£ç´éä¾å·¥ç¨é¡å¥ç¯©é¸å¸¶å¥ï¼ãå±ç¨ï¼commonï¼ãé¡å¥çä¿®æ­£æ¯æ¬¡é½æå¸¶å¥ãè²»ç¨å½±é¿æ¥µå°ï¼ç´æ¯ä»½å ±åå¤ $0.0003ï¼ã</div>
+        <div class="guide-step-title">下次自動生效</div>
+        <div class="guide-step-desc">修正紀錄存入 Drive 的 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">corrections.json</code>。下次分析同類工程時，AI 的 Prompt 裡會自動附上最近 30 筆修正紀錄，在分析前告知 AI「上次這樣讀是錯的，正確應該是這樣」。</div>
+        <div class="guide-step-tip">💡 修正紀錄依工程類別篩選帶入，「共用（common）」類別的修正每次都會帶入。費用影響極小（約每份報告多 $0.0003）。</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ââ ç³»çµ±è¨­å® ââ -->
+<!-- ══ 系統設定 ══ -->
 <div class="guide-section">
   <div class="guide-sec-header">
-    <span class="guide-sec-icon">â</span>
-    <div><div class="guide-sec-title">ç³»çµ±è¨­å®èé¨ç½²</div><div class="guide-sec-sub">é¦æ¬¡è¨­å®èç¶­è­·èªªæ</div></div>
+    <span class="guide-sec-icon">⚙</span>
+    <div><div class="guide-sec-title">系統設定與部署</div><div class="guide-sec-sub">首次設定與維護說明</div></div>
   </div>
   <div class="guide-body">
     <table class="setup-table">
-      <thead><tr><th>è¨­å®é ç®</th><th>èªªæ</th></tr></thead>
+      <thead><tr><th>設定項目</th><th>說明</th></tr></thead>
       <tbody>
         <tr>
-          <td>Apps Script å¾ç«¯</td>
-          <td>æ´åç³»çµ±çå¾ç«¯ï¼è² è²¬å¼å« Gemini APIãå­å Google Driveãé©è­ç®¡çå¡ç»å¥ãé¨ç½²å¾å°ç¶²åå¡«å¥ HTML ç¬¬ä¸è¡ <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.BACKEND_URL</code></td>
+          <td>Apps Script 後端</td>
+          <td>整個系統的後端，負責呼叫 Gemini API、存取 Google Drive、驗證管理員登入。部署後將網址填入 HTML 第一行 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.BACKEND_URL</code></td>
         </tr>
         <tr>
           <td>Gemini API Key</td>
-          <td>å¡«å¥ Apps Script ç <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.GEMINI_API_KEY</code>ãKey æ°¸é åªå­å¨ä¼ºæå¨ç«¯ï¼ä¸ææ´é²çµ¦ä½¿ç¨èãè²»ç¨ç´ $0.02 / ä»½å ±åã</td>
+          <td>填入 Apps Script 的 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.GEMINI_API_KEY</code>。Key 永遠只存在伺服器端，不會暴露給使用者。費用約 $0.02 / 份報告。</td>
         </tr>
         <tr>
-          <td>Google Drive è³æå¤¾</td>
-          <td>å¨ Drive å»ºç«ä¸å <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">ProcureAI</code> è³æå¤¾ï¼å°è³æå¤¾ ID å¡«å¥ Apps Script ç <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.DRIVE_FOLDER_ID</code></td>
+          <td>Google Drive 資料夾</td>
+          <td>在 Drive 建立一個 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">ProcureAI</code> 資料夾，將資料夾 ID 填入 Apps Script 的 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.DRIVE_FOLDER_ID</code></td>
         </tr>
         <tr>
-          <td>ç®¡çå¡å¸³å¯</td>
-          <td>å¸³èå¯ç¢¼è¨­å®å¨ HTML ç¬¬ä¸è¡ <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.ADMIN_USER / ADMIN_PW</code> å Apps Script çååæ¬ä½ãå©èéä¿æä¸è´ã</td>
+          <td>管理員帳密</td>
+          <td>帳號密碼設定在 HTML 第一行 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">CONFIG.ADMIN_USER / ADMIN_PW</code> 和 Apps Script 的同名欄位。兩處需保持一致。</td>
         </tr>
         <tr>
-          <td>é¨ç½²æ´æ°æ¹å¼</td>
-          <td>ä¿®æ¹ HTML å¾ä¸å³è³ GitHub è¦è <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">index.html</code> å³çæãä¿®æ¹ Apps Script å¾ééæ°é¨ç½²ï¼ç®¡çé¨ç½² â ç·¨è¼¯ â æ°çæ¬ï¼ä¸¦æ´æ° CONFIG.BACKEND_URLã</td>
+          <td>部署更新方式</td>
+          <td>修改 HTML 後上傳至 GitHub 覆蓋 <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px">index.html</code> 即生效。修改 Apps Script 後需重新部署（管理部署 → 編輯 → 新版本）並更新 CONFIG.BACKEND_URL。</td>
         </tr>
         <tr>
-          <td>Drive è³æå¤¾çµæ§</td>
+          <td>Drive 資料夾結構</td>
           <td>
-            ç³»çµ±èªåå»ºç«ä»¥ä¸çµæ§ï¼<br>
+            系統自動建立以下結構：<br>
             <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:4px 8px;border-radius:4px;display:block;margin-top:.4rem;line-height:1.8">
               ProcureAI/<br>
-              âââ master_list.jsonï¼ä¸»æªï¼<br>
-              âââ corrections.jsonï¼AI ä¿®æ­£ç´éï¼<br>
-              âââ uploads/YYYY-MM/ï¼åå§å ±å¹å®ï¼<br>
-              âââ reports/YYYY-MM/ï¼åæå ±å JSON + Excelï¼
+              ├── master_list.json（主檔）<br>
+              ├── corrections.json（AI 修正紀錄）<br>
+              ├── uploads/YYYY-MM/（原始報價單）<br>
+              └── reports/YYYY-MM/（分析報告 JSON + Excel）
             </code>
           </td>
         </tr>
@@ -767,70 +767,70 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
   </div>
 </div>
 
-<!-- ââ FAQ ââ -->
+<!-- ══ FAQ ══ -->
 <div class="guide-section">
   <div class="guide-sec-header">
-    <span class="guide-sec-icon">â</span>
-    <div><div class="guide-sec-title">å¸¸è¦åé¡</div><div class="guide-sec-sub">FAQ</div></div>
+    <span class="guide-sec-icon">❓</span>
+    <div><div class="guide-sec-title">常見問題</div><div class="guide-sec-sub">FAQ</div></div>
   </div>
   <div class="guide-body">
     <div class="faq-item">
-      <div class="faq-q">å¾ç«¯é£ç·å¤±ææéº¼è¾¦ï¼</div>
-      <div class="faq-a">æ F12 éåéç¼èå·¥å· â Console é ç±¤æ¥çé¯èª¤è¨æ¯ãå¸¸è¦åå ï¼â Apps Script ç¶²åå¡«é¯ â¡é¨ç½²æå­åæ¬æªè¨­çºãææäººãâ¢Apps Script ææ°å¢åè½éè¦éæ°ææ¬ï¼å» script.google.com é»ãå·è¡ãä»»ä¸å½æ¸è§¸ç¼ææ¬ï¼ã</div>
+      <div class="faq-q">後端連線失敗怎麼辦？</div>
+      <div class="faq-a">按 F12 開啟開發者工具 → Console 頁籤查看錯誤訊息。常見原因：①Apps Script 網址填錯 ②部署時存取權未設為「所有人」③Apps Script 有新增功能需要重新授權（去 script.google.com 點「執行」任一函數觸發授權）。</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">AI åææéå¾é·æéº¼è¾¦ï¼</div>
-      <div class="faq-a">é¸æç¹å®å·¥ç¨é¡å¥ï¼èé ALLï¼å¯ä»¥å¤§å¹ç¸®ç­æéï¼å çºä¸»æªæ¯å°çåé æ¸éæ¸å°ãææ PDF è§£æéåº¦éå¸¸æ¯åå§æ¸ä½ PDF æ¢ï¼å»ºè­°ä½¿ç¨é«è§£æåº¦ï¼300 DPI ä»¥ä¸ï¼çææä»¶ã</div>
+      <div class="faq-q">AI 分析時間很長怎麼辦？</div>
+      <div class="faq-a">選擇特定工程類別（而非 ALL）可以大幅縮短時間，因為主檔比對的品項數量減少。掃描 PDF 解析速度通常比原始數位 PDF 慢，建議使用高解析度（300 DPI 以上）的掃描件。</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">AI è®åçåé é åºè·åå§å ±å¹å®ä¸åï¼</div>
-      <div class="faq-a">å ±åä¸­çåé é åºå®å¨ä¾ç§ AI è®åçåå§é åºãå¦æé åºæèª¤ï¼å¯ä½¿ç¨ â² â¼ æéæåèª¿æ´ï¼æææ³åé åå°æ­£ç¢ºä½ç½®ã</div>
+      <div class="faq-q">AI 讀取的品項順序跟原始報價單不同？</div>
+      <div class="faq-a">報告中的品項順序完全依照 AI 讀取的原始順序。如果順序有誤，可使用 ▲ ▼ 按鈕手動調整，或拖曳品項列到正確位置。</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">ä¸»æªæ²æéååé ï¼çèé¡¯ç¤ºãâª ç¡åºæºãï¼</div>
-      <div class="faq-a">éæ¬¡æ¡è³¼å®æä¸¦ç¢ºèªæäº¤å¹å¾ï¼ç¨ãä¸»æªç®¡çãé é¢æ°å¢éååé ï¼ä¸æ¬¡åææå°±æåºæºå¯ä»¥æ¯å°ãå»ºè­°åæå¡«å¥ Keywords æ¬ä½ï¼è±æééµå­ï¼ï¼éæ¨£ AI å¨æ¨¡ç³æ¯å°ææ´å®¹ææ¾å°å°æåé ã</div>
+      <div class="faq-q">主檔沒有這個品項，燈號顯示「⚪ 無基準」？</div>
+      <div class="faq-a">這次採購完成並確認成交價後，用「主檔管理」頁面新增這個品項，下次分析時就有基準可以比對。建議同時填入 Keywords 欄位（英文關鍵字），這樣 AI 在模糊比對時更容易找到對應品項。</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">å¤äººåæä½¿ç¨ä¸»æªç·¨è¼¯æè¡çªåï¼</div>
-      <div class="faq-a">ç®åç³»çµ±æ¡ç¨ãæå¾å²å­èè¦èãçæ¹å¼ï¼è¥å¤äººåæç·¨è¼¯ååå¥å²å­ï¼å¾å²å­çæè¦èåå²å­çãå»ºè­°ä¸»æªç®¡çç±åºå®çç®¡çå¡è² è²¬ï¼æåèª¿å¥½æéåæ¹ç·¨è¼¯ã</div>
+      <div class="faq-q">多人同時使用主檔編輯會衝突嗎？</div>
+      <div class="faq-a">目前系統採用「最後儲存者覆蓋」的方式，若多人同時編輯再分別儲存，後儲存的會覆蓋先儲存的。建議主檔管理由固定的管理員負責，或協調好時間分批編輯。</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">ä¸è¬ä½¿ç¨èï¼éç®¡çå¡ï¼å¯ä»¥åä»éº¼ï¼</div>
-      <div class="faq-a">ä¸è¬ä½¿ç¨èï¼ä¸ç»å¥ï¼å¯ä»¥ï¼ä¸å³å ±å¹å®é²è¡æ¯å¹åæãæ¥çå ±åãæåä¿®æ¹å ±åå§å®¹ãå¯åº Excel / JSON / PDFãæ¥çä¸»æªï¼å¯è®ï¼ã<br>éè¦ç®¡çå¡ç»å¥æè½ï¼ç·¨è¼¯ä¸»æªåé ãæ°å¢åªé¤ä¸»æªåé ãå²å­ä¸»æªè³ Driveãéåç³»çµ±è¨­å®ã</div>
+      <div class="faq-q">一般使用者（非管理員）可以做什麼？</div>
+      <div class="faq-a">一般使用者（不登入）可以：上傳報價單進行比價分析、查看報告、手動修改報告內容、匯出 Excel / JSON / PDF、查看主檔（唯讀）。<br>需要管理員登入才能：編輯主檔品項、新增刪除主檔品項、儲存主檔至 Drive、開啟系統設定。</div>
     </div>
   </div>
 </div>
 
 <div style="text-align:center;padding:1.5rem 0;font-family:var(--mono);font-size:11px;color:var(--t3)">
-  ProcureAI v4 ï½ Powered by Gemini AI ï½ Built on Google Apps Script + GitHub Pages
+  ProcureAI v4 ｜ Powered by Gemini AI ｜ Built on Google Apps Script + GitHub Pages
 </div>
 
 </div>
 
-<!-- ââ PAGE: MASTER ââ -->
+<!-- ══ PAGE: MASTER ══ -->
 <div class="pg" id="pg-master">
   <div class="mtool">
-    <input class="msearch" id="ms" placeholder="æå°åé è¦æ ¼ãééµå­â¦" oninput="renderM()" onchange="renderM()" onsearch="renderM()">
-    <span class="mcnt" id="mc">å± 0 ç­</span>
-    <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="openAdd()">+ æ°å¢</button>
-    <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="saveM()">å²å­è³ Drive</button>
-    <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="expCSV()">å¯åº CSV</button>
+    <input class="msearch" id="ms" placeholder="搜尋品項規格、關鍵字…" oninput="renderM()" onchange="renderM()" onsearch="renderM()">
+    <span class="mcnt" id="mc">共 0 筆</span>
+    <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="openAdd()">+ 新增</button>
+    <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="saveM()">儲存至 Drive</button>
+    <button class="btn btn-g" style="font-size:12px;padding:7px 14px" onclick="expCSV()">匯出 CSV</button>
     <label class="btn btn-g" style="font-size:12px;padding:7px 14px;cursor:pointer">
-      å¯å¥è¦è CSV <input type="file" accept=".csv" id="csvIn" style="display:none" onchange="impCSV(this)">
+      匯入覆蓋 CSV <input type="file" accept=".csv" id="csvIn" style="display:none" onchange="impCSV(this)">
     </label>
     <label class="btn btn-g" style="font-size:12px;padding:7px 14px;cursor:pointer">
-      å¯å¥è¦è JSON <input type="file" accept=".json" id="jsonIn" style="display:none" onchange="impJSON(this)">
+      匯入覆蓋 JSON <input type="file" accept=".json" id="jsonIn" style="display:none" onchange="impJSON(this)">
     </label>
   </div>
-  <!-- åé  tabs -->
+  <!-- 分頁 tabs -->
   <div class="mtabs" id="masterTabs">
-    <button class="mtab on" onclick="setMTab('all')" id="mtab-all">å¨é¨ <span class="mtab-cnt" id="cnt-all">0</span></button>
-    <button class="mtab" onclick="setMTab('piping')" id="mtab-piping">â éç®¡ <span class="mtab-cnt" id="cnt-piping">0</span></button>
-    <button class="mtab" onclick="setMTab('electrical')" id="mtab-electrical">â¡ åé» <span class="mtab-cnt" id="cnt-electrical">0</span></button>
-    <button class="mtab" onclick="setMTab('civil')" id="mtab-civil">ð åæ¨ <span class="mtab-cnt" id="cnt-civil">0</span></button>
-    <button class="mtab" onclick="setMTab('structural')" id="mtab-structural">ð© é¼æ§ <span class="mtab-cnt" id="cnt-structural">0</span></button>
-    <button class="mtab" onclick="setMTab('common')" id="mtab-common">ð¦ å±ç¨ <span class="mtab-cnt" id="cnt-common">0</span></button>
-    <button class="mtab" onclick="setMTab('labor')" id="mtab-labor">ð· å·¥è²» <span class="mtab-cnt" id="cnt-labor">0</span></button>
+    <button class="mtab on" onclick="setMTab('all')" id="mtab-all">全部 <span class="mtab-cnt" id="cnt-all">0</span></button>
+    <button class="mtab" onclick="setMTab('piping')" id="mtab-piping">⚙ 配管 <span class="mtab-cnt" id="cnt-piping">0</span></button>
+    <button class="mtab" onclick="setMTab('electrical')" id="mtab-electrical">⚡ 儀電 <span class="mtab-cnt" id="cnt-electrical">0</span></button>
+    <button class="mtab" onclick="setMTab('civil')" id="mtab-civil">🏗 土木 <span class="mtab-cnt" id="cnt-civil">0</span></button>
+    <button class="mtab" onclick="setMTab('structural')" id="mtab-structural">🔩 鋼構 <span class="mtab-cnt" id="cnt-structural">0</span></button>
+    <button class="mtab" onclick="setMTab('common')" id="mtab-common">📦 共用 <span class="mtab-cnt" id="cnt-common">0</span></button>
+    <button class="mtab" onclick="setMTab('labor')" id="mtab-labor">👷 工費 <span class="mtab-cnt" id="cnt-labor">0</span></button>
   </div>
   <div class="tc">
     <div class="tsc">
@@ -843,7 +843,7 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
           <th style="text-align:left;min-width:180px">Keywords</th>
           <th style="text-align:left;min-width:100px">Remark</th>
           <th style="text-align:center;min-width:130px">Updated</th>
-          <th style="text-align:center;padding-right:16px;min-width:70px">æä½</th>
+          <th style="text-align:center;padding-right:16px;min-width:70px">操作</th>
         </tr></thead>
         <tbody id="mBody"></tbody>
       </table>
@@ -852,11 +852,11 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
   <p id="masterHint" style="font-family:var(--mono);font-size:10px;color:var(--t3);margin-top:.75rem"></p>
 </div>
 
-<!-- ââ MODAL: ADD ââ -->
+<!-- ══ MODAL: ADD ══ -->
 <div class="mbg h" id="addM">
   <div class="mbox">
-    <h3>æ°å¢åé </h3>
-    <div class="field" style="margin-bottom:.75rem"><label>Material Specification *</label><input id="m-sp" placeholder="ä¾ï¼Ball Valve, SS304, CL150, 2&quot;"></div>
+    <h3>新增品項</h3>
+    <div class="field" style="margin-bottom:.75rem"><label>Material Specification *</label><input id="m-sp" placeholder="例：Ball Valve, SS304, CL150, 2&quot;"></div>
     <div class="g2" style="margin-bottom:.75rem">
       <div class="field"><label>Unit</label>
         <select id="m-un"><option>EA</option><option>M</option><option>PCS</option><option>KG</option><option>SET</option><option>LOT</option></select>
@@ -865,158 +865,158 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
     </div>
     <div class="field" style="margin-bottom:.75rem"><label>Category *</label>
       <select id="m-cat">
-        <option value="piping">â éç®¡ (Piping)</option>
-        <option value="electrical">â¡ åé» (Electrical)</option>
-        <option value="civil">ð åæ¨ (Civil)</option>
-        <option value="structural">ð© é¼æ§ (Structural)</option>
-        <option value="common">ð¦ å±ç¨ (Common)</option>
-        <option value="labor">ð· å·¥è²» (Labor)</option>
+        <option value="piping">⚙ 配管 (Piping)</option>
+        <option value="electrical">⚡ 儀電 (Electrical)</option>
+        <option value="civil">🏗 土木 (Civil)</option>
+        <option value="structural">🔩 鋼構 (Structural)</option>
+        <option value="common">📦 共用 (Common)</option>
+        <option value="labor">👷 工費 (Labor)</option>
       </select>
     </div>
     <div class="field" style="margin-bottom:.75rem"><label>Keywords</label><input id="m-kw" placeholder="ball valve ss304 2inch"></div>
     <div class="field" style="margin-bottom:1.25rem"><label>Remark</label><input id="m-rm"></div>
     <div class="btn-row" style="margin-top:0">
-      <button class="btn btn-g" onclick="closeAdd()">åæ¶</button>
-      <button class="btn btn-c" onclick="addItem()">æ°å¢</button>
+      <button class="btn btn-g" onclick="closeAdd()">取消</button>
+      <button class="btn btn-c" onclick="addItem()">新增</button>
     </div>
   </div>
 </div>
 
-<!-- ââ MODAL: SETTINGS ââ -->
+<!-- ══ MODAL: SETTINGS ══ -->
 <div class="mbg h" id="settM">
   <div class="mbox" style="max-width:520px">
-    <h3>ç³»çµ±è¨­å®</h3>
+    <h3>系統設定</h3>
     <div class="srow">
-      <div><div class="slbl">Apps Script å¾ç«¯ç¶²å</div><div class="ssub">å¯«æ­»å¨ HTML ç¬¬ä¸è¡ CONFIG.BACKEND_URLï¼ä¿®æ¹å¾éæ°ä¸å³ GitHub</div></div>
+      <div><div class="slbl">Apps Script 後端網址</div><div class="ssub">寫死在 HTML 第一行 CONFIG.BACKEND_URL，修改後重新上傳 GitHub</div></div>
       <div style="display:flex;gap:.5rem;align-items:center">
-        <span class="sval" id="urlStat">æªè¨­å®</span>
-        <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="setUrl()">è¨­å®</button>
+        <span class="sval" id="urlStat">未設定</span>
+        <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="setUrl()">設定</button>
       </div>
     </div>
     <div class="srow">
-      <div><div class="slbl">Gemini API Key</div><div class="ssub">ç´æ¥å¯«å¨ Apps Script CONFIG.GEMINI_API_KEYï¼åéæå¡ç¡éè¨­å®</div></div>
-      <span class="sval" style="color:var(--gn)">ç±å¾ç«¯çµ±ä¸ç®¡ç â</span>
+      <div><div class="slbl">Gemini API Key</div><div class="ssub">直接寫在 Apps Script CONFIG.GEMINI_API_KEY，團隊成員無需設定</div></div>
+      <span class="sval" style="color:var(--gn)">由後端統一管理 ✓</span>
     </div>
     <div class="srow">
-      <div><div class="slbl">Google Drive é£ç·çæ</div><div class="ssub">éé Apps Script æä½ Driveï¼ç¡é OAuth popup</div></div>
-      <span class="sval" id="drvStat">ä¾ Apps Script ææ¬</span>
+      <div><div class="slbl">Google Drive 連線狀態</div><div class="ssub">透過 Apps Script 操作 Drive，無需 OAuth popup</div></div>
+      <span class="sval" id="drvStat">依 Apps Script 授權</span>
     </div>
     <div class="srow">
-      <div><div class="slbl">ç®¡çå¡å¯ç¢¼</div><div class="ssub">åæ­¥æ´æ° Apps Script CONFIG.ADMIN_PW</div></div>
-      <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="chgPw()">ä¿®æ¹</button>
+      <div><div class="slbl">管理員密碼</div><div class="ssub">同步更新 Apps Script CONFIG.ADMIN_PW</div></div>
+      <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="chgPw()">修改</button>
     </div>
     <div class="btn-row" style="margin-top:1rem">
-      <button class="btn btn-g" onclick="closeSett()">éé</button>
-      <button class="btn btn-c" onclick="testConn()">æ¸¬è©¦é£ç·</button>
+      <button class="btn btn-g" onclick="closeSett()">關閉</button>
+      <button class="btn btn-c" onclick="testConn()">測試連線</button>
     </div>
   </div>
 </div>
 
 
-<!-- ââ MODAL: CATEGORY SELECT ââ -->
+<!-- ══ MODAL: CATEGORY SELECT ══ -->
 <div class="mbg h" id="catModal">
   <div class="mbox" style="max-width:480px">
-    <h3>é¸æå·¥ç¨é¡å¥</h3>
-    <p style="font-size:13px;color:var(--t2);margin-bottom:.25rem">é¸æå¾ AI åªæ¯å°å°æé¡å¥çä¸»æªï¼ç¯çåææé</p>
+    <h3>選擇工程類別</h3>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:.25rem">選擇後 AI 只比對對應類別的主檔，節省分析時間</p>
     <div class="cat-grid">
       <div class="cat-btn" onclick="selCat('all')" id="cat-all">
-        <span class="cat-ico">ð</span>
+        <span class="cat-ico">📋</span>
         <div class="cat-lbl">ALL</div>
-        <div class="cat-sub">å¨é¨ä¸»æªæ¯å°</div>
+        <div class="cat-sub">全部主檔比對</div>
       </div>
       <div class="cat-btn" onclick="selCat('piping')" id="cat-piping">
-        <span class="cat-ico">â</span>
-        <div class="cat-lbl">éç®¡</div>
+        <span class="cat-ico">⚙</span>
+        <div class="cat-lbl">配管</div>
         <div class="cat-sub">Piping + Common</div>
       </div>
       <div class="cat-btn" onclick="selCat('electrical')" id="cat-electrical">
-        <span class="cat-ico">â¡</span>
-        <div class="cat-lbl">åé»</div>
+        <span class="cat-ico">⚡</span>
+        <div class="cat-lbl">儀電</div>
         <div class="cat-sub">Electrical + Common</div>
       </div>
       <div class="cat-btn" onclick="selCat('civil')" id="cat-civil">
-        <span class="cat-ico">ð</span>
-        <div class="cat-lbl">åæ¨</div>
+        <span class="cat-ico">🏗</span>
+        <div class="cat-lbl">土木</div>
         <div class="cat-sub">Civil + Common</div>
       </div>
       <div class="cat-btn" onclick="selCat('structural')" id="cat-structural">
-        <span class="cat-ico">ð©</span>
-        <div class="cat-lbl">é¼æ§</div>
+        <span class="cat-ico">🔩</span>
+        <div class="cat-lbl">鋼構</div>
         <div class="cat-sub">Structural + Common</div>
       </div>
       <div class="cat-btn" onclick="selCat('labor')" id="cat-labor">
-        <span class="cat-ico">ð·</span>
-        <div class="cat-lbl">å·¥è²»/æ´å</div>
+        <span class="cat-ico">👷</span>
+        <div class="cat-lbl">工費/整包</div>
         <div class="cat-sub">Labor + Common</div>
       </div>
     </div>
     <div class="btn-row" style="margin-top:.5rem">
-      <button class="btn btn-g" onclick="document.getElementById('catModal').classList.add('h')">åæ¶</button>
-      <button class="btn btn-c" id="catConfirmBtn" onclick="startAnalyzeWithCat()" disabled>éå§åæ â</button>
+      <button class="btn btn-g" onclick="document.getElementById('catModal').classList.add('h')">取消</button>
+      <button class="btn btn-c" id="catConfirmBtn" onclick="startAnalyzeWithCat()" disabled>開始分析 →</button>
     </div>
   </div>
 </div>
 
-<!-- ââ FILE PREVIEW FLOAT ââ -->
+<!-- ══ FILE PREVIEW FLOAT ══ -->
 <button class="fp-toggle" id="fpToggle" onclick="togglePreview()">
-  ð æ¥çåå§æª
+  📄 查看原始檔
 </button>
 <div class="fp-float" id="fpFloat">
   <div class="fp-float-header" id="fpDragHandle">
-    <span class="fp-float-title" id="fpTitle">ð åå§å ±å¹å®</span>
-    <a id="fpDownloadBtn" style="font-size:11px;padding:3px 10px;border:1px solid var(--rim2);border-radius:var(--r);color:var(--cy);text-decoration:none;background:#fff;cursor:pointer;display:inline-block" download="">â¬ ä¸è¼</a>
+    <span class="fp-float-title" id="fpTitle">📄 原始報價單</span>
+    <a id="fpDownloadBtn" style="font-size:11px;padding:3px 10px;border:1px solid var(--rim2);border-radius:var(--r);color:var(--cy);text-decoration:none;background:#fff;cursor:pointer;display:inline-block" download="">⬇ 下載</a>
   </div>
   <div class="fp-float-body" id="fpBody"></div>
 </div>
 
-<!-- ââ MODAL: CORRECTION ââ -->
+<!-- ══ MODAL: CORRECTION ══ -->
 <div class="mbg h" id="corrModal">
   <div class="mbox" style="max-width:560px">
-    <h3>âï¸ ä¿®æ­£åé è³æ</h3>
-    <p style="font-size:13px;color:var(--t2);margin-bottom:1rem">ä¿®æ¹å¾æãå¥ç¨ä¸¦æ´æ°ãâ å ±åç«å³æ´æ°ãå¦åæå¡«å¥ãAI èªªæãæ¬ä½ï¼éæå­å¥ Drive ä¾ä¸æ¬¡ AI å­¸ç¿ã</p>
+    <h3>✏️ 修正品項資料</h3>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:1rem">修改後按「套用並更新」— 報告立即更新。如同時填入「AI 說明」欄位，還會存入 Drive 供下次 AI 學習。</p>
 
-    <div class="corr-row"><span class="corr-label">AI è®å</span><div class="corr-val" id="corr-ai" style="color:var(--rd);font-size:12px;background:var(--bg3);border:1.5px solid var(--rim2);border-radius:6px;padding:.5rem .75rem;line-height:1.6;flex:1">â</div></div>
+    <div class="corr-row"><span class="corr-label">AI 讀取</span><div class="corr-val" id="corr-ai" style="color:var(--rd);font-size:12px;background:var(--bg3);border:1.5px solid var(--rim2);border-radius:6px;padding:.5rem .75rem;line-height:1.6;flex:1">—</div></div>
 
     <div style="background:var(--bg3);border-radius:var(--r);padding:1rem;margin:.75rem 0">
-      <div style="font-family:var(--mono);font-size:10px;color:var(--cy);margin-bottom:.75rem;letter-spacing:.08em">ä¿®æ¹çºæ­£ç¢ºå¼</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--cy);margin-bottom:.75rem;letter-spacing:.08em">修改為正確值</div>
       <div class="g2" style="margin-bottom:.75rem">
-        <div class="field"><label>åé è¦æ ¼</label><input id="corr-spec-edit" placeholder="åé åç¨±"></div>
-        <div class="field"><label>å®ä½</label><input id="corr-unit-edit" placeholder="EA / M / PCS"></div>
+        <div class="field"><label>品項規格</label><input id="corr-spec-edit" placeholder="品項名稱"></div>
+        <div class="field"><label>單位</label><input id="corr-unit-edit" placeholder="EA / M / PCS"></div>
       </div>
       <div class="g2">
-        <div class="field"><label>æ¸é</label><input type="number" id="corr-qty-edit" placeholder="æ¸é" step="0.01"></div>
-        <div class="field"><label>å» åå®å¹ (à¸¿)</label><input type="number" id="corr-price-edit" placeholder="å®å¹" step="0.01"></div>
+        <div class="field"><label>數量</label><input type="number" id="corr-qty-edit" placeholder="數量" step="0.01"></div>
+        <div class="field"><label>廠商單價 (฿)</label><input type="number" id="corr-price-edit" placeholder="單價" step="0.01"></div>
       </div>
     </div>
 
     <div style="border-top:1px solid var(--rim2);padding-top:.75rem;margin-top:.25rem">
-      <div style="font-family:var(--mono);font-size:10px;color:var(--t3);margin-bottom:.6rem">ä»¥ä¸é¸å¡« â å¡«å¥å¾å­å¥ Driveï¼ä¾ AI ä¸æ¬¡å­¸ç¿</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--t3);margin-bottom:.6rem">以下選填 — 填入後存入 Drive，供 AI 下次學習</div>
       <div class="corr-row">
-        <span class="corr-label">æ­£ç¢ºèªªæ</span>
-        <div class="field" style="flex:1"><input id="corr-correct" placeholder="èªªæ AI åªè£¡è®é¯ï¼é¸å¡«ï¼"></div>
+        <span class="corr-label">正確說明</span>
+        <div class="field" style="flex:1"><input id="corr-correct" placeholder="說明 AI 哪裡讀錯（選填）"></div>
       </div>
       <div class="corr-row">
-        <span class="corr-label">è£ååè¨»</span>
-        <div class="field" style="flex:1"><input id="corr-note" placeholder="ä¾ï¼å» åç¨æ³°æç¸®å¯«ï¼å¯¦éæ¯ XXX"></div>
+        <span class="corr-label">補充備註</span>
+        <div class="field" style="flex:1"><input id="corr-note" placeholder="例：廠商用泰文縮寫，實際是 XXX"></div>
       </div>
       <div class="corr-row">
-        <span class="corr-label">é¡å¥</span>
+        <span class="corr-label">類別</span>
         <div class="field" style="flex:1">
           <select id="corr-cat">
-            <option value="common">ð¦ å±ç¨</option>
-            <option value="piping">â éç®¡</option>
-            <option value="electrical">â¡ åé»</option>
-            <option value="civil">ð åæ¨</option>
-            <option value="structural">ð© é¼æ§</option>
-            <option value="labor">ð· å·¥è²»</option>
+            <option value="common">📦 共用</option>
+            <option value="piping">⚙ 配管</option>
+            <option value="electrical">⚡ 儀電</option>
+            <option value="civil">🏗 土木</option>
+            <option value="structural">🔩 鋼構</option>
+            <option value="labor">👷 工費</option>
           </select>
         </div>
       </div>
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-g" onclick="document.getElementById('corrModal').classList.add('h');document.getElementById('corr-correct').value='';document.getElementById('corr-note').value=''">åæ¶</button>
-      <button class="btn btn-c" onclick="submitCorrection()">å¥ç¨ä¸¦æ´æ°å ±å â</button>
+      <button class="btn btn-g" onclick="document.getElementById('corrModal').classList.add('h');document.getElementById('corr-correct').value='';document.getElementById('corr-note').value=''">取消</button>
+      <button class="btn btn-c" onclick="submitCorrection()">套用並更新報告 →</button>
     </div>
   </div>
 </div>
@@ -1024,17 +1024,17 @@ tbody td[contenteditable]:focus{outline:1px solid var(--cy);outline-offset:-1px;
 <div class="toast" id="toast"></div>
 
 <script>
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// â  â é¨ç½²è¨­å® â åªéä¿®æ¹éè£¡ï¼æ¹å®ä¸å³ GitHub å³çæ       â
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ╔═══════════════════════════════════════════════════════════╗
+// ║  ★ 部署設定 — 只需修改這裡，改完上傳 GitHub 即生效       ║
+// ╚═══════════════════════════════════════════════════════════╝
 const CONFIG = {
-  BACKEND_URL:   'https://script.google.com/macros/s/AKfycbzXm_WS7zlu-Mmj8jYuK7uX19nKb2hgJT6-8F87IMrUtxYpP5zb575XIqcKorB48a472A/exec',  // â è²¼ä¸ Apps Script é¨ç½²ç¶²å
+  BACKEND_URL:   'https://script.google.com/macros/s/AKfycbzXm_WS7zlu-Mmj8jYuK7uX19nKb2hgJT6-8F87IMrUtxYpP5zb575XIqcKorB48a472A/exec',  // ★ 貼上 Apps Script 部署網址
   ADMIN_USER:    'AAA',
   ADMIN_PW:      '123',
 };
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ════════════════════════════════════════════════════════════
 
-// âââ STATE âââ
+// ═══ STATE ═══
 let masterData  = [];
 let parsedItems = [];
 let laborItems  = [];
@@ -1043,23 +1043,23 @@ let curFileUrl  = null;   // object URL for preview
 let curRptId    = '';
 let authToken   = '';
 let backendUrl  = CONFIG.BACKEND_URL;
-let selectedCat = 'all'; // é¸æçå·¥ç¨é¡å¥
-let currentMTab = 'all'; // master åé 
-let corrTarget  = null;  // ç®åè¦ä¿®æ­£çåé 
+let selectedCat = 'all'; // 選擇的工程類別
+let currentMTab = 'all'; // master 分頁
+let corrTarget  = null;  // 目前要修正的品項
 
 const CATS = {
-  all:        { label:'ALL',   icon:'ð', related:['piping','electrical','civil','structural','common','labor'] },
-  piping:     { label:'éç®¡',  icon:'â',  related:['piping','common'] },
-  electrical: { label:'åé»',  icon:'â¡', related:['electrical','common'] },
-  civil:      { label:'åæ¨',  icon:'ð', related:['civil','common'] },
-  structural: { label:'é¼æ§',  icon:'ð©', related:['structural','common'] },
-  labor:      { label:'å·¥è²»',  icon:'ð·', related:['labor','common'] },
+  all:        { label:'ALL',   icon:'📋', related:['piping','electrical','civil','structural','common','labor'] },
+  piping:     { label:'配管',  icon:'⚙',  related:['piping','common'] },
+  electrical: { label:'儀電',  icon:'⚡', related:['electrical','common'] },
+  civil:      { label:'土木',  icon:'🏗', related:['civil','common'] },
+  structural: { label:'鋼構',  icon:'🔩', related:['structural','common'] },
+  labor:      { label:'工費',  icon:'👷', related:['labor','common'] },
 };
 
-// âââ API âââ
+// ═══ API ═══
 async function api(action, extra={}) {
   if (!backendUrl || backendUrl === 'YOUR_APPS_SCRIPT_URL')
-    throw new Error('è«å¨ HTML CONFIG.BACKEND_URL å¡«å¥ Apps Script ç¶²åå¾éæ°ä¸å³ GitHub');
+    throw new Error('請在 HTML CONFIG.BACKEND_URL 填入 Apps Script 網址後重新上傳 GitHub');
   const body = { action, token: authToken, ...extra };
   let res;
   try {
@@ -1069,21 +1069,21 @@ async function api(action, extra={}) {
       body: JSON.stringify(body)
     });
   } catch(e) {
-    throw new Error('ç¶²è·¯é¯èª¤ï¼' + e.message);
+    throw new Error('網路錯誤：' + e.message);
   }
   if (!res.ok) throw new Error('HTTP ' + res.status);
   let data;
-  try { data = await res.json(); } catch(_) { throw new Error('åææ ¼å¼é¯èª¤'); }
+  try { data = await res.json(); } catch(_) { throw new Error('回應格式錯誤'); }
   if (!data.ok) {
-    if(data.error==='æªææ¬'){authToken='';sessionStorage.removeItem('tok');showAdminUI(false);setTimeout(openLogin,300);throw new Error('ç»å¥å·²éæï¼è«éæ°ç»å¥');}
-    throw new Error(data.error || 'API é¯èª¤');
+    if(data.error==='未授權'){authToken='';sessionStorage.removeItem('tok');showAdminUI(false);setTimeout(openLogin,300);throw new Error('登入已過期，請重新登入');}
+    throw new Error(data.error || 'API 錯誤');
   }
   return data;
 }
 
-// âââ UTIL âââ
-const fmt  = n => n==null?'â':Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmtN = n => n==null?'â':Number(n).toLocaleString('th-TH',{maximumFractionDigits:0});
+// ═══ UTIL ═══
+const fmt  = n => n==null?'—':Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtN = n => n==null?'—':Number(n).toLocaleString('th-TH',{maximumFractionDigits:0});
 let _toastQ=[];let _toasting=false;
 function toast(msg,type='ok',dur=3000){
   _toastQ.push({msg,type,dur});
@@ -1113,12 +1113,12 @@ function setStep(n){
 }
 function updBadge(){
   const n=masterData.length;
-  document.getElementById('mBadge').textContent=`ä¸»æª ${n} ç­`;
-  document.getElementById('mc').textContent=`å± ${n} ç­`;
+  document.getElementById('mBadge').textContent=`主檔 ${n} 筆`;
+  document.getElementById('mc').textContent=`共 ${n} 筆`;
 }
 function updDriveBadge(ok){
   const el=document.getElementById('driveBadge');
-  el.textContent=ok?'å¾ç«¯å·²é£ç·':(backendUrl&&backendUrl!=='YOUR_APPS_SCRIPT_URL'?'å¾ç«¯é£ç·å¤±æ':'å¾ç«¯æªè¨­å®');
+  el.textContent=ok?'後端已連線':(backendUrl&&backendUrl!=='YOUR_APPS_SCRIPT_URL'?'後端連線失敗':'後端未設定');
   el.className='nbadge '+(ok?'ok':'warn');
 }
 function showAdminUI(on){
@@ -1126,30 +1126,30 @@ function showAdminUI(on){
 }
 function goMaster(){ showPg('master'); }
 
-// âââ AUTH âââ
+// ═══ AUTH ═══
 function openLogin(){ document.getElementById('lo').classList.add('on'); document.getElementById('lu').focus(); }
 function closeLogin(){ document.getElementById('lo').classList.remove('on'); document.getElementById('le').textContent=''; }
 async function doLogin(){
   const u=document.getElementById('lu').value.trim();
   const p=document.getElementById('lp').value;
-  if(!u||!p){document.getElementById('le').textContent='è«å¡«å¥å¸³èèå¯ç¢¼';return;}
+  if(!u||!p){document.getElementById('le').textContent='請填入帳號與密碼';return;}
   if(!backendUrl||backendUrl==='YOUR_APPS_SCRIPT_URL'){
     if(u===CONFIG.ADMIN_USER&&p===CONFIG.ADMIN_PW){
       authToken='local-admin';sessionStorage.setItem('tok',authToken);
-      closeLogin();showAdminUI(true);showPg('master');toast('ç®¡çå¡ç»å¥æåï¼æ¬æ©æ¨¡å¼ï¼','ok');
-    } else { document.getElementById('le').textContent='å¸³èæå¯ç¢¼é¯èª¤';document.getElementById('lp').value=''; }
+      closeLogin();showAdminUI(true);showPg('master');toast('管理員登入成功（本機模式）','ok');
+    } else { document.getElementById('le').textContent='帳號或密碼錯誤';document.getElementById('lp').value=''; }
     return;
   }
   try {
-    document.getElementById('le').textContent='é©è­ä¸­â¦';
+    document.getElementById('le').textContent='驗證中…';
     const d=await api('login',{username:u,password:p});
     authToken=d.token;sessionStorage.setItem('tok',authToken);
-    closeLogin();showAdminUI(true);showPg('master');toast('ç®¡çå¡ç»å¥æå','ok');
+    closeLogin();showAdminUI(true);showPg('master');toast('管理員登入成功','ok');
   } catch(e){document.getElementById('le').textContent=e.message;document.getElementById('lp').value='';}
 }
-function logout(){sessionStorage.clear();authToken='';showAdminUI(false);showPg('analyze');toast('å·²ç»åº','info');}
+function logout(){sessionStorage.clear();authToken='';showAdminUI(false);showPg('analyze');toast('已登出','info');}
 
-// âââ MASTER LOAD / SAVE âââ
+// ═══ MASTER LOAD / SAVE ═══
 async function loadMaster(){
   try {
     const d=await api('loadMaster',{});
@@ -1167,11 +1167,11 @@ async function saveM(){
   try {
     const d=await api('saveMaster',{data:masterData});
     masterData.forEach(r=>{r._d=false;r._n=false;});renderM();
-    toast(`å·²å²å­ ${d.count} ç­è³ Google Drive â`,'ok');
-  } catch(e){masterData.forEach(r=>{r._d=false;r._n=false;});renderM();toast('å·²æ¬æ©æ«å­','info');}
+    toast(`已儲存 ${d.count} 筆至 Google Drive ✓`,'ok');
+  } catch(e){masterData.forEach(r=>{r._d=false;r._n=false;});renderM();toast('已本機暫存','info');}
 }
 
-// âââ MASTER TABLE âââ
+// ═══ MASTER TABLE ═══
 let currentMTabVal = 'all';
 function setMTab(cat){
   currentMTabVal=cat;
@@ -1182,7 +1182,7 @@ function setMTab(cat){
 function renderM(){
   const q=(document.getElementById('ms').value||'').toLowerCase();
   const canEdit=!!authToken;
-  // åé ç¯©é¸
+  // 分頁篩選
   let rows=[];
   masterData.forEach((r,i)=>{
     if(r._del) return;
@@ -1190,7 +1190,7 @@ function renderM(){
     if(q && !r.spec.toLowerCase().includes(q) && !(r.keywords||'').toLowerCase().includes(q)) return;
     rows.push([r,i]);
   });
-  // æ´æ° tab è¨æ¸
+  // 更新 tab 計數
   const catKeys=['piping','electrical','civil','structural','common','labor'];
   catKeys.forEach(c=>{
     const cnt=masterData.filter(r=>!r._del&&r.category===c).length;
@@ -1201,17 +1201,17 @@ function renderM(){
   if(allEl) allEl.textContent=masterData.filter(r=>!r._del).length;
 
   const catOpts=['piping','electrical','civil','structural','common','labor'];
-  const catLabels={piping:'â éç®¡',electrical:'â¡ åé»',civil:'ð åæ¨',structural:'ð© é¼æ§',common:'ð¦ å±ç¨',labor:'ð· å·¥è²»'};
+  const catLabels={piping:'⚙ 配管',electrical:'⚡ 儀電',civil:'🏗 土木',structural:'🔩 鋼構',common:'📦 共用',labor:'👷 工費'};
   document.getElementById('mBody').innerHTML=rows.map(([r,i])=>{
     const ce=canEdit?'true':'false';
     const cur=canEdit?'':'cursor:default';
     const clk=canEdit?'':'onclick="openLogin()"';
     const catSel=catOpts.map(c=>`<option value="${c}"${r.category===c?' selected':''}>${catLabels[c]}</option>`).join('');
     const delBtn=canEdit
-      ?`<button class="btn btn-r" style="font-size:11px;padding:3px 8px" onclick="delM(${i})">åªé¤</button>`
-      :`<button class="btn btn-g" style="font-size:11px;padding:3px 8px;opacity:.4" onclick="openLogin()">ð</button>`;
+      ?`<button class="btn btn-r" style="font-size:11px;padding:3px 8px" onclick="delM(${i})">刪除</button>`
+      :`<button class="btn btn-g" style="font-size:11px;padding:3px 8px;opacity:.4" onclick="openLogin()">🔒</button>`;
     const units=['EA','M','PCS','KG','SET','LOT'].map(u=>`<option${r.unit===u?' selected':''}>${u}</option>`).join('');
-    const updStr=r.updatedAt?new Date(r.updatedAt).toLocaleDateString('zh-TW'):'â';
+    const updStr=r.updatedAt?new Date(r.updatedAt).toLocaleDateString('zh-TW'):'—';
     return `<tr class="${r._n?'rn':r._d?'rd':''}">
       <td contenteditable="${ce}" onblur="eM(${i},'spec',this.textContent)" style="${cur}" ${clk}>${r.spec}</td>
       <td style="text-align:center">
@@ -1230,21 +1230,21 @@ function renderM(){
   updBadge();
   const hint=document.getElementById('masterHint');
   if(hint) hint.textContent=canEdit
-    ?'* é»æ¬ä½ç´æ¥ç·¨è¼¯ãæ©è²å = æªå²å­ããå²å­è³ Driveãæ¨é master_list.jsonãæ´æ°æéèªåè¨éã'
-    :'ð å¯è®æ¨¡å¼ â é»ä»»ææ¬ä½å³å¯ç»å¥ç®¡çå¡é²è¡ç·¨è¼¯ã';
+    ?'* 點欄位直接編輯。橘色列 = 未儲存。「儲存至 Drive」推送 master_list.json。更新時間自動記錄。'
+    :'🔒 唯讀模式 — 點任意欄位即可登入管理員進行編輯。';
 }
 function eM(i,f,v){
   if(!authToken){renderM();openLogin();return;}
   masterData[i][f]=f==='price'?(parseFloat(v)||0):v;
   masterData[i]._d=true;
-  masterData[i].updatedAt=new Date().toISOString(); // èªåè¨éæ´æ°æé
+  masterData[i].updatedAt=new Date().toISOString(); // 自動記錄更新時間
 }
-function delM(i){if(!authToken){openLogin();return;}if(!confirm(`ç¢ºå®åªé¤ã${masterData[i].spec}ãï¼`))return;masterData.splice(i,1);renderM();toast('å·²åªé¤','ok');}
+function delM(i){if(!authToken){openLogin();return;}if(!confirm(`確定刪除「${masterData[i].spec}」？`))return;masterData.splice(i,1);renderM();toast('已刪除','ok');}
 function openAdd(){if(!authToken){openLogin();return;}document.getElementById('addM').classList.remove('h');}
 function closeAdd(){document.getElementById('addM').classList.add('h');}
 function addItem(){
   const spec=document.getElementById('m-sp').value.trim();
-  if(!spec){toast('åé è¦æ ¼ä¸å¯ç©ºç½','err');return;}
+  if(!spec){toast('品項規格不可空白','err');return;}
   masterData.push({
     spec,unit:document.getElementById('m-un').value,
     price:parseFloat(document.getElementById('m-pr').value)||0,
@@ -1257,28 +1257,28 @@ function addItem(){
   closeAdd();
   ['m-sp','m-kw','m-rm'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('m-pr').value='';
-  renderM();toast('å·²æ°å¢ï¼è¨å¾æãå²å­è³ Driveã','ok');
+  renderM();toast('已新增，記得按「儲存至 Drive」','ok');
 }
 
-// âââ CSV âââ
+// ═══ CSV ═══
 function expCSV(){
   const rows=[['Material Specification','Unit','Unit Price (THB)','Category','Keywords','Remark','Updated At'],
     ...masterData.filter(r=>!r._del).map(r=>[r.spec,r.unit,r.price,r.category||'',r.keywords||'',r.remark||'',r.updatedAt||''])];
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-  dl('\uFEFF'+csv,'master_item_list.csv','text/csv;charset=utf-8');toast('CSV å·²å¯åº','ok');
+  dl('\uFEFF'+csv,'master_item_list.csv','text/csv;charset=utf-8');toast('CSV 已匯出','ok');
 }
 function impJSON(inp){
   const f=inp.files[0];if(!f)return;
   const reader=new FileReader();
   reader.onload=e=>{
     try{
-      const data=JSON.parse(e.target.result.replace(/^ï»¿/,''));
+      const data=JSON.parse(e.target.result.replace(/^﻿/,''));
       const arr=Array.isArray(data)?data:(data.data||[]);
-      if(!arr.length){toast('JSON æ ¼å¼æèª¤æç¡è³æ','err');return;}
-      if(!confirm(`ç¢ºå®ç¨å¯å¥ç ${arr.length} ç­è¦èç¾æä¸»æª ${masterData.length} ç­ï¼`))return;
+      if(!arr.length){toast('JSON 格式有誤或無資料','err');return;}
+      if(!confirm(`確定用匯入的 ${arr.length} 筆覆蓋現有主檔 ${masterData.length} 筆？`))return;
       masterData=arr.map(r=>({...r,_d:false,_n:false}));
-      renderM();toast(`å·²å¯å¥ ${arr.length} ç­ï¼è«æãå²å­è³ Driveãåæ­¥`,'ok');
-    }catch(ex){toast('JSON è§£æå¤±æï¼'+ex.message,'err',5000);}
+      renderM();toast(`已匯入 ${arr.length} 筆，請按「儲存至 Drive」同步`,'ok');
+    }catch(ex){toast('JSON 解析失敗：'+ex.message,'err',5000);}
   };
   reader.readAsText(f,'utf-8');inp.value='';
 }
@@ -1286,7 +1286,7 @@ function impCSV(inp){
   const f=inp.files[0];if(!f)return;
   const reader=new FileReader();
   reader.onload=e=>{
-    const lines=e.target.result.replace(/^ï»¿/,'').split('\n').filter(l=>l.trim());
+    const lines=e.target.result.replace(/^﻿/,'').split('\n').filter(l=>l.trim());
     const parse=l=>{const cells=[];let cur='',inQ=false;for(const ch of l){if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){cells.push(cur.trim());cur='';}else cur+=ch;}cells.push(cur.trim());return cells.map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"'));};
     const rows=lines.map(parse);
     const h=rows[0].map(x=>x.toLowerCase().trim());
@@ -1297,14 +1297,14 @@ function impCSV(inp){
       updatedAt:r[updi>=0?updi:6]||new Date().toISOString(),
       _d:false,_n:true
     }));
-    if(!confirm(`ç¢ºå®ç¨å¯å¥ç ${data.length} ç­è¦èç¾æä¸»æª ${masterData.length} ç­ï¼`))return;
-    masterData=data;renderM();toast(`å·²å¯å¥ ${data.length} ç­ï¼è«æãå²å­è³ Driveãåæ­¥`,'ok');
+    if(!confirm(`確定用匯入的 ${data.length} 筆覆蓋現有主檔 ${masterData.length} 筆？`))return;
+    masterData=data;renderM();toast(`已匯入 ${data.length} 筆，請按「儲存至 Drive」同步`,'ok');
   };
   reader.readAsText(f,'utf-8');inp.value='';
 }
 
-// âââ FILE UPLOAD âââ
-const ICONS={pdf:'ð',xlsx:'ð',xls:'ð',docx:'ð',doc:'ð',jpg:'ð¼',jpeg:'ð¼',png:'ð¼',heic:'ð¼',webp:'ð¼',md:'ð'};
+// ═══ FILE UPLOAD ═══
+const ICONS={pdf:'📋',xlsx:'📊',xls:'📊',docx:'📝',doc:'📝',jpg:'🖼',jpeg:'🖼',png:'🖼',heic:'🖼',webp:'🖼',md:'📄'};
 const dz=document.getElementById('dz');
 const fi=document.getElementById('fi');
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
@@ -1315,8 +1315,8 @@ function setF(f){
   curFile=f;
   const _ext=f.name.split('.').pop().toLowerCase();
   if(['xlsx','xls','docx','doc'].includes(_ext))
-    toast('Excel/Word æ ¼å¼ï¼AI åè½è§£ææªåèæå­çµæ§ï¼å»ºè­°è½å­ PDF åä¸å³ä»¥åå¾æä½³åæææ','info',6000);
-  // ç¨ FileReader è½æ data URLï¼ç¸å®¹ææéåæ¹å¼ï¼file://ãGitHub Pages ç­ï¼
+    toast('Excel/Word 格式：AI 僅能解析檔名與文字結構，建議轉存 PDF 再上傳以取得最佳分析效果','info',6000);
+  // 用 FileReader 轉成 data URL，相容所有開啟方式（file://、GitHub Pages 等）
   const reader=new FileReader();
   reader.onload=e=>{
     curFileUrl=e.target.result;
@@ -1326,7 +1326,7 @@ function setF(f){
     if(['jpg','jpeg','png','webp','heic'].includes(ext)){
       body.innerHTML='';
       const img=document.createElement('img');
-      img.src=curFileUrl;img.alt='å ±å¹å®é è¦½';
+      img.src=curFileUrl;img.alt='報價單預覽';
       img.style.cssText='width:100%;height:auto;display:block';
       body.appendChild(img);
     } else if(ext==='pdf'){
@@ -1344,20 +1344,20 @@ function setF(f){
       tr.readAsText(f,'utf-8');
     } else {
       body.innerHTML=`<div style="padding:2rem;text-align:center;color:var(--t3);font-size:13px">
-        <div style="font-size:32px;margin-bottom:1rem">ð</div>
+        <div style="font-size:32px;margin-bottom:1rem">📄</div>
         <div>${f.name}</div>
-        <div style="margin-top:.5rem;font-size:11px">è«é»ä¸æ¹ãâ¬ ä¸è¼ãæ¥ç</div>
+        <div style="margin-top:.5rem;font-size:11px">請點下方「⬇ 下載」查看</div>
       </div>`;
     }
-    // æ´æ°ä¸è¼æé
+    // 更新下載按鈕
     const dlBtn=document.getElementById('fpDownloadBtn');
     if(dlBtn){ dlBtn.href=curFileUrl; dlBtn.download=f.name; }
     const titleEl=document.getElementById('fpTitle');
-    if(titleEl) titleEl.textContent='ð '+f.name;
+    if(titleEl) titleEl.textContent='📄 '+f.name;
   };
   reader.readAsDataURL(f);
   const ext=f.name.split('.').pop().toLowerCase();
-  document.getElementById('pico').textContent=ICONS[ext]||'ð';
+  document.getElementById('pico').textContent=ICONS[ext]||'📄';
   document.getElementById('pnm').textContent=f.name;
   document.getElementById('psz').textContent=(f.size/1024).toFixed(1)+' KB';
   document.getElementById('fp').classList.add('on');
@@ -1380,7 +1380,7 @@ function resetAll(){
   document.getElementById('fpBody').innerHTML='';
 }
 
-// âââ CATEGORY SELECT âââ
+// ═══ CATEGORY SELECT ═══
 function openCatModal(){
   if(!curFile)return;
   document.getElementById('catModal').classList.remove('h');
@@ -1396,18 +1396,18 @@ function startAnalyzeWithCat(){
   doAnalyze();
 }
 
-// âââ ANALYZE âââ
+// ═══ ANALYZE ═══
 async function doAnalyze(){
   if(!curFile)return;
-  if(!backendUrl||backendUrl==='YOUR_APPS_SCRIPT_URL'){toast('è«è¨­å® Apps Script å¾ç«¯ç¶²å','err');return;}
+  if(!backendUrl||backendUrl==='YOUR_APPS_SCRIPT_URL'){toast('請設定 Apps Script 後端網址','err');return;}
   document.getElementById('pnl-up').style.display='none';
   document.getElementById('pnl-ld').style.display='';
   setStep(2);
   const msgs=[
-    ['Gemini è§£æå ±å¹å®ä¸­â¦','è¾¨è­åé è¦æ ¼èå» åè³è¨'],
-    [`æ¯å° ${selectedCat==='all'?'å¨é¨':''+CATS[selectedCat]?.label} ä¸»æªâ¦`,`ç¯©é¸å°æé¡å¥åé `],
-    ['è¨ç®å·®ç°å¹åº¦â¦','æ¨è¨çè'],
-    ['æ´çå ±åâ¦','å³å°å®æ']
+    ['Gemini 解析報價單中…','辨識品項規格與廠商資訊'],
+    [`比對 ${selectedCat==='all'?'全部':''+CATS[selectedCat]?.label} 主檔…`,`篩選對應類別品項`],
+    ['計算差異幅度…','標記燈號'],
+    ['整理報告…','即將完成']
   ];
   let mi=0;
   const tick=setInterval(()=>{mi=(mi+1)%msgs.length;document.getElementById('ldT').textContent=msgs[mi][0];document.getElementById('ldS').textContent=msgs[mi][1];},1800);
@@ -1428,26 +1428,26 @@ async function doAnalyze(){
     let mdText='';
     if(ext==='md'){
       mdText=await new Promise(ok=>{const r=new FileReader();r.onload=e=>ok(e.target.result);r.readAsText(curFile,'utf-8');});
-      if(mdText.length>6000){mdText=mdText.slice(0,6000)+'\n\n[... å§å®¹å·²æªæ·ï¼åå³å¥å 6000 å­å]';toast('Markdown æªæ¡éé·ï¼å·²æªåå 6000 å­åé²è¡åæ','info',4000);}
+      if(mdText.length>6000){mdText=mdText.slice(0,6000)+'\n\n[... 內容已截斷，僅傳入前 6000 字元]';toast('Markdown 檔案過長，已截取前 6000 字元進行分析','info',4000);}
     }
     const today=new Date().toISOString().slice(0,10);
 
-    // ä¾é¡å¥ç¯©é¸ Master List
+    // 依類別篩選 Master List
     const relatedCats = selectedCat==='all'
       ? ['piping','electrical','civil','structural','common','labor']
       : CATS[selectedCat].related;
     const filteredMaster=masterData.filter(r=>!r._del&&(!r.category||relatedCats.includes(r.category)));
     const masterArr=filteredMaster.map(r=>({spec:r.spec,unit:r.unit,price:r.price,keywords:r.keywords}));
-    // ä¸»æªè¶é 500 ç­ææªåå 500ï¼é¿å prompt è¶é token éå¶
+    // 主檔超過 500 筆時截取前 500，避免 prompt 超過 token 限制
     const masterJson=JSON.stringify(masterArr.length>500?masterArr.slice(0,500):masterArr);
-    if(masterArr.length>500) toast(`ä¸»æªå± ${masterArr.length} ç­ï¼æ¬æ¬¡æ¯å°åå 500 ç­ï¼è©²é¡å¥ï¼`,'info',4000);
+    if(masterArr.length>500) toast(`主檔共 ${masterArr.length} 筆，本次比對取前 500 筆（該類別）`,'info',4000);
 
-    // æä¿®æ­£ç´éï¼æå¤ 30 ç­ï¼same category + commonï¼
+    // 撈修正紀錄（最多 30 筆，same category + common）
     let corrText='';
     try {
       const cd=await api('loadCorrections',{category:selectedCat});
       if(cd.data&&cd.data.length){
-        corrText='\n\nãéå»ä¿®æ­£ç´é â è«æ³¨æéäºå¸¸è¦é¯èª¤ã\n'+cd.data.slice(0,30).map(c=>`- ã${c.aiRead}ãâ æ­£ç¢ºæçºã${c.correct}ã${c.note?'ï¼'+c.note+'ï¼':''}`).join('\n');
+        corrText='\n\n【過去修正紀錄 — 請注意這些常見錯誤】\n'+cd.data.slice(0,30).map(c=>`- 「${c.aiRead}」→ 正確應為「${c.correct}」${c.note?'（'+c.note+'）':''}`).join('\n');
       }
     } catch(_){}
 
@@ -1475,34 +1475,34 @@ Return ONLY a single valid JSON (no markdown):
     "flag": "normal|high|low|pending|no_basis|labor_package"
   }]
 }
-FLAG: normal=Â±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis=no match, labor_package=labor/package`;
+FLAG: normal=±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis=no match, labor_package=labor/package`;
 
-    const finalPrompt=mdText?prompt+'\n\n[Markdown å ±å¹å®å§å®¹å¦ä¸]\n'+mdText:prompt;
+    const finalPrompt=mdText?prompt+'\n\n[Markdown 報價單內容如下]\n'+mdText:prompt;
     const geminiResp=await api('callGemini',{prompt:finalPrompt,base64Data:isMedia?b64:null,mimeType:isMedia?mime:null});
     const raw=geminiResp.text||'';
-    if(!raw.trim()) throw new Error('AI æªåå³ä»»ä½å§å®¹ï¼è«éè©¦');
-    // å»æ code block æ¨è¨å¾ï¼ç¨ regex æ½åç¬¬ä¸åå®æ´ JSON ç©ä»¶ï¼é¿å Gemini å¤¾å¸¶èªªææå­ï¼
+    if(!raw.trim()) throw new Error('AI 未回傳任何內容，請重試');
+    // 去掉 code block 標記後，用 regex 抽取第一個完整 JSON 物件（避免 Gemini 夾帶說明文字）
     const stripped=raw.replace(/```[\w]*\n?/g,'').trim();
     const jsonMatch=stripped.match(/\{[\s\S]*\}/);
-    if(!jsonMatch) throw new Error('AI åå³æ ¼å¼ç°å¸¸ï¼æ¾ä¸å° JSONï¼ï¼è«éè©¦');
+    if(!jsonMatch) throw new Error('AI 回傳格式異常（找不到 JSON），請重試');
     const parsed=JSON.parse(jsonMatch[0]);
     clearInterval(tick);
     parsedItems=Array.isArray(parsed.items)?parsed.items:[];
-    if(!parsedItems.length) throw new Error('AI æªè§£æåºä»»ä½åé ï¼è«ç¢ºèªæªæ¡å«æå ±å¹æç´°ï¼ææ¹ç¨ PDF æ ¼å¼éè©¦');
+    if(!parsedItems.length) throw new Error('AI 未解析出任何品項，請確認檔案含有報價明細，或改用 PDF 格式重試');
     curRptId='RPT-'+today.replace(/-/g,'')+'-'+Math.floor(Math.random()*900+100);
-    window._aiVendor=parsed.vendor||'â';
-    window._aiProject=parsed.project||'â';
+    window._aiVendor=parsed.vendor||'—';
+    window._aiProject=parsed.project||'—';
     window._aiDate=today;
     laborItems=parsedItems.filter(it=>it.flag==='labor_package');
 
-    // ä¸å³åå§æª
+    // 上傳原始檔
     try { await api('uploadFile',{fileName:curFile.name,base64Data:b64,mimeType:mime}); } catch(_){}
 
     document.getElementById('pnl-ld').style.display='none';
     buildReport();
     document.getElementById('pnl-rpt').style.display='';
     setStep(3);
-    // é¡¯ç¤ºåå§æªé è¦½æé
+    // 顯示原始檔預覽按鈕
     document.getElementById('fpToggle').classList.add('show');
     setupPreview();
   } catch(e){
@@ -1513,7 +1513,7 @@ FLAG: normal=Â±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis
   }
 }
 function showErr(e){
-  const msg = e?.message || String(e) || 'æªç¥é¯èª¤';
+  const msg = e?.message || String(e) || '未知錯誤';
   console.error('[ProcureAI]', msg, e);
   document.getElementById('pnl-up').style.display='none';
   document.getElementById('pnl-err').style.display='';
@@ -1525,23 +1525,23 @@ function hideErr(){
 }
 function copyErr(){
   const msg = document.getElementById('errMsg').textContent;
-  navigator.clipboard?.writeText(msg).then(()=>toast('å·²è¤è£½é¯èª¤è¨æ¯','ok')).catch(()=>{
-    prompt('è«æåè¤è£½ä»¥ä¸é¯èª¤è¨æ¯ï¼', msg);
+  navigator.clipboard?.writeText(msg).then(()=>toast('已複製錯誤訊息','ok')).catch(()=>{
+    prompt('請手動複製以下錯誤訊息：', msg);
   });
 }
 function f2b64(file){return new Promise((ok,fail)=>{const r=new FileReader();r.onload=()=>ok(r.result.split(',')[1]);r.onerror=fail;r.readAsDataURL(file);});}
 
-// âââ FILE PREVIEW âââ
+// ═══ FILE PREVIEW ═══
 function setupPreview(){
-  // å§å®¹å·²å¨ä¸å³æè¼å¥ï¼éè£¡åªç¢ºä¿æéå¯è¦
+  // 內容已在上傳時載入，這裡只確保按鈕可見
   if(!curFile)return;
   document.getElementById('fpToggle').classList.add('show');
 }
 function togglePreview(){
   document.getElementById('fpFloat').classList.toggle('show');
 }
-// openFileNewTab å·²ç§»é¤ï¼æ¹ç¨ fpDownloadBtn ç´æ¥ä¸è¼
-// æµ®åè¦çªææ³
+// openFileNewTab 已移除，改用 fpDownloadBtn 直接下載
+// 浮動視窗拖曳
 (function(){
   let drag=false,ox=0,oy=0,startL=0,startT=0;
   document.addEventListener('DOMContentLoaded',()=>{
@@ -1562,30 +1562,30 @@ function togglePreview(){
   });
 })();
 
-// âââ FLAG HELPER âââ
+// ═══ FLAG HELPER ═══
 function getF(it){
   if(it.flag==='labor_package'){
-    if(it._est==null) return{lbl:'å·¥è²»/æ´å',cls:'py',diff:null};
+    if(it._est==null) return{lbl:'工費/整包',cls:'py',diff:null};
     const d=(it.unitPrice-it._est)/it._est,p=(d*100).toFixed(1);
-    if(Math.abs(d)<=.1) return{lbl:`ð¢ æ­£å¸¸ (${d>=0?'+':''}${p}%)`,cls:'pg',diff:d};
-    if(d>.1) return{lbl:`ð´ åé« (+${p}%)`,cls:'pr',diff:d};
-    return{lbl:`ð£ åä½ (${p}%)`,cls:'pp',diff:d};
+    if(Math.abs(d)<=.1) return{lbl:`🟢 正常 (${d>=0?'+':''}${p}%)`,cls:'pg',diff:d};
+    if(d>.1) return{lbl:`🔴 偏高 (+${p}%)`,cls:'pr',diff:d};
+    return{lbl:`🟣 偏低 (${p}%)`,cls:'pp',diff:d};
   }
   const base=it.masterLowestPrice,p=base?((it.unitPrice-base)/base*100).toFixed(1):null,d=p!=null?parseFloat(p):null;
   switch(it.flag){
-    case'normal':  return{lbl:`ð¢ æ­£å¸¸ (${d>=0?'+':''}${p}%)`,cls:'pg',diff:d};
-    case'high':    return{lbl:`ð´ åé« (+${p}%)`,cls:'pr',diff:d};
-    case'low':     return{lbl:`ð£ åä½ (${p}%)`,cls:'pp',diff:d};
-    case'pending': return{lbl:'ð  å¾ç¢ºèª',cls:'pa',diff:d};
-    case'no_basis':return{lbl:'âª ç¡åºæº',cls:'pgr',diff:null};
-    default:       return{lbl:'â',cls:'pgr',diff:null};
+    case'normal':  return{lbl:`🟢 正常 (${d>=0?'+':''}${p}%)`,cls:'pg',diff:d};
+    case'high':    return{lbl:`🔴 偏高 (+${p}%)`,cls:'pr',diff:d};
+    case'low':     return{lbl:`🟣 偏低 (${p}%)`,cls:'pp',diff:d};
+    case'pending': return{lbl:'🟠 待確認',cls:'pa',diff:d};
+    case'no_basis':return{lbl:'⚪ 無基準',cls:'pgr',diff:null};
+    default:       return{lbl:'—',cls:'pgr',diff:null};
   }
 }
 
-// âââ BUILD REPORT âââ
+// ═══ BUILD REPORT ═══
 async function buildReport(){
-  const vendor  = window._aiVendor||'â';
-  const project = window._aiProject||'â';
+  const vendor  = window._aiVendor||'—';
+  const project = window._aiProject||'—';
   const rptDate = new Date().toLocaleString('zh-TW',{hour12:false});
 
   document.getElementById('rptInner').innerHTML = buildRptHTML();
@@ -1593,14 +1593,14 @@ async function buildReport(){
   // backup
   try {
     await api('saveReport',{reportId:curRptId,reportData:{reportId:curRptId,vendor,project,date:window._aiDate,generatedAt:new Date().toISOString(),items:parsedItems}});
-    toast('å ±åå·²åä»½è³ Google Drive','info');
+    toast('報告已備份至 Google Drive','info');
   } catch(_){}
 }
 
-// âââ ç¢çå ±å HTMLï¼å¯éè¤å¼å«ä»¥æ´æ°ç«é¢ï¼âââ
+// ─── 產生報告 HTML（可重複呼叫以更新畫面）───
 function buildRptHTML(){
-  const vendor  = window._aiVendor||'â';
-  const project = window._aiProject||'â';
+  const vendor  = window._aiVendor||'—';
+  const project = window._aiProject||'—';
   const rptDate = new Date().toLocaleString('zh-TW',{hour12:false});
   const cnt={normal:0,high:0,low:0,pending:0,no_basis:0,labor:0};
   parsedItems.forEach(it=>{
@@ -1610,13 +1610,13 @@ function buildRptHTML(){
     } else cnt[it.flag]=(cnt[it.flag]||0)+1;
   });
 
-  // ââ ç¢çè¡¨æ ¼åï¼ä¸æ category åçµï¼å®å¨ä¾åå§é åºï¼ââ
+  // ── 產生表格列（不按 category 分組，完全依原始順序）──
   let rows='';
   let lastCat='';
   parsedItems.forEach((it,i)=>{
-    // é¡å¥åéæ¨é¡ï¼ä¾åºåºç¾ï¼ä¸éè¤ï¼
+    // 類別分隔標題（依序出現，不重複）
     const thisCat = it.category||'other';
-    const catL={material:'ææ',labor:'å·¥è²»',package:'æ´åé ç®',other:'å¶ä»'};
+    const catL={material:'材料',labor:'工費',package:'整包項目',other:'其他'};
     if(thisCat !== lastCat){
       rows += `<tr class="tsec"><td colspan="11">${catL[thisCat]||thisCat}</td></tr>`;
       lastCat = thisCat;
@@ -1625,8 +1625,8 @@ function buildRptHTML(){
     const sub = it.subtotal!=null ? it.subtotal : (it.qty ? it.unitPrice*it.qty : null);
     const f   = getF(it);
 
-    // å·®ç°
-    let diffStr = '<span class="cna">â</span>';
+    // 差異
+    let diffStr = '<span class="cna">—</span>';
     if(it.flag==='labor_package' && it._est!=null){
       const dv=(it.unitPrice-it._est)/it._est*100;
       diffStr=`<span class="${dv>0?'cup':dv<0?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;
@@ -1635,17 +1635,17 @@ function buildRptHTML(){
       diffStr=`<span class="${dv>1?'cup':dv<-1?'cdn':'cok'}">${dv>=0?'+':''}${dv.toFixed(1)}%</span>`;
     }
 
-    // æ­·å²æä½å¹ / å·¥è²»æ ¼
+    // 歷史最低價 / 工費格
     let baseCell='';
     if(it.flag==='labor_package'){
-      // å®ä¸æ¸å­è¼¸å¥æ ¼
+      // 單一數字輸入格
       const estVal = it._est!=null ? it._est : '';
       const estResult = it._est!=null
-        ? `<span style="color:${Math.abs((it.unitPrice-it._est)/it._est)<=.1?'var(--gn)':it.unitPrice>it._est*1.1?'var(--rd)':'var(--pu)'}">â à¸¿${fmt(it._est)}</span>`
-        : '<span style="color:var(--am)">è«å¡«å¥é ä¼°å·¥è²»</span>';
+        ? `<span style="color:${Math.abs((it.unitPrice-it._est)/it._est)<=.1?'var(--gn)':it.unitPrice>it._est*1.1?'var(--rd)':'var(--pu)'}">≈ ฿${fmt(it._est)}</span>`
+        : '<span style="color:var(--am)">請填入預估工費</span>';
       baseCell = `<div style="display:flex;flex-direction:column;gap:4px">
         <input type="number" min="0" step="100"
-          placeholder="é ä¼°å·¥è²» (à¸¿)"
+          placeholder="預估工費 (฿)"
           value="${estVal}"
           id="lv${i}"
           oninput="setLaborEst(${i},this.value)"
@@ -1655,7 +1655,7 @@ function buildRptHTML(){
         <span id="lres${i}" style="font-family:var(--mono);font-size:11px">${estResult}</span>
       </div>`;
     } else {
-      baseCell = it.masterLowestPrice ? `à¸¿ ${fmt(it.masterLowestPrice)}` : '<span class="cna">â</span>';
+      baseCell = it.masterLowestPrice ? `฿ ${fmt(it.masterLowestPrice)}` : '<span class="cna">—</span>';
     }
 
     rows += `<tr id="rptrow-${i}" draggable="true"
@@ -1663,48 +1663,48 @@ function buildRptHTML(){
         ondragover="event.preventDefault()"
         ondrop="dragDrop(event,${i})">
       <td style="text-align:center;padding:0 4px;white-space:nowrap">
-        <button onclick="moveRow(${i},-1)" title="ä¸ç§»" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--t3);padding:1px 3px">â²</button>
-        <button onclick="moveRow(${i},1)"  title="ä¸ç§»" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--t3);padding:1px 3px">â¼</button>
-        <button onclick="deleteRow(${i})"  title="åªé¤æ­¤å" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--rd);padding:1px 3px">â</button>
+        <button onclick="moveRow(${i},-1)" title="上移" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--t3);padding:1px 3px">▲</button>
+        <button onclick="moveRow(${i},1)"  title="下移" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--t3);padding:1px 3px">▼</button>
+        <button onclick="deleteRow(${i})"  title="刪除此列" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--rd);padding:1px 3px">✕</button>
       </td>
       <td class="ecell" contenteditable="true" onblur="editRpt(${i},'spec',this.textContent)" style="min-width:180px">${escH(it.spec)}</td>
-      <td class="ecell" style="text-align:center" contenteditable="true" onblur="editRpt(${i},'unit',this.textContent)">${escH(it.unit||'â')}</td>
-      <td class="ecell" contenteditable="true" onblur="editRpt(${i},'qty',this.textContent)" style="text-align:right">${it.qty!=null?fmtN(it.qty):'â'}</td>
-      <td class="ecell" contenteditable="true" onblur="editRpt(${i},'unitPrice',this.textContent)" style="text-align:right">à¸¿ ${fmt(it.unitPrice)}</td>
-      <td id="sub-${i}" style="text-align:right">${sub!=null?'à¸¿ '+fmt(sub):'â'}</td>
+      <td class="ecell" style="text-align:center" contenteditable="true" onblur="editRpt(${i},'unit',this.textContent)">${escH(it.unit||'—')}</td>
+      <td class="ecell" contenteditable="true" onblur="editRpt(${i},'qty',this.textContent)" style="text-align:right">${it.qty!=null?fmtN(it.qty):'—'}</td>
+      <td class="ecell" contenteditable="true" onblur="editRpt(${i},'unitPrice',this.textContent)" style="text-align:right">฿ ${fmt(it.unitPrice)}</td>
+      <td id="sub-${i}" style="text-align:right">${sub!=null?'฿ '+fmt(sub):'—'}</td>
       <td id="base-${i}" style="font-size:12px">${baseCell}</td>
       <td id="diff-${i}" style="text-align:right">${diffStr}</td>
-      <td style="font-size:11px;color:var(--t3);max-width:140px;white-space:normal">${escH(it.masterSpec||'â')}</td>
+      <td style="font-size:11px;color:var(--t3);max-width:140px;white-space:normal">${escH(it.masterSpec||'—')}</td>
       <td id="flag-${i}" style="text-align:center"><span class="pill ${f.cls}" id="pill-${i}">${f.lbl}</span></td>
       <td style="text-align:center;padding:0 6px">
-        <button title="ä¿®æ¹æ­¤åè³æä¸¦åå ± AI é¯èª¤" onclick="openCorr(${i})"
+        <button title="修改此列資料並回報 AI 錯誤" onclick="openCorr(${i})"
           style="background:none;border:1px solid var(--rim2);border-radius:4px;cursor:pointer;font-size:12px;padding:6px 10px;color:var(--cy);transition:all .15s;min-height:36px;min-width:58px;touch-action:manipulation"
-          onmouseover="this.style.background='var(--cyf)'" onmouseout="this.style.background='none'">âï¸ ä¿®æ­£</button>
+          onmouseover="this.style.background='var(--cyf)'" onmouseout="this.style.background='none'">✏️ 修正</button>
       </td>
     </tr>`;
   });
 
-  // å æ°åé å
+  // 加新品項列
   rows += `<tr id="addRowBtn">
     <td colspan="11" style="text-align:center;padding:.6rem">
       <button onclick="addNewRow()" style="background:var(--cyf);border:1.5px dashed var(--cy);border-radius:6px;color:var(--cy);font-size:13px;font-weight:500;padding:6px 20px;cursor:pointer;font-family:var(--body);width:100%">
-        + æ°å¢åé 
+        + 新增品項
       </button>
     </td>
   </tr>`;
 
-  // åæè¨ç® totals
+  // 動態計算 totals
   const {totalQ,totalS,canSave} = calcTotals();
 
   const advs=parsedItems.filter(it=>['high','low'].includes(it.flag)||(it.flag==='labor_package'&&it._est!=null&&Math.abs((it.unitPrice-it._est)/it._est)>.1));
   const advHtml=advs.slice(0,6).map(it=>{
     const f=getF(it);const col=f.cls==='pr'?'var(--rd)':f.cls==='pp'?'var(--pu)':'var(--am)';
     let msg='';
-    if(it.flag==='labor_package'&&it._est&&it.unitPrice>it._est*1.1) msg=`å» åå ± à¸¿${fmt(it.unitPrice)}ï¼é ä¼°åç à¸¿${fmt(it._est)}ï¼å»ºè­°è­°éã`;
-    else if(it.flag==='labor_package'&&it._est&&it.unitPrice<it._est*.9) msg=`å» åå ±ä½æ¼é ä¼° à¸¿${fmt(it._est)}ï¼ç¢ºèªå·¥ä½ç¯åã`;
-    else if(it.flag==='high') msg=`æ­·å²æä½ à¸¿${fmt(it.masterLowestPrice)}ï¼å» åå ± à¸¿${fmt(it.unitPrice)}ï¼+${((it.unitPrice/it.masterLowestPrice-1)*100).toFixed(1)}%ï¼ï¼å»ºè­°è­°å¹ã`;
-    else msg=`å» åå ±ä½æ¼æ­·å²æä½ ${((1-it.unitPrice/it.masterLowestPrice)*100).toFixed(1)}%ï¼ç¢ºèªè¦æ ¼ä¸è´æ§ã`;
-    return `<div class="adv" style="border-left-color:${col}"><div class="adv-t">${f.lbl.split('(')[0].trim()} â ${escH(it.spec)}</div><div class="adv-b">${msg}</div></div>`;
+    if(it.flag==='labor_package'&&it._est&&it.unitPrice>it._est*1.1) msg=`廠商報 ฿${fmt(it.unitPrice)}，預估合理 ฿${fmt(it._est)}，建議議降。`;
+    else if(it.flag==='labor_package'&&it._est&&it.unitPrice<it._est*.9) msg=`廠商報低於預估 ฿${fmt(it._est)}，確認工作範圍。`;
+    else if(it.flag==='high') msg=`歷史最低 ฿${fmt(it.masterLowestPrice)}，廠商報 ฿${fmt(it.unitPrice)}（+${((it.unitPrice/it.masterLowestPrice-1)*100).toFixed(1)}%），建議議價。`;
+    else msg=`廠商報低於歷史最低 ${((1-it.unitPrice/it.masterLowestPrice)*100).toFixed(1)}%，確認規格一致性。`;
+    return `<div class="adv" style="border-left-color:${col}"><div class="adv-t">${f.lbl.split('(')[0].trim()} — ${escH(it.spec)}</div><div class="adv-b">${msg}</div></div>`;
   }).join('');
 
   return `
@@ -1714,63 +1714,63 @@ function buildRptHTML(){
           <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.1em;margin-bottom:5px">${curRptId}</div>
           <div style="font-family:var(--head);font-size:20px;font-weight:800;color:var(--cy)" contenteditable="true">${escH(vendor)}</div>
           <div style="font-size:13px;color:var(--t2);margin-top:3px" contenteditable="true">${escH(project)}</div>
-          <div style="font-family:var(--mono);font-size:11px;color:var(--t3);margin-top:2px">åææ¥æï¼${window._aiDate} ï½ ${CATS[selectedCat]?.icon||''} ${CATS[selectedCat]?.label||'ALL'}</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--t3);margin-top:2px">分析日期：${window._aiDate} ｜ ${CATS[selectedCat]?.icon||''} ${CATS[selectedCat]?.label||'ALL'}</div>
         </div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);text-align:right">è£½è¡¨ï¼${rptDate}<br>ä¸»æªï¼${masterData.length} ç­</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);text-align:right">製表：${rptDate}<br>主檔：${masterData.length} 筆</div>
       </div>
       <div class="ss">
-        <div class="sbox sg"><div class="sn" style="color:var(--gn)">${cnt.normal}</div><div class="sl">æ­£å¸¸</div></div>
-        <div class="sbox sr"><div class="sn" style="color:var(--rd)">${cnt.high}</div><div class="sl">åé«</div></div>
-        <div class="sbox sp"><div class="sn" style="color:var(--pu)">${cnt.low}</div><div class="sl">åä½</div></div>
-        <div class="sbox sa"><div class="sn" style="color:var(--am)">${cnt.pending}</div><div class="sl">å¾ç¢ºèª</div></div>
-        <div class="sbox sgr"><div class="sn" style="color:var(--t3)">${cnt.no_basis}</div><div class="sl">ç¡åºæº</div></div>
-        <div class="sbox sy"><div class="sn" style="color:var(--yw)">${cnt.labor}</div><div class="sl">å·¥è²»</div></div>
+        <div class="sbox sg"><div class="sn" style="color:var(--gn)">${cnt.normal}</div><div class="sl">正常</div></div>
+        <div class="sbox sr"><div class="sn" style="color:var(--rd)">${cnt.high}</div><div class="sl">偏高</div></div>
+        <div class="sbox sp"><div class="sn" style="color:var(--pu)">${cnt.low}</div><div class="sl">偏低</div></div>
+        <div class="sbox sa"><div class="sn" style="color:var(--am)">${cnt.pending}</div><div class="sl">待確認</div></div>
+        <div class="sbox sgr"><div class="sn" style="color:var(--t3)">${cnt.no_basis}</div><div class="sl">無基準</div></div>
+        <div class="sbox sy"><div class="sn" style="color:var(--yw)">${cnt.labor}</div><div class="sl">工費</div></div>
       </div>
     </div>
     <div class="tc" style="margin-bottom:1rem">
       <div class="rpt-toolbar">
-        <span class="rpt-toolbar-title">ð å®æ´åé æç´°ï¼ä¾åå§é åºï¼</span>
+        <span class="rpt-toolbar-title">📋 完整品項明細（依原始順序）</span>
         <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
-          <span style="font-family:var(--mono);font-size:11px;color:var(--t3)">æææ¬ä½å¯ç´æ¥é»æç·¨è¼¯ ï½ â²â¼ å¯ä¸ä¸ç§»å ï½ â åªé¤</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--t3)">所有欄位可直接點擊編輯 ｜ ▲▼ 可上下移動 ｜ ✕ 刪除</span>
         </div>
       </div>
-      <div class="tsc-hint">â å·¦å³æ»åæ¥çå®æ´æ¬ä½ â</div>
+      <div class="tsc-hint">← 左右滑動查看完整欄位 →</div>
       <div class="tsc"><table id="rptTable">
         <thead><tr>
-          <th style="text-align:center;min-width:70px">æä½</th>
-          <th style="text-align:left;padding-left:8px">åé è¦æ ¼ï¼å» ååæï¼</th>
-          <th style="text-align:center">å®ä½</th><th style="text-align:right">æ¸é</th>
-          <th style="text-align:right">å» åå®å¹ (à¸¿)</th>
-          <th style="text-align:right">å ±å¹å°è¨ (à¸¿)</th>
-          <th style="min-width:160px">æ­·å²æä½å¹ / å·¥è²»é ä¼° (à¸¿)</th>
-          <th style="text-align:right">å·®ç°</th>
-          <th style="text-align:left">æ¯å°åé </th>
-          <th style="text-align:center">çè</th>
-          <th style="text-align:center;padding-right:8px">ä¿®æ­£</th>
+          <th style="text-align:center;min-width:70px">操作</th>
+          <th style="text-align:left;padding-left:8px">品項規格（廠商原文）</th>
+          <th style="text-align:center">單位</th><th style="text-align:right">數量</th>
+          <th style="text-align:right">廠商單價 (฿)</th>
+          <th style="text-align:right">報價小計 (฿)</th>
+          <th style="min-width:160px">歷史最低價 / 工費預估 (฿)</th>
+          <th style="text-align:right">差異</th>
+          <th style="text-align:left">比對品項</th>
+          <th style="text-align:center">燈號</th>
+          <th style="text-align:center;padding-right:8px">修正</th>
         </tr></thead>
         <tbody id="rptBody">${rows}
           <tr class="ttot" id="totalRow">
             <td colspan="4" style="text-align:left;padding-left:16px;font-family:var(--mono);font-size:10px;color:var(--t3)">TOTAL</td>
-            <td></td><td id="totalQ" style="font-family:var(--mono);font-size:14px;text-align:right">à¸¿ ${fmt(totalQ)}</td>
+            <td></td><td id="totalQ" style="font-family:var(--mono);font-size:14px;text-align:right">฿ ${fmt(totalQ)}</td>
             <td colspan="5"></td>
           </tr>
         </tbody>
       </table></div>
     </div>
     <div class="totals" id="totalsBar">
-      <div class="tcell"><label>å» åå ±å¹ç¸½è¨</label><div class="tamt" style="color:var(--t1)" id="totalQBig">à¸¿ ${fmt(totalQ)}</div><div class="tnote" style="color:var(--t3)">å» åéå¹</div></div>
-      <div class="tcell"><label>å»ºè­°ç®æ¨å¹</label><div class="tamt" style="color:var(--gn)" id="totalS">à¸¿ ${fmt(totalS)}</div><div class="tnote" style="color:var(--t3)">ä¾æä½å¹ / å·¥è²»é ä¼°</div></div>
-      <div class="tcell"><label>å¯ç¯çéé¡</label><div class="tamt" style="color:var(--mg)" id="canSave">à¸¿ ${fmt(canSave)}</div><div class="tnote" style="color:${canSave>0?'var(--mg)':'var(--t3)'};" id="savePct">${totalQ>0?'â'+((canSave/totalQ)*100).toFixed(1)+'%':'â'}</div></div>
+      <div class="tcell"><label>廠商報價總計</label><div class="tamt" style="color:var(--t1)" id="totalQBig">฿ ${fmt(totalQ)}</div><div class="tnote" style="color:var(--t3)">廠商開價</div></div>
+      <div class="tcell"><label>建議目標價</label><div class="tamt" style="color:var(--gn)" id="totalS">฿ ${fmt(totalS)}</div><div class="tnote" style="color:var(--t3)">依最低價 / 工費預估</div></div>
+      <div class="tcell"><label>可節省金額</label><div class="tamt" style="color:var(--mg)" id="canSave">฿ ${fmt(canSave)}</div><div class="tnote" style="color:${canSave>0?'var(--mg)':'var(--t3)'};" id="savePct">${totalQ>0?'−'+((canSave/totalQ)*100).toFixed(1)+'%':'—'}</div></div>
     </div>
-    ${advHtml?`<div style="margin-bottom:1rem"><div class="clabel" style="margin-bottom:.75rem">AI è­°å¹å»ºè­°</div>${advHtml}</div>`:''}
+    ${advHtml?`<div style="margin-bottom:1rem"><div class="clabel" style="margin-bottom:.75rem">AI 議價建議</div>${advHtml}</div>`:''}
     <div style="font-family:var(--mono);font-size:10px;color:var(--t3);padding:.75rem 0;border-top:1px solid var(--rim2)">
-      çèï¼Â±10% çºæ­£å¸¸åé ï¼ å·¥è²»ï¼ç´æ¥å¨æ¬ä½å¡«å¥é ä¼°ç¸½éé¡ ï¼ Gemini AI èªåçæ ï¼ ${curRptId}
+      燈號：±10% 為正常區間 ／ 工費：直接在欄位填入預估總金額 ／ Gemini AI 自動生成 ／ ${curRptId}
     </div>`;
 }
 
 function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// âââ è¨ç® totals âââ
+// ─── 計算 totals ───
 function calcTotals(){
   let totalQ=0,totalS=0,canSave=0;
   parsedItems.forEach(it=>{
@@ -1787,22 +1787,22 @@ function calcTotals(){
   return {totalQ,totalS,canSave};
 }
 
-// âââ åææ´æ° totals é¡¯ç¤º âââ
+// ─── 動態更新 totals 顯示 ───
 function recalcTotals(){
   const {totalQ,totalS,canSave}=calcTotals();
-  ['totalQ','totalQBig'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='à¸¿ '+fmt(totalQ);});
-  const ts=document.getElementById('totalS');if(ts)ts.textContent='à¸¿ '+fmt(totalS);
-  const cs=document.getElementById('canSave');if(cs)cs.textContent='à¸¿ '+fmt(canSave);
+  ['totalQ','totalQBig'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='฿ '+fmt(totalQ);});
+  const ts=document.getElementById('totalS');if(ts)ts.textContent='฿ '+fmt(totalS);
+  const cs=document.getElementById('canSave');if(cs)cs.textContent='฿ '+fmt(canSave);
   const sp=document.getElementById('savePct');
-  if(sp){sp.textContent=totalQ>0?'â'+((canSave/totalQ)*100).toFixed(1)+'%':'â';sp.style.color=canSave>0?'var(--mg)':'var(--t3)';}
+  if(sp){sp.textContent=totalQ>0?'−'+((canSave/totalQ)*100).toFixed(1)+'%':'—';sp.style.color=canSave>0?'var(--mg)':'var(--t3)';}
 }
 
-// âââ å·¥è²»ï¼å®æ ¼å¡«å¥ âââ
+// ─── 工費：單格填入 ───
 function setLaborEst(i, val){
   const it=parsedItems[i]; if(!it) return;
   const n=parseFloat(val)||0;
   it._est = n>0 ? n : null;
-  // æ´æ°é¡¯ç¤º
+  // 更新顯示
   const resEl=document.getElementById(`lres${i}`);
   const diffEl=document.getElementById(`diff-${i}`);
   const pillEl=document.getElementById(`pill-${i}`);
@@ -1810,35 +1810,35 @@ function setLaborEst(i, val){
     const dv=(it.unitPrice-n)/n;
     const pct=(dv*100).toFixed(1);
     let col,lbl;
-    if(Math.abs(dv)<=.1){col='var(--gn)';lbl=`ð¢ æ­£å¸¸ (${dv>=0?'+':''}${pct}%)`;}
-    else if(dv>.1){col='var(--rd)';lbl=`ð´ åé« (+${pct}%)`;}
-    else{col='var(--pu)';lbl=`ð£ åä½ (${pct}%)`;}
-    if(resEl) resEl.innerHTML=`<span style="color:${col}">â à¸¿${fmt(n)}&nbsp;&nbsp;${lbl}</span>`;
+    if(Math.abs(dv)<=.1){col='var(--gn)';lbl=`🟢 正常 (${dv>=0?'+':''}${pct}%)`;}
+    else if(dv>.1){col='var(--rd)';lbl=`🔴 偏高 (+${pct}%)`;}
+    else{col='var(--pu)';lbl=`🟣 偏低 (${pct}%)`;}
+    if(resEl) resEl.innerHTML=`<span style="color:${col}">≈ ฿${fmt(n)}&nbsp;&nbsp;${lbl}</span>`;
     if(diffEl) diffEl.innerHTML=`<span class="${dv*100>0?'cup':dv*100<0?'cdn':'cok'}">${dv*100>=0?'+':''}${pct}%</span>`;
     if(pillEl){pillEl.textContent=lbl;pillEl.className='pill '+(Math.abs(dv)<=.1?'pg':dv>.1?'pr':'pp');}
   } else {
-    if(resEl) resEl.innerHTML='<span style="color:var(--am)">è«å¡«å¥é ä¼°å·¥è²»</span>';
-    if(diffEl) diffEl.innerHTML='<span class="cna">â</span>';
-    if(pillEl){pillEl.textContent='å·¥è²»/æ´å';pillEl.className='pill py';}
+    if(resEl) resEl.innerHTML='<span style="color:var(--am)">請填入預估工費</span>';
+    if(diffEl) diffEl.innerHTML='<span class="cna">—</span>';
+    if(pillEl){pillEl.textContent='工費/整包';pillEl.className='pill py';}
   }
   recalcTotals();
 }
 
-// âââ ç·¨è¼¯å²å­æ ¼ âââ
+// ─── 編輯儲存格 ───
 function editRpt(i,field,val){
   const it=parsedItems[i]; if(!it) return;
-  const clean=val.replace(/[à¸¿,\s]/g,'').trim();
+  const clean=val.replace(/[฿,\s]/g,'').trim();
   if(field==='unitPrice'||field==='qty'){
     const n=parseFloat(clean); if(!isNaN(n)&&n>=0) it[field]=n;
   } else it[field]=val.trim();
-  // éç®å°è¨
+  // 重算小計
   const sub=it.qty!=null?it.unitPrice*it.qty:null;
   it.subtotal=sub;
-  const subEl=document.getElementById(`sub-${i}`);if(subEl)subEl.textContent=sub!=null?'à¸¿ '+fmt(sub):'â';
-  // éç®çè
+  const subEl=document.getElementById(`sub-${i}`);if(subEl)subEl.textContent=sub!=null?'฿ '+fmt(sub):'—';
+  // 重算燈號
   const f=getF(it);
   const pillEl=document.getElementById(`pill-${i}`);if(pillEl){pillEl.textContent=f.lbl;pillEl.className='pill '+f.cls;}
-  // éç®å·®ç°
+  // 重算差異
   if(it.masterLowestPrice&&it.flag!=='labor_package'){
     const dv=(it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice*100;
     const diffEl=document.getElementById(`diff-${i}`);
@@ -1847,20 +1847,20 @@ function editRpt(i,field,val){
   recalcTotals();
 }
 
-// âââ æ°å¢åé  âââ
+// ─── 新增品項 ───
 function addNewRow(){
-  parsedItems.push({spec:'æ°åé ',unit:'EA',qty:1,unitPrice:0,subtotal:0,category:'material',masterSpec:null,masterLowestPrice:null,matchConfidence:'none',flag:'no_basis'});
+  parsedItems.push({spec:'新品項',unit:'EA',qty:1,unitPrice:0,subtotal:0,category:'material',masterSpec:null,masterLowestPrice:null,matchConfidence:'none',flag:'no_basis'});
   refreshReport();
 }
 
-// âââ åªé¤åé  âââ
+// ─── 刪除品項 ───
 function deleteRow(i){
-  if(!confirm(`ç¢ºå®åªé¤ã${parsedItems[i]?.spec}ãï¼`))return;
+  if(!confirm(`確定刪除「${parsedItems[i]?.spec}」？`))return;
   parsedItems.splice(i,1);
   refreshReport();
 }
 
-// âââ ä¸ä¸ç§»å âââ
+// ─── 上下移動 ───
 function moveRow(i,dir){
   const j=i+dir;
   if(j<0||j>=parsedItems.length)return;
@@ -1868,7 +1868,7 @@ function moveRow(i,dir){
   refreshReport();
 }
 
-// âââ ææ³ âââ
+// ─── 拖曳 ───
 let dragIdx=null;
 function dragStart(e,i){dragIdx=i;e.dataTransfer.effectAllowed='move';}
 function dragDrop(e,i){
@@ -1879,7 +1879,7 @@ function dragDrop(e,i){
   refreshReport();
 }
 
-// âââ éæ°æ¸²æå ±åï¼ä¿ç scroll ä½ç½®ï¼âââ
+// ─── 重新渲染報告（保留 scroll 位置）───
 function refreshReport(){
   const rptEl=document.getElementById('rptInner');
   if(!rptEl)return;
@@ -1889,12 +1889,12 @@ function refreshReport(){
   recalcTotals();
 }
 
-// âââ CORRECTION âââ
+// ═══ CORRECTION ═══
 function openCorr(i){
   const it=parsedItems[i]; if(!it)return;
   corrTarget=i;
-  document.getElementById('corr-ai').textContent   = `è¦æ ¼: ${it.spec} ï¼ å®å¹: à¸¿${fmt(it.unitPrice)} ï¼ æ¸é: ${it.qty??'â'} ï¼ å®ä½: ${it.unit||'â'} ï¼ æ¯å°: ${it.masterSpec||'ç¡'}`;
-  // è®ä½¿ç¨èå¯ä»¥ç´æ¥ä¿®æ¹æææ¬ä½
+  document.getElementById('corr-ai').textContent   = `規格: ${it.spec} ／ 單價: ฿${fmt(it.unitPrice)} ／ 數量: ${it.qty??'—'} ／ 單位: ${it.unit||'—'} ／ 比對: ${it.masterSpec||'無'}`;
+  // 讓使用者可以直接修改所有欄位
   document.getElementById('corr-spec-edit').value  = it.spec;
   document.getElementById('corr-unit-edit').value  = it.unit||'';
   document.getElementById('corr-qty-edit').value   = it.qty!=null?it.qty:'';
@@ -1909,7 +1909,7 @@ function openCorr(i){
 async function submitCorrection(){
   const i=corrTarget;
   const it=parsedItems[i]; if(!it)return;
-  // 1. å¥ç¨æåä¿®æ¹å° parsedItems
+  // 1. 套用手動修改到 parsedItems
   const newSpec  = document.getElementById('corr-spec-edit').value.trim();
   const newUnit  = document.getElementById('corr-unit-edit').value.trim();
   const newQty   = parseFloat(document.getElementById('corr-qty-edit').value);
@@ -1920,29 +1920,29 @@ async function submitCorrection(){
   if(!isNaN(newPrice)) it.unitPrice=newPrice;
   it.subtotal = it.qty!=null ? it.unitPrice*it.qty : null;
 
-  // 2. å²å­ä¿®æ­£ç´éï¼å¦ææå¡«æ­£ç¢ºç­æ¡ï¼
+  // 2. 儲存修正紀錄（如果有填正確答案）
   const correct=document.getElementById('corr-correct').value.trim();
   if(correct){
     const corr={
-      aiRead: `${it.spec} â å®å¹ à¸¿${fmt(it.unitPrice)}`,
+      aiRead: `${it.spec} → 單價 ฿${fmt(it.unitPrice)}`,
       correct,
       note:     document.getElementById('corr-note').value.trim(),
       category: document.getElementById('corr-cat').value,
       createdAt:new Date().toISOString(),
       reportId: curRptId
     };
-    try { await api('saveCorrection',{correction:corr}); toast('ä¿®æ­£ç´éå·²å²å­è³ Driveï¼ä¸æ¬¡èªåå¸¶å¥ â','ok'); }
-    catch(_){ toast('ä¿®æ­£å·²å¥ç¨ï¼ç´éæ«å­æ¼æ¬æ©','info',3000); }
+    try { await api('saveCorrection',{correction:corr}); toast('修正紀錄已儲存至 Drive，下次自動帶入 ✓','ok'); }
+    catch(_){ toast('修正已套用，紀錄暫存於本機','info',3000); }
   }
 
   document.getElementById('corrModal').classList.add('h');
-  // 3. éæ°æ¸²æå ±åï¼ç«å³çå°ä¿®æ¹
+  // 3. 重新渲染報告，立即看到修改
   refreshReport();
-  toast('å·²æ´æ°å ±å','ok');
+  toast('已更新報告','ok');
 }
 
 
-// âââ EXPORT âââ
+// ═══ EXPORT ═══
 async function exportPDF(){
   const btn=document.querySelector('button[onclick="exportPDF()"]');
   if(btn){btn.disabled=true;btn.textContent='匯出中...';}
@@ -1977,7 +1977,7 @@ async function exportPDF(){
 
 function expJSON(){
   const d={reportId:curRptId,generatedAt:new Date().toISOString(),vendor:window._aiVendor,project:window._aiProject,items:parsedItems};
-  dl(JSON.stringify(d,null,2),curRptId+'.json','application/json');toast('JSON å·²å¯åº','ok');
+  dl(JSON.stringify(d,null,2),curRptId+'.json','application/json');toast('JSON 已匯出','ok');
 }
 async function expExcel(){
   const btn=document.querySelector('button[onclick="expExcel()"]');
@@ -2011,21 +2011,21 @@ async function expExcel(){
 }
 function dl(content,name,type){const blob=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();}
 
-// âââ SETTINGS âââ
+// ═══ SETTINGS ═══
 function openSett(){if(!authToken){openLogin();return;}document.getElementById('settM').classList.remove('h');updSettUI();}
 function closeSett(){document.getElementById('settM').classList.add('h');}
 function updSettUI(){
   const configured=backendUrl&&backendUrl!=='YOUR_APPS_SCRIPT_URL';
-  document.getElementById('urlStat').textContent=configured?'å·²è¨­å® â':'æªè¨­å® â è«ä¿®æ¹ HTML CONFIG';
+  document.getElementById('urlStat').textContent=configured?'已設定 ✓':'未設定 — 請修改 HTML CONFIG';
 }
-function setUrl(){toast('è«ç´æ¥ä¿®æ¹ HTML ç¬¬ä¸è¡ CONFIG.BACKEND_URLï¼åä¸å³ GitHub å³çæ','info',5000);}
-function chgPw(){const np=prompt('è«è¼¸å¥æ°å¯ç¢¼ï¼æå° 8 ç¢¼ï¼ï¼');if(!np||np.length<8){toast('å¯ç¢¼å¤ªç­','err');return;}toast('è«å¨ Apps Script CONFIG.ADMIN_PW æ´æ°å¯ç¢¼å¾éæ°é¨ç½²','info',6000);}
+function setUrl(){toast('請直接修改 HTML 第一行 CONFIG.BACKEND_URL，再上傳 GitHub 即生效','info',5000);}
+function chgPw(){const np=prompt('請輸入新密碼（最少 8 碼）：');if(!np||np.length<8){toast('密碼太短','err');return;}toast('請在 Apps Script CONFIG.ADMIN_PW 更新密碼後重新部署','info',6000);}
 async function testConn(){
-  try{const res=await fetch(backendUrl);const d=await res.json();toast(d.ok?'é£ç·æåï¼'+d.msg:'é£ç·å¤±æï¼'+d.error,d.ok?'ok':'err');}
-  catch(e){toast('ç¡æ³é£ç·ï¼'+e.message,'err');}
+  try{const res=await fetch(backendUrl);const d=await res.json();toast(d.ok?'連線成功：'+d.msg:'連線失敗：'+d.error,d.ok?'ok':'err');}
+  catch(e){toast('無法連線：'+e.message,'err');}
 }
 
-// âââ INIT âââ
+// ═══ INIT ═══
 window.addEventListener('DOMContentLoaded',()=>{
   const tok=sessionStorage.getItem('tok');
   if(tok){authToken=tok;showAdminUI(true);}
@@ -2037,7 +2037,7 @@ document.getElementById('settM').addEventListener('click',function(e){if(e.targe
 document.getElementById('catModal').addEventListener('click',function(e){if(e.target===this)this.classList.add('h')});
 document.getElementById('corrModal').addEventListener('click',function(e){if(e.target===this)this.classList.add('h')});
 
-// âââ SEED DATA (Notion Master List) âââ
+// ═══ SEED DATA (Notion Master List) ═══
 const SEED=[
   {spec:'Ball Valve, SS304, CL150, PTFE, 1/2" (Screw)',unit:'EA',price:850,category:'piping',keywords:'ball valve ss304 150p ptfe 1/2 screw npt stainless',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
   {spec:'Ball Valve, SS304, CL150, PTFE, 1" (Screw)',unit:'EA',price:1150,category:'piping',keywords:'ball valve ss304 150p ptfe 1inch screw npt stainless',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
@@ -2075,8 +2075,8 @@ const SEED=[
   {spec:'UPVC Pipe, Class 13.5, 1-1/2" x 4m',unit:'EA',price:248,category:'piping',keywords:'upvc pipe class 13.5 1.5inch 4m pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
   {spec:'UPVC Pipe, Class 13.5, 2" x 4m',unit:'EA',price:335,category:'piping',keywords:'upvc pipe class 13.5 2inch 4m pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
   {spec:'UPVC Pipe, Class 13.5, 3" x 4m',unit:'EA',price:520,category:'piping',keywords:'upvc pipe class 13.5 3inch 4m pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
-  {spec:'UPVC Elbow 90Â°, 1"',unit:'EA',price:14,category:'piping',keywords:'upvc elbow 90 1inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
-  {spec:'UPVC Elbow 90Â°, 2"',unit:'EA',price:38,category:'piping',keywords:'upvc elbow 90 2inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Elbow 90°, 1"',unit:'EA',price:14,category:'piping',keywords:'upvc elbow 90 1inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
+  {spec:'UPVC Elbow 90°, 2"',unit:'EA',price:38,category:'piping',keywords:'upvc elbow 90 2inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
   {spec:'UPVC Tee, 1"',unit:'EA',price:16.5,category:'piping',keywords:'upvc tee 1inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
   {spec:'UPVC Tee, 2"',unit:'EA',price:52,category:'piping',keywords:'upvc tee 2inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
   {spec:'UPVC Coupling, 1"',unit:'EA',price:7.8,category:'piping',keywords:'upvc coupling 1inch fitting pvc',remark:'',updatedAt:'2025-01-01T00:00:00.000Z'},
