@@ -1944,31 +1944,28 @@ async function submitCorrection(){
 
 // ═══ EXPORT ═══
 async function exportPDF(){
-  if(!parsedItems||!parsedItems.length){toast('尚無報告資料','err');return;}
-  if(!window.html2canvas){toast('PDF 函式庫載入中，請稍後再試','err',4000);return;}
   const btn=document.querySelector('button[onclick="exportPDF()"]');
-  const origTxt=btn?btn.textContent:'';
-  if(btn){btn.disabled=true;btn.textContent='⏳ 生成中…';}
-  toast('PDF 生成中，請稍候（大型報告約 5 秒）…','info',12000);
+  if(btn){btn.disabled=true;btn.textContent='匯出中...';}
   try{
+    if(!window.jspdf||!window.jspdf.jsPDF){
+      await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';s.onload=res;s.onerror=()=>rej(new Error('jsPDF 載入失敗'));document.head.appendChild(s);});
+      await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s);});
+    }
     const {jsPDF}=window.jspdf;
-    const el=document.getElementById('rptInner');
-    const prevW=el.style.width;const prevOv=el.style.overflow;
-    el.style.width=el.scrollWidth+'px';el.style.overflow='visible';
-    const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false,scrollX:0,scrollY:0,width:el.scrollWidth,height:el.scrollHeight,windowWidth:el.scrollWidth});
-    el.style.width=prevW;el.style.overflow=prevOv;
-    const imgData=canvas.toDataURL('image/jpeg',0.92);
-    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-    const pageW=210,pageH=297;
-    const imgW=pageW;
-    const imgH=canvas.height*imgW/canvas.width;
-    let y=0,left=imgH;
-    pdf.addImage(imgData,'JPEG',0,y,imgW,imgH);left-=pageH;
-    while(left>0){y-=pageH;pdf.addPage();pdf.addImage(imgData,'JPEG',0,y,imgW,imgH);left-=pageH;}
-    pdf.save((curRptId||'report')+'.pdf');
-    toast('PDF 已匯出','ok');
-  }catch(e){toast('PDF 生成失敗：'+e.message,'err',5000);}
-  finally{if(btn){btn.disabled=false;btn.textContent=origTxt;}}
+    const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    const tables=document.querySelectorAll('#rptInner table');
+    if(!tables.length){toast('請先產生報告再匯出','err');return;}
+    let y=15;
+    doc.setFontSize(14);doc.text('比價評估報告',148,y,{align:'center'});y+=8;
+    doc.setFontSize(9);doc.text(new Date().toLocaleDateString('zh-TW'),148,y,{align:'center'});y+=6;
+    tables.forEach(tbl=>{
+      doc.autoTable({html:tbl,startY:y,styles:{fontSize:7,cellPadding:1.5},headStyles:{fillColor:[0,168,157]},margin:{left:8,right:8}});
+      y=doc.lastAutoTable.finalY+6;
+    });
+    doc.save('比價報告_'+new Date().toISOString().slice(0,10)+'.pdf');
+    toast('PDF 已下載','ok');
+  }catch(e){toast('PDF 匯出失敗：'+e.message,'err',5000);}
+  finally{if(btn){btn.disabled=false;btn.textContent='匯出 PDF';}}
 }
 
 function expJSON(){
@@ -1976,17 +1973,24 @@ function expJSON(){
   dl(JSON.stringify(d,null,2),curRptId+'.json','application/json');toast('JSON 已匯出','ok');
 }
 async function expExcel(){
-  if(!parsedItems.length){toast('尚無報告資料','err');return;}
-  toast('產生 Excel 中…','info',3000);
-  try {
-    const resp=await api('generateExcel',{reportId:curRptId,vendor:window._aiVendor||'—',project:window._aiProject||'—',date:window._aiDate||new Date().toISOString().slice(0,10),items:parsedItems});
-    const b64=resp.base64;
-    const bin=atob(b64);const arr=new Uint8Array(bin.length);
-    for(let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
-    const blob=new Blob([arr],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=curRptId+'.xlsx';a.click();
-    toast('Excel 已下載並備份至 Drive ✓','ok');
-  } catch(e){toast('Excel 產生失敗：'+e.message,'err',5000);}
+  const btn=document.querySelector('button[onclick="expExcel()"]');
+  if(btn){btn.disabled=true;btn.textContent='匯出中...';}
+  try{
+    if(!window.XLSX){
+      await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=res;s.onerror=()=>rej(new Error('SheetJS 載入失敗'));document.head.appendChild(s);});
+    }
+    const tables=document.querySelectorAll('#rptInner table');
+    if(!tables.length){toast('請先產生報告再匯出','err');return;}
+    const wb=XLSX.utils.book_new();
+    tables.forEach((tbl,i)=>{
+      const ws=XLSX.utils.table_to_sheet(tbl);
+      XLSX.utils.book_append_sheet(wb,'Sheet'+(i+1),ws);
+    });
+    const fname='比價報告_'+new Date().toISOString().slice(0,10)+'.xlsx';
+    XLSX.writeFile(wb,fname);
+    toast('Excel 已下載','ok');
+  }catch(e){toast('Excel 匯出失敗：'+e.message,'err',5000);}
+  finally{if(btn){btn.disabled=false;btn.textContent='📊 匯出 Excel';}}
 }
 function dl(content,name,type){const blob=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();}
 
