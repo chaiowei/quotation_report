@@ -1408,7 +1408,8 @@ function startAnalyzeWithCat(){
 const AI_PROVIDERS=[{id:'anthropic',label:'Claude Haiku 5.5'},{id:'gemini',label:'Gemini 3.8 Flash'}];
 const CHUNK_MIN_PAGES=5, CHUNK_PAGES=3;          // 5 頁以上的 PDF 分段送出，每段 3 頁
 const PRICE_PKG_UNITS=['L/S','LS','LOT','JOB','LUMPSUM','LUMP SUM'];
-const LEN_UNITS=['NO','LG','LEN','LENGTH','STICK'];   // 管材「支」：1 支 = 6 m
+const LEN_UNITS=['NO','LG','LEN','LENGTH','STICK'];
+const PKG_NAME_RE=/SAFETY|MOBILI[SZ]ATION|MISCELLANEOUS|^\W*OTHER\b|TRANSPORT|SCAFFOLD|ACCOMMODATION|INSPECTION|CRANE|FORKLIFT|FOLKLIFT|BOOM LIFT|MOBILE LIFT/i;   // 管材「支」：1 支 = 6 m
 
 function loadScriptOnce(src,globalName){
   if(window[globalName]) return Promise.resolve();
@@ -1495,7 +1496,7 @@ Return ONLY one valid JSON (no markdown):
 function parseAIJson(raw){
   const stripped=String(raw||'').replace(/```[\w]*\n?/g,'').trim();
   const m=stripped.match(/\{[\s\S]*\}/);
-  if(!m) throw new Error('AI 回傳格式異常（找不到 JSON）');
+  if(!m) throw new Error('AI 回傳格式異常（找不到 JSON）：'+String(raw||'').slice(0,120));
   const parsed=JSON.parse(m[0]);
   if(!Array.isArray(parsed.items)) throw new Error('AI 回傳的 JSON 沒有 items');
   return parsed;
@@ -1582,7 +1583,8 @@ function applyPricing(items){
     it.subtotal=lt!=null?lt:((ma||0)+(la||0))||null;
     const ur=String(it.unit||'').toUpperCase().replace(/\./g,'').trim();
     const unit=ur.replace(/S$/,'');                      // NOS→NO、SETS→SET
-    const isPkg=PRICE_PKG_UNITS.includes(ur);           // AI 的 category 不可靠（料＋工的列常被標 package），只看單位
+    // AI 的 category 不可靠（料＋工的列常被標 package），只看單位與常見間接費用名稱
+    const isPkg=PRICE_PKG_UNITS.includes(ur)||PKG_NAME_RE.test(String(it.spec||''));
     if(mu!=null&&mu>0&&!isPkg){
       it.unitPrice=mu; it._basis='材料單價';
     } else {
@@ -1650,6 +1652,7 @@ async function doAnalyze(){
     await loadMaster();
     if(!window._masterFromDrive) toast('⚠️ 主檔無法從 Drive 載入，本次比價使用內建範例主檔','err',6000);
   }
+  document.getElementById('pnl-err').style.display='none';
   document.getElementById('pnl-up').style.display='none';
   document.getElementById('pnl-ld').style.display='';
   setStep(2);
