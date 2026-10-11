@@ -1436,6 +1436,7 @@ async function pdfInfo(file){
   return {pages:doc.numPages,nums,hasText:numCount>=20,buf};
 }
 const round2=n=>Math.round(n*100)/100;
+const fmtQ=n=>Number(n).toLocaleString('th-TH',{maximumFractionDigits:3});   // 數量可能有小數（例：15.9 m）
 
 // 依頁數切成多段 PDF（base64）
 async function splitPdf(buf,pages){
@@ -1539,8 +1540,8 @@ function verifyExtraction(res,info){
   res.items.forEach(it=>{
     const q=num(it.qty),mu=num(it.materialUnitPrice),ma=num(it.materialAmount),lu=num(it.labourUnitPrice),la=num(it.labourAmount),lt=num(it.lineTotal);
     const iss=[];
-    if(q!=null&&mu!=null&&ma!=null&&!near(q*mu,ma)) iss.push(`數量×材料單價（${fmtN(q)}×${fmt(mu)}）≠ 材料金額 ${fmt(ma)}`);
-    if(q!=null&&lu!=null&&la!=null&&!near(q*lu,la)) iss.push(`數量×工資單價（${fmtN(q)}×${fmt(lu)}）≠ 工資金額 ${fmt(la)}`);
+    if(q!=null&&mu!=null&&ma!=null&&!near(q*mu,ma)) iss.push(`數量×材料單價（${fmtQ(q)}×${fmt(mu)}）≠ 材料金額 ${fmt(ma)}`);
+    if(q!=null&&lu!=null&&la!=null&&!near(q*lu,la)) iss.push(`數量×工資單價（${fmtQ(q)}×${fmt(lu)}）≠ 工資金額 ${fmt(la)}`);
     const base=(ma||0)+(la||0);
     if(lt!=null&&base>0&&(lt<base*.99||lt>base*1.6)) iss.push(`小計 ${fmt(lt)} 與材料＋工資 ${fmt(base)} 對不起來`);
     if(lt==null&&base===0&&(mu!=null||lu!=null)) iss.push('有單價但沒有金額');
