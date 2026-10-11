@@ -46,7 +46,8 @@ Google Apps Script 後端（quotation-apps-script.gs）
 | 2026-06-25 | PDF 預覽改用 blob URL |
 | 2026-06-26 | `renderM()` 效能 O(n²) → O(n) |
 | 2026-06-26 | Excel 匯出改純前端 SheetJS；PDF 匯出改 html2canvas（中文不亂碼）、jsPDF 動態載入 |
-| 2026-06-28 | `submitCorrection()` 修正前先保存 AI 原始讀值 |
+| 2026-06-28 | ⚠️ 這次 commit 實際上沒有套用 `submitCorrection()` 修正，反而把 HTML 尾端截斷（少了 `</script></body></html>`），網頁從此無法運作 |
+| 2026-10-11 | 修復截斷的 HTML、真正套用 `submitCorrection()` 保存 AI 原始讀值、修 jsPDF 網址錯字 `lihbs`；本機測試頁面、主檔載入（69 筆）、Gemini 呼叫皆正常 |
 
 ---
 
@@ -54,7 +55,6 @@ Google Apps Script 後端（quotation-apps-script.gs）
 
 - [ ] 確認系統實際使用狀況（有無 bug、需改進的地方）
 - [ ] 關閉 PR #1（`chaiowei-patch-1`，2026-06-07）：新增 `loan_policy_calculator.html`，與本專案無關
-- [ ] 修 `quotation-system-v4.html` 第 8 行 jsPDF 網址錯字 `lihbs`（不影響功能，`exportPDF()` 會用正確網址動態載入）
 - [ ] 刪除分支 `claude/pdf-excel-export-errors-7k9a2o`（修正已被 main 以其他方式取代）
 - [ ] 補充主檔材料庫資料（若有缺漏品項）
 - [ ] 跑一批真實報價單測試分析品質
@@ -85,6 +85,8 @@ Google Apps Script 後端（quotation-apps-script.gs）
 ### Tier 2 試做：P-066-68（2026-10-11）
 脫硫 tie-in 配管，PPEC Rev.0 → Rev.1
 - 產出：`03_比對報告\P-066-68_Tier2比對.xlsx`（三頁：Rev.1 vs 主檔／Rev.0→Rev.1 差異／工資分析）
+- 正式報告：`03_比對報告\P-066-68_比價報告_依原始報價單.xlsx`（Rev.1、Rev.0 各一頁；左邊照原始報價單的排列與欄位，右邊加資料庫比對、v4 燈號、AI 提取核對、原檔頁碼）。直接用 PyMuPDF 讀 PDF 表格，兩版逐行與 Sub-Total 全部核對吻合。產生腳本：`系統範本\產生比價報告_依原始報價單.py`
+- 使用者回饋：分組合併的摘要表（`P-066-68_比價摘要.xlsx`）和原本的明細表都太複雜、無法對照原檔核對，報告一律照原始報價單排列
 - 解析：PyMuPDF 抽 PDF 文字層逐 cell 重組，兩版總額與每行「數量×單價」全部核對吻合；Safety、Mobilization 兩項沒有「-」前綴要另外抓；比兩版時品名要去掉「- N DAY」這類會變的字串
 - 料工混合處理原則：每列加「價格類型」欄（純料／工／料+工分列／雜項 Lump sum），只有「純料」跟主檔比；工資另頁用「工/料比」比
 - 結果：Rev.0→Rev.1 減 412,476 = 純料 167,676＋雜項 158,500＋工資 82,800＋堤牆 3,500；2" 彎頭 825→120（-85%）、Y-strainer 25,482→5,358（-79%），Rev.0 灌水明顯
