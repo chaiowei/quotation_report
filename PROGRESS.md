@@ -49,10 +49,14 @@ Google Apps Script 後端（quotation-apps-script.gs）
 | 2026-06-28 | ⚠️ 這次 commit 實際上沒有套用 `submitCorrection()` 修正，反而把 HTML 尾端截斷（少了 `</script></body></html>`），網頁從此無法運作 |
 | 2026-10-11 | 修復截斷的 HTML、真正套用 `submitCorrection()` 保存 AI 原始讀值、修 jsPDF 網址錯字 `lihbs`；本機測試頁面、主檔載入（69 筆）、Gemini 呼叫皆正常 |
 
+| 2026-10-11 | 100 次 AI 分析測試（2.5 Flash）＋ 36 次對照（3.8 Flash），報告：`docs/2026-10-11_AI報價分析測試報告.md`；主檔 69 → 215 筆（新增 146 筆待採購確認，備份 `master_list_backup_20261011_173149.json`） |
 ---
 
 ## 待辦
 
+- [ ] GAS 模型改 `gemini-3.8-flash`（備援 3.6 Flash、3.5 Flash-Lite），AI Studio 儲值（2026-10-11 網站因模型與額度問題無法分析）
+- [ ] 燈號改由程式計算；核對文件總額；比價只用材料單價（見測試報告第 8 節）
+- [ ] 採購審核主檔新增 146 筆、6 筆價格差異
 - [ ] 確認系統實際使用狀況（有無 bug、需改進的地方）
 - [ ] 關閉 PR #1（`chaiowei-patch-1`，2026-06-07）：新增 `loan_policy_calculator.html`，與本專案無關
 - [ ] 刪除分支 `claude/pdf-excel-export-errors-7k9a2o`（修正已被 main 以其他方式取代）
