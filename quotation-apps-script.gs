@@ -28,11 +28,26 @@ const CONFIG = {
   GEMINI_MODELS:   ['gemini-3.8-flash', 'gemini-3.6-flash'],  // 依序嘗試；1.5 / 2.0 / 2.5-lite 已停用或新帳號不可用
 };
 // API Key 優先讀「專案設定 → 指令碼屬性」：GEMINI_API_KEY、ANTHROPIC_API_KEY
+// 名稱比對不分大小寫、忽略空白與符號（避免貼上時多了空格或全形字元）；值去掉前後空白與引號
+function normKeyName(s) { return String(s).replace(/[^A-Za-z0-9]/g, '').toUpperCase(); }
 function getKey(name) {
-  const v = PropertiesService.getScriptProperties().getProperty(name);
-  if (v) return v.trim();
+  const props = PropertiesService.getScriptProperties().getProperties();
+  for (const k in props) {
+    const v = String(props[k] || '').trim().replace(/^['"`]+|['"`]+$/g, '');
+    if (normKeyName(k) === normKeyName(name) && v) return v;
+  }
   const c = CONFIG[name];
   return c && !/^YOUR_/.test(c) ? c : '';
+}
+// 診斷：列出指令碼屬性的名稱與長度（不回傳 Key 內容）
+function handleKeyStatus() {
+  const props = PropertiesService.getScriptProperties().getProperties();
+  const list = Object.keys(props).map(k => {
+    const v = String(props[k] || '').trim();
+    return { name: JSON.stringify(k), length: v.length,
+             type: /^AIza/.test(v) ? 'Gemini Key 格式' : /^sk-ant-/.test(v) ? 'Anthropic Key 格式' : '無法辨識' };
+  });
+  return { ok: true, properties: list, gemini: !!getKey('GEMINI_API_KEY'), anthropic: !!getKey('ANTHROPIC_API_KEY') };
 }
 // ──────────────────────────────────────────────────
  
@@ -56,6 +71,7 @@ function doPost(e) {
       case 'saveReport':  return respond(handleSaveReport(body));
       case 'callGemini':     return respond(handleCallGemini(body));
       case 'callAI':         return respond(handleCallAI(body));
+      case 'keyStatus':      return respond(handleKeyStatus());
       case 'generateExcel':    return respond(handleGenerateExcel(body));
       case 'saveCorrection':   return respond(handleSaveCorrection(body));
       case 'loadCorrections':  return respond(handleLoadCorrections(body));
