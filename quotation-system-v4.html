@@ -1151,14 +1151,21 @@ function logout(){sessionStorage.clear();authToken='';showAdminUI(false);showPg(
 
 // ═══ MASTER LOAD / SAVE ═══
 async function loadMaster(){
-  try {
-    const d=await api('loadMaster',{});
-    masterData=(d.data||[]).map(r=>({...r,_d:false,_n:false}));
-    if(!masterData.length) masterData=SEED.map(s=>({...s,_d:false,_n:false}));
-    updBadge();updDriveBadge(true);renderM();
-  } catch(e){
-    masterData=SEED.map(s=>({...s,_d:false,_n:false}));
-    updBadge();updDriveBadge(false);renderM();
+  // Apps Script 偶爾會冷啟動失敗，失敗時重試 1 次；仍失敗才改用內建範例主檔，並記錄來源
+  for(let attempt=1;attempt<=2;attempt++){
+    try {
+      const d=await api('loadMaster',{});
+      masterData=(d.data||[]).map(r=>({...r,_d:false,_n:false}));
+      window._masterFromDrive=masterData.length>0;
+      if(!masterData.length) masterData=SEED.map(s=>({...s,_d:false,_n:false}));
+      updBadge();updDriveBadge(true);renderM();
+      return;
+    } catch(e){
+      if(attempt<2) continue;
+      window._masterFromDrive=false;
+      masterData=SEED.map(s=>({...s,_d:false,_n:false}));
+      updBadge();updDriveBadge(false);renderM();
+    }
   }
 }
 function loadMasterLocal(){ masterData=SEED.map(s=>({...s,_d:false,_n:false}));updBadge();renderM(); }
@@ -1396,10 +1403,253 @@ function startAnalyzeWithCat(){
   doAnalyze();
 }
 
+// ═══ EXTRACTION & VERIFICATION ═══
+// 方案 B：Claude Haiku 先讀 → 程式核對（逐列算術、原文比對、總額）→ 不過就改用 Gemini 重讀 → 仍不過就標示需人工核對
+const AI_PROVIDERS=[{id:'anthropic',label:'Claude Haiku 5.5'},{id:'gemini',label:'Gemini 3.8 Flash'}];
+const CHUNK_MIN_PAGES=5, CHUNK_PAGES=3;          // 5 頁以上的 PDF 分段送出，每段 3 頁
+const PRICE_PKG_UNITS=['L/S','LS','LOT','JOB','LUMPSUM','LUMP SUM'];
+const LEN_UNITS=['NO','LG','LEN','LENGTH','STICK'];   // 管材「支」：1 支 = 6 m
+
+function loadScriptOnce(src,globalName){
+  if(window[globalName]) return Promise.resolve();
+  return new Promise((ok,fail)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>fail(new Error(src+' 載入失敗'));document.head.appendChild(s);});
+}
+async function ensurePdfLibs(){
+  await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js','pdfjsLib');
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js','PDFLib');
+}
+
+// 讀 PDF 文字層：頁數 + 所有出現過的數字（掃描檔沒有文字層 → hasText=false，略過原文比對）
+async function pdfInfo(file){
+  await ensurePdfLibs();
+  const buf=await file.arrayBuffer();
+  const doc=await window.pdfjsLib.getDocument({data:new Uint8Array(buf.slice(0))}).promise;
+  const nums=new Set();
+  let numCount=0;
+  for(let p=1;p<=doc.numPages;p++){
+    const tc=await (await doc.getPage(p)).getTextContent();
+    const txt=tc.items.map(i=>i.str).join(' ');
+    (txt.match(/\d[\d,]*(?:\.\d+)?/g)||[]).forEach(m=>{const n=parseFloat(m.replace(/,/g,''));if(!isNaN(n)){nums.add(round2(n));numCount++;}});
+  }
+  return {pages:doc.numPages,nums,hasText:numCount>=20,buf};
+}
+const round2=n=>Math.round(n*100)/100;
+
+// 依頁數切成多段 PDF（base64）
+async function splitPdf(buf,pages){
+  const {PDFDocument}=window.PDFLib;
+  const src=await PDFDocument.load(buf);
+  const chunks=[];
+  for(let start=0;start<pages;start+=CHUNK_PAGES){
+    const idx=[];for(let p=start;p<Math.min(start+CHUNK_PAGES,pages);p++)idx.push(p);
+    const out=await PDFDocument.create();
+    (await out.copyPages(src,idx)).forEach(pg=>out.addPage(pg));
+    const bytes=await out.save();
+    let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));
+    chunks.push({b64:btoa(bin),from:start+1,to:idx[idx.length-1]+1});
+  }
+  return chunks;
+}
+
+function buildExtractPrompt(masterJson,masterCount,corrText,chunk,totalPages){
+  const scope=chunk&&totalPages>1&&(chunk.from!==1||chunk.to!==totalPages)
+    ? `\nThe attached file is pages ${chunk.from}-${chunk.to} of a ${totalPages}-page quotation. Use the printed page numbers ${chunk.from}-${chunk.to}. Output only rows printed on these pages. documentTotal = null unless the grand total of the whole BOQ is printed on these pages. If these pages are a cover summary that only repeats the detailed BOQ on other pages, output no rows for it.`
+    : '';
+  return `You are an expert procurement engineer reading a construction quotation (Thailand).
+Master Item List (${masterCount} items): ${masterJson}${corrText}
+
+TASK: Transcribe EVERY priced line item of the attached quotation exactly as printed, then match it to the Master Item List.
+Rules:
+- One item per printed row that has a quantity or a price. Keep the original order. Never merge rows, never split one row into two.
+- Do NOT output section headings, section totals, sub-totals, grand totals, VAT, discount, OH&Profit, or a cover-page summary line that repeats the detailed BOQ.
+- If the document has both a cover page summary and a detailed BOQ, use only the detailed BOQ rows.
+- Copy every number exactly as printed (remove thousands separators). Use null when the cell is blank or "-". Do not calculate or convert anything.
+- If the quotation has only one unit-price column (no material / labour split), put it in materialUnitPrice and the row amount in materialAmount and lineTotal.
+- documentTotal = the printed total of all line items before VAT, discount and OH&Profit (e.g. "Sub-Total", "TOTAL", "GRAND TOTAL" of the BOQ).
+- masterSpec must be copied exactly from the Master Item List, or null. matchConfidence=high only when size, material and type all agree.${scope}
+Return ONLY one valid JSON (no markdown):
+{
+  "vendor": "exact company name",
+  "project": "project name or scope",
+  "currency": "THB",
+  "documentTotal": number_or_null,
+  "items": [{
+    "page": page_number,
+    "itemNo": "item number as printed or null",
+    "spec": "original description text (include size / material printed on the row)",
+    "unit": "unit as printed",
+    "qty": number_or_null,
+    "materialUnitPrice": number_or_null,
+    "materialAmount": number_or_null,
+    "labourUnitPrice": number_or_null,
+    "labourAmount": number_or_null,
+    "lineTotal": number_or_null,
+    "category": "material|labor|package",
+    "masterSpec": "matched master spec or null",
+    "matchConfidence": "high|medium|low|none"
+  }]
+}`;
+}
+
+function parseAIJson(raw){
+  const stripped=String(raw||'').replace(/```[\w]*\n?/g,'').trim();
+  const m=stripped.match(/\{[\s\S]*\}/);
+  if(!m) throw new Error('AI 回傳格式異常（找不到 JSON）');
+  const parsed=JSON.parse(m[0]);
+  if(!Array.isArray(parsed.items)) throw new Error('AI 回傳的 JSON 沒有 items');
+  return parsed;
+}
+
+// 呼叫一次 AI；網路錯誤、GAS 404、空白、JSON 壞掉 → 同一模型自動重試 1 次
+async function callAIOnce(provider,prompt,b64,mime){
+  let lastErr;
+  for(let attempt=1;attempt<=2;attempt++){
+    try{
+      const r=await api('callAI',{provider,prompt,base64Data:b64,mimeType:mime});
+      return {parsed:parseAIJson(r.text),model:r.model,usage:r.usage};
+    }catch(e){
+      lastErr=e;
+      if(/unsupported|不支援|Key|額度|401|402/.test(e.message)) break;   // 設定問題，重試沒用
+    }
+  }
+  throw lastErr;
+}
+
+// 用一個模型讀完整份（必要時分段），合併成一份結果
+async function extractWith(provider,parts,info,prompts){
+  const results=await Promise.all(parts.map((p,i)=>callAIOnce(provider,prompts[i],p.b64,p.mime)));
+  const items=[];let docTotal=null;const usage={input:0,output:0};
+  results.forEach(r=>{
+    r.parsed.items.forEach(it=>items.push(it));
+    const t=num(r.parsed.documentTotal);if(t!=null)docTotal=t;
+    usage.input+=r.usage?.input||0;usage.output+=r.usage?.output||0;
+  });
+  const first=results[0].parsed;
+  return {provider,model:results[0].model,vendor:first.vendor,project:first.project,documentTotal:docTotal,items,usage};
+}
+
+const num=v=>{if(v===null||v===undefined||v==='')return null;const n=typeof v==='number'?v:parseFloat(String(v).replace(/,/g,''));return isNaN(n)?null:n;};
+const near=(a,b,rel=.005)=>Math.abs(a-b)<=Math.max(1,Math.abs(b)*rel);
+
+// 程式核對：只用報價單自己的數字互相驗算，不靠 AI 判斷
+function verifyExtraction(res,info){
+  let rowIssues=0;
+  res.items.forEach(it=>{
+    const q=num(it.qty),mu=num(it.materialUnitPrice),ma=num(it.materialAmount),lu=num(it.labourUnitPrice),la=num(it.labourAmount),lt=num(it.lineTotal);
+    const iss=[];
+    if(q!=null&&mu!=null&&ma!=null&&!near(q*mu,ma)) iss.push(`數量×材料單價（${fmtN(q)}×${fmt(mu)}）≠ 材料金額 ${fmt(ma)}`);
+    if(q!=null&&lu!=null&&la!=null&&!near(q*lu,la)) iss.push(`數量×工資單價（${fmtN(q)}×${fmt(lu)}）≠ 工資金額 ${fmt(la)}`);
+    const base=(ma||0)+(la||0);
+    if(lt!=null&&base>0&&(lt<base*.99||lt>base*1.6)) iss.push(`小計 ${fmt(lt)} 與材料＋工資 ${fmt(base)} 對不起來`);
+    if(lt==null&&base===0&&(mu!=null||lu!=null)) iss.push('有單價但沒有金額');
+    if(info&&info.hasText){
+      [['數量',q],['材料單價',mu],['材料金額',ma],['工資單價',lu],['工資金額',la],['小計',lt]].forEach(([k,v])=>{
+        if(v!=null&&v!==0&&!info.nums.has(round2(v))&&!info.nums.has(Math.round(v))) iss.push(`${k} ${fmt(v)} 在原檔找不到`);
+      });
+    }
+    it._issues=iss;
+    if(iss.length) rowIssues++;
+  });
+  const lineSum=res.items.reduce((s,it)=>s+(num(it.lineTotal)??((num(it.materialAmount)||0)+(num(it.labourAmount)||0))),0);
+  const doc=[];
+  if(res.documentTotal==null) doc.push('沒有讀到文件總額，無法核對');
+  else if(!near(lineSum,res.documentTotal,.001)) doc.push(`逐行加總 ฿${fmt(lineSum)} ≠ 文件總額 ฿${fmt(res.documentTotal)}（差 ฿${fmt(lineSum-res.documentTotal)}）`);
+  if(info&&info.hasText&&res.documentTotal!=null&&!info.nums.has(round2(res.documentTotal))) doc.push(`文件總額 ฿${fmt(res.documentTotal)} 在原檔找不到`);
+  return {rowIssues,doc,lineSum,ok:rowIssues===0&&doc.length===0,score:rowIssues+doc.length*5};
+}
+
+// 同一份報價、同一品項卻有不同材料單價（議價線索）
+function priceInconsistencies(items){
+  const g={};
+  items.forEach(it=>{
+    const mu=num(it.materialUnitPrice);if(mu==null||mu<=0)return;
+    const k=String(it.spec||'').toUpperCase().replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim()+'|'+String(it.unit||'').toUpperCase();
+    (g[k]=g[k]||{spec:it.spec,unit:it.unit,prices:new Set(),pages:new Set()});
+    g[k].prices.add(mu);if(it.page)g[k].pages.add(it.page);
+  });
+  return Object.values(g).filter(x=>x.prices.size>1).map(x=>({spec:x.spec,unit:x.unit,prices:[...x.prices].sort((a,b)=>a-b),pages:[...x.pages]}));
+}
+
+// 比價：只用「材料單價」對主檔；燈號由程式依 ±10% 計算（AI 只負責讀資料與對應品名）
+function masterIndex(){const m={};masterData.forEach(r=>{if(!r._del)m[String(r.spec).trim().toLowerCase()]=r;});return m;}
+function applyPricing(items){
+  const idx=masterIndex();
+  items.forEach(it=>{
+    const q=num(it.qty),mu=num(it.materialUnitPrice),lu=num(it.labourUnitPrice),lt=num(it.lineTotal);
+    const ma=num(it.materialAmount),la=num(it.labourAmount);
+    it.qty=q;
+    it.subtotal=lt!=null?lt:((ma||0)+(la||0))||null;
+    const ur=String(it.unit||'').toUpperCase().replace(/\./g,'').trim();
+    const unit=ur.replace(/S$/,'');                      // NOS→NO、SETS→SET
+    const isPkg=PRICE_PKG_UNITS.includes(ur);           // AI 的 category 不可靠（料＋工的列常被標 package），只看單位
+    if(mu!=null&&mu>0&&!isPkg){
+      it.unitPrice=mu; it._basis='材料單價';
+    } else {
+      it.unitPrice=lu!=null&&lu>0?lu:(q?(it.subtotal||0)/q:(it.subtotal||0));
+      it._basis=mu==null&&lu!=null?'工資單價':'整包';
+      it.flag='labor_package'; it.masterLowestPrice=null; it._conv=null;
+      return;
+    }
+    const m=it.masterSpec?idx[String(it.masterSpec).trim().toLowerCase()]:null;
+    if(!m){it.masterSpec=null;it.masterLowestPrice=null;it.flag='no_basis';it._conv=null;return;}
+    // 單位換算：主檔以 M 計、報價以「支」計 → 1 支 = 6 m
+    let factor=1;it._conv=null;
+    const mu2=String(m.unit||'').toUpperCase();
+    if(mu2==='M'&&LEN_UNITS.includes(unit)){factor=6;it._conv='主檔每 m × 6（1 支 = 6 m）';}
+    else if(['EA','PCS'].includes(mu2)&&unit==='M'&&/\(6m\)/i.test(m.spec)){factor=1/6;it._conv='主檔每支 ÷ 6（1 支 = 6 m）';}
+    it.masterSpec=m.spec;
+    it.masterLowestPrice=round2(m.price*factor);
+    it.flag=computeFlag(it);
+  });
+  return items;
+}
+function computeFlag(it){
+  if(it.flag==='labor_package') return 'labor_package';
+  if(!it.masterLowestPrice) return 'no_basis';
+  if(it.matchConfidence&&it.matchConfidence!=='high') return 'pending';
+  const d=(it.unitPrice-it.masterLowestPrice)/it.masterLowestPrice;
+  return Math.abs(d)<=.1?'normal':d>.1?'high':'low';
+}
+
+// 整個流程：Haiku → 核對 → 不過就 Gemini → 選問題最少的一份
+async function extractAndVerify(file,ext,mime,b64,masterJson,masterCount,corrText,onStep){
+  const isPdf=ext==='pdf';
+  let info=null;
+  if(isPdf){try{info=await pdfInfo(file);}catch(e){console.warn('[ProcureAI] PDF 文字層讀取失敗',e);}}
+  let parts=[{b64,mime,from:1,to:info?.pages||1}];
+  if(info&&info.pages>=CHUNK_MIN_PAGES){
+    try{parts=(await splitPdf(info.buf,info.pages)).map(c=>({...c,mime}));}catch(e){console.warn('[ProcureAI] PDF 分段失敗，改整份送出',e);}
+  }
+  const prompts=parts.map(p=>buildExtractPrompt(masterJson,masterCount,corrText,p,info?.pages||1));
+  const attempts=[];let best=null;
+  for(const prov of AI_PROVIDERS){
+    onStep&&onStep(`${prov.label} 讀取中…${parts.length>1?`（分 ${parts.length} 段）`:''}`);
+    let res;
+    try{res=await extractWith(prov.id,parts,info,prompts);}
+    catch(e){attempts.push({provider:prov.label,error:e.message});continue;}
+    const v=verifyExtraction(res,info);
+    attempts.push({provider:prov.label,model:res.model,rowIssues:v.rowIssues,doc:v.doc,ok:v.ok,usage:res.usage,lineSum:v.lineSum,documentTotal:res.documentTotal});
+    if(!best||v.score<best.v.score) best={res,v,label:prov.label};
+    if(v.ok) break;
+    onStep&&onStep(`${prov.label} 核對發現 ${v.rowIssues} 列異常${v.doc.length?'、總額不符':''}，改用下一個模型重讀…`);
+  }
+  if(!best) throw new Error('所有 AI 模型都失敗：'+attempts.map(a=>`${a.provider}：${a.error}`).join('；'));
+  verifyExtraction(best.res,info);   // 重新標記被選中那份的每列問題
+  return {...best.res,verify:best.v,usedLabel:best.label,attempts,info:{pages:info?.pages||null,hasText:!!info?.hasText,chunks:parts.length},
+          inconsistencies:priceInconsistencies(best.res.items)};
+}
+
 // ═══ ANALYZE ═══
 async function doAnalyze(){
   if(!curFile)return;
   if(!backendUrl||backendUrl==='YOUR_APPS_SCRIPT_URL'){toast('請設定 Apps Script 後端網址','err');return;}
+  // 主檔還沒從 Drive 載入完成（或載入失敗）就先等／重載，避免用錯主檔比價
+  if(window._masterReady) await window._masterReady;
+  if(!window._masterFromDrive){
+    await loadMaster();
+    if(!window._masterFromDrive) toast('⚠️ 主檔無法從 Drive 載入，本次比價使用內建範例主檔','err',6000);
+  }
   document.getElementById('pnl-up').style.display='none';
   document.getElementById('pnl-ld').style.display='';
   setStep(2);
@@ -1451,52 +1701,33 @@ async function doAnalyze(){
       }
     } catch(_){}
 
-    const prompt=`You are an expert procurement engineer with 20 years experience in Thailand construction projects.
-Today's date: ${today}
-Analysis category: ${selectedCat==='all'?'ALL categories':CATS[selectedCat]?.label||selectedCat}
-Master Item List (${filteredMaster.length} items): ${masterJson}${corrText}
-
-TASK: Analyze the attached quotation document. Extract ALL line items.
-Return ONLY a single valid JSON (no markdown):
-{
-  "vendor": "exact company name from document",
-  "project": "project name or scope from document",
-  "currency": "THB",
-  "items": [{
-    "spec": "original text from quotation",
-    "unit": "unit",
-    "qty": number_or_null,
-    "unitPrice": number,
-    "subtotal": number_or_null,
-    "category": "material|labor|package",
-    "masterSpec": "matched spec or null",
-    "masterLowestPrice": number_or_null,
-    "matchConfidence": "high|medium|low|none",
-    "flag": "normal|high|low|pending|no_basis|labor_package"
-  }]
-}
-FLAG: normal=±10%, high=>+10%, low=<-10%, pending=medium confidence, no_basis=no match, labor_package=labor/package`;
-
-    const finalPrompt=mdText?prompt+'\n\n[Markdown 報價單內容如下]\n'+mdText:prompt;
-    const geminiResp=await api('callGemini',{prompt:finalPrompt,base64Data:isMedia?b64:null,mimeType:isMedia?mime:null});
-    const raw=geminiResp.text||'';
-    if(!raw.trim()) throw new Error('AI 未回傳任何內容，請重試');
-    // 去掉 code block 標記後，用 regex 抽取第一個完整 JSON 物件（避免 Gemini 夾帶說明文字）
-    const stripped=raw.replace(/```[\w]*\n?/g,'').trim();
-    const jsonMatch=stripped.match(/\{[\s\S]*\}/);
-    if(!jsonMatch) throw new Error('AI 回傳格式異常（找不到 JSON），請重試');
-    const parsed=JSON.parse(jsonMatch[0]);
+    const masterCount=Math.min(filteredMaster.length,500);
+    const ldS=t=>{const el=document.getElementById('ldS');if(el)el.textContent=t;};
     clearInterval(tick);
-    parsedItems=Array.isArray(parsed.items)?parsed.items:[];
+    document.getElementById('ldT').textContent='AI 讀取報價單並逐行核對中…';
+    const ext2=ext==='md'?null:ext;
+    let result;
+    if(mdText){
+      // Markdown 沒有原檔可比對：直接用 Gemini 文字模式，仍做總額與算術核對
+      const r=await callAIOnce('gemini',buildExtractPrompt(masterJson,masterCount,corrText,null,1)+'\n\n[Markdown 報價單內容如下]\n'+mdText,null,null);
+      const res={provider:'gemini',model:r.model,vendor:r.parsed.vendor,project:r.parsed.project,documentTotal:num(r.parsed.documentTotal),items:r.parsed.items,usage:r.usage};
+      result={...res,verify:verifyExtraction(res,null),usedLabel:'Gemini',attempts:[],info:{pages:null,hasText:false,chunks:1},inconsistencies:priceInconsistencies(res.items)};
+    } else {
+      result=await extractAndVerify(curFile,ext2,mime,isMedia?b64:null,masterJson,masterCount,corrText,ldS);
+    }
+    parsedItems=applyPricing(result.items);
     if(!parsedItems.length) throw new Error('AI 未解析出任何品項，請確認檔案含有報價明細，或改用 PDF 格式重試');
     curRptId='RPT-'+today.replace(/-/g,'')+'-'+Math.floor(Math.random()*900+100);
-    window._aiVendor=parsed.vendor||'—';
-    window._aiProject=parsed.project||'—';
+    window._aiVendor=result.vendor||'—';
+    window._aiProject=result.project||'—';
     window._aiDate=today;
+    window._verify={documentTotal:result.documentTotal,lineSum:result.verify.lineSum,doc:result.verify.doc,rowIssues:result.verify.rowIssues,
+      used:result.usedLabel,model:result.model,attempts:result.attempts,info:result.info,inconsistencies:result.inconsistencies};
     laborItems=parsedItems.filter(it=>it.flag==='labor_package');
 
     // 上傳原始檔
-    try { await api('uploadFile',{fileName:curFile.name,base64Data:b64,mimeType:mime}); } catch(_){}
+    // 未登入時不備份（後端需要管理員 token，否則會跳出登入視窗）
+    if(authToken) try { await api('uploadFile',{fileName:curFile.name,base64Data:b64,mimeType:mime}); } catch(_){}
 
     document.getElementById('pnl-ld').style.display='none';
     buildReport();
@@ -1591,7 +1822,7 @@ async function buildReport(){
   document.getElementById('rptInner').innerHTML = buildRptHTML();
 
   // backup
-  try {
+  if(authToken) try {
     await api('saveReport',{reportId:curRptId,reportData:{reportId:curRptId,vendor,project,date:window._aiDate,generatedAt:new Date().toISOString(),items:parsedItems}});
     toast('報告已備份至 Google Drive','info');
   } catch(_){}
@@ -1618,9 +1849,13 @@ function buildRptHTML(){
     const thisCat = it.category||'other';
     const catL={material:'材料',labor:'工費',package:'整包項目',other:'其他'};
     if(thisCat !== lastCat){
-      rows += `<tr class="tsec"><td colspan="11">${catL[thisCat]||thisCat}</td></tr>`;
+      rows += `<tr class="tsec"><td colspan="13">${catL[thisCat]||thisCat}</td></tr>`;
       lastCat = thisCat;
     }
+    const iss = it._issues||[];
+    const chkCell = iss.length
+      ? `<span title="${escH(iss.join('\n'))}" style="color:var(--rd);font-size:11px;white-space:normal;display:block;max-width:240px;text-align:left">⚠️ ${escH(iss.join('；'))}</span>`
+      : it._edited?'<span style="color:var(--cy);font-size:11px">✏️ 已人工修正</span>':'<span style="color:var(--gn)">✅</span>';
 
     const sub = it.subtotal!=null ? it.subtotal : (it.qty ? it.unitPrice*it.qty : null);
     const f   = getF(it);
@@ -1658,7 +1893,7 @@ function buildRptHTML(){
       baseCell = it.masterLowestPrice ? `฿ ${fmt(it.masterLowestPrice)}` : '<span class="cna">—</span>';
     }
 
-    rows += `<tr id="rptrow-${i}" draggable="true"
+    rows += `<tr id="rptrow-${i}" draggable="true"${iss.length?' style="background:#FFF4E5"':''}
         ondragstart="dragStart(event,${i})"
         ondragover="event.preventDefault()"
         ondrop="dragDrop(event,${i})">
@@ -1667,15 +1902,17 @@ function buildRptHTML(){
         <button onclick="moveRow(${i},1)"  title="下移" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--t3);padding:1px 3px">▼</button>
         <button onclick="deleteRow(${i})"  title="刪除此列" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--rd);padding:1px 3px">✕</button>
       </td>
+      <td style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--t3)">${it.page??'—'}</td>
       <td class="ecell" contenteditable="true" onblur="editRpt(${i},'spec',this.textContent)" style="min-width:180px">${escH(it.spec)}</td>
       <td class="ecell" style="text-align:center" contenteditable="true" onblur="editRpt(${i},'unit',this.textContent)">${escH(it.unit||'—')}</td>
       <td class="ecell" contenteditable="true" onblur="editRpt(${i},'qty',this.textContent)" style="text-align:right">${it.qty!=null?fmtN(it.qty):'—'}</td>
-      <td class="ecell" contenteditable="true" onblur="editRpt(${i},'unitPrice',this.textContent)" style="text-align:right">฿ ${fmt(it.unitPrice)}</td>
+      <td class="ecell" contenteditable="true" onblur="editRpt(${i},'unitPrice',this.textContent)" style="text-align:right">฿ ${fmt(it.unitPrice)}${it._basis&&it._basis!=='材料單價'?`<div style="font-size:10px;color:var(--t3)">${it._basis}</div>`:''}</td>
       <td id="sub-${i}" style="text-align:right">${sub!=null?'฿ '+fmt(sub):'—'}</td>
       <td id="base-${i}" style="font-size:12px">${baseCell}</td>
       <td id="diff-${i}" style="text-align:right">${diffStr}</td>
-      <td style="font-size:11px;color:var(--t3);max-width:140px;white-space:normal">${escH(it.masterSpec||'—')}</td>
+      <td style="font-size:11px;color:var(--t3);max-width:140px;white-space:normal">${escH(it.masterSpec||'—')}${it._conv?`<div style="color:var(--am)">${escH(it._conv)}</div>`:''}</td>
       <td id="flag-${i}" style="text-align:center"><span class="pill ${f.cls}" id="pill-${i}">${f.lbl}</span></td>
+      <td id="chk-${i}" style="text-align:left;min-width:190px">${chkCell}</td>
       <td style="text-align:center;padding:0 6px">
         <button title="修改此列資料並回報 AI 錯誤" onclick="openCorr(${i})"
           style="background:none;border:1px solid var(--rim2);border-radius:4px;cursor:pointer;font-size:12px;padding:6px 10px;color:var(--cy);transition:all .15s;min-height:36px;min-width:58px;touch-action:manipulation"
@@ -1686,7 +1923,7 @@ function buildRptHTML(){
 
   // 加新品項列
   rows += `<tr id="addRowBtn">
-    <td colspan="11" style="text-align:center;padding:.6rem">
+    <td colspan="13" style="text-align:center;padding:.6rem">
       <button onclick="addNewRow()" style="background:var(--cyf);border:1.5px dashed var(--cy);border-radius:6px;color:var(--cy);font-size:13px;font-weight:500;padding:6px 20px;cursor:pointer;font-family:var(--body);width:100%">
         + 新增品項
       </button>
@@ -1727,6 +1964,7 @@ function buildRptHTML(){
         <div class="sbox sy"><div class="sn" style="color:var(--yw)">${cnt.labor}</div><div class="sl">工費</div></div>
       </div>
     </div>
+    ${buildVerifyHTML()}
     <div class="tc" style="margin-bottom:1rem">
       <div class="rpt-toolbar">
         <span class="rpt-toolbar-title">📋 完整品項明細（依原始順序）</span>
@@ -1738,21 +1976,23 @@ function buildRptHTML(){
       <div class="tsc"><table id="rptTable">
         <thead><tr>
           <th style="text-align:center;min-width:70px">操作</th>
+          <th style="text-align:center">頁</th>
           <th style="text-align:left;padding-left:8px">品項規格（廠商原文）</th>
           <th style="text-align:center">單位</th><th style="text-align:right">數量</th>
-          <th style="text-align:right">廠商單價 (฿)</th>
+          <th style="text-align:right">材料單價 (฿)</th>
           <th style="text-align:right">報價小計 (฿)</th>
           <th style="min-width:160px">歷史最低價 / 工費預估 (฿)</th>
           <th style="text-align:right">差異</th>
           <th style="text-align:left">比對品項</th>
           <th style="text-align:center">燈號</th>
+          <th style="text-align:left">原檔核對</th>
           <th style="text-align:center;padding-right:8px">修正</th>
         </tr></thead>
         <tbody id="rptBody">${rows}
           <tr class="ttot" id="totalRow">
-            <td colspan="4" style="text-align:left;padding-left:16px;font-family:var(--mono);font-size:10px;color:var(--t3)">TOTAL</td>
+            <td colspan="5" style="text-align:left;padding-left:16px;font-family:var(--mono);font-size:10px;color:var(--t3)">TOTAL</td>
             <td></td><td id="totalQ" style="font-family:var(--mono);font-size:14px;text-align:right">฿ ${fmt(totalQ)}</td>
-            <td colspan="5"></td>
+            <td colspan="6"></td>
           </tr>
         </tbody>
       </table></div>
@@ -1768,7 +2008,40 @@ function buildRptHTML(){
     </div>`;
 }
 
-function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// 兩個模型逐列都沒問題、讀到的加總與文件總額也一樣，但仍對不上 → 問題在報價單本身
+function vendorSide(v){
+  const a=(v.attempts||[]).filter(x=>!x.error);
+  return a.length>=2&&a.every(x=>x.rowIssues===0&&x.doc.length&&near(x.lineSum,a[0].lineSum,.0001)&&x.documentTotal===a[0].documentTotal);
+}
+// ─── 原檔核對結果（總額、逐列、模型、同品項不同單價）───
+function buildVerifyHTML(){
+  const v=window._verify; if(!v) return '';
+  const rowsBad=parsedItems.filter(it=>(it._issues||[]).length).length;
+  const ok=!v.doc.length&&!rowsBad;
+  const col=ok?'var(--gn)':'var(--rd)';
+  const totalLine=v.documentTotal!=null
+    ? `文件總額 ฿${fmt(v.documentTotal)} ／ 逐行加總 ฿${fmt(v.lineSum)}`
+    : `逐行加總 ฿${fmt(v.lineSum)}（沒有讀到文件總額）`;
+  const tries=(v.attempts||[]).map(a=>a.error?`${a.provider}：失敗（${escH(a.error)}）`
+    :`${a.provider}：${a.ok?'核對通過':`${a.rowIssues} 列異常${a.doc.length?'、總額不符':''}`}`).join(' → ');
+  const textNote=v.info&&v.info.pages
+    ? (v.info.hasText?`PDF ${v.info.pages} 頁，已逐一比對原檔文字`:`PDF ${v.info.pages} 頁為掃描檔，無法比對原檔文字，只做算術核對`)+(v.info.chunks>1?`，分 ${v.info.chunks} 段讀取`:'')
+    : '非 PDF，只做算術核對';
+  const inc=(v.inconsistencies||[]).slice(0,10).map(x=>`<li>${escH(x.spec)}（${escH(x.unit||'')}）：${x.prices.map(p=>'฿'+fmt(p)).join(' ／ ')}${x.pages.length?`（第 ${x.pages.join('、')} 頁）`:''}</li>`).join('');
+  return `<div class="card" style="margin-bottom:1rem;border-left:4px solid ${col}">
+    <div style="font-weight:700;color:${col};margin-bottom:.4rem">${ok?'✅ 原檔核對通過':'⚠️ 原檔核對有問題，請對照原檔確認標示的列'}</div>
+    <div style="font-size:13px;color:var(--t2);line-height:1.7">
+      ${totalLine}<br>
+      ${v.doc.map(d=>`<span style="color:var(--rd)">● ${escH(d)}</span>`).join('<br>')}${v.doc.length?'<br>':''}
+      ${rowsBad?`<span style="color:var(--rd)">● ${rowsBad} 列的數字與原檔或算術對不起來（表格中橘底列）</span><br>`:''}
+      ${vendorSide(v)?'<span style="color:var(--am)">● 兩個 AI 模型逐行讀到的金額完全一致，差額很可能是報價單本身的錯誤或漏算，建議向廠商確認</span><br>':''}
+      <span style="color:var(--t3);font-size:12px">使用：${escH(v.used||'')}（${escH(v.model||'')}）｜ ${escH(tries)} ｜ ${textNote}</span>
+    </div>
+    ${inc?`<div style="margin-top:.6rem;font-size:13px"><b>同一份報價、同一品項有不同單價（議價線索）</b><ul style="margin:.3rem 0 0 1.2rem">${inc}</ul></div>`:''}
+  </div>`;
+}
 
 // ─── 計算 totals ───
 function calcTotals(){
@@ -1780,8 +2053,10 @@ function calcTotals(){
       totalS+=it._est;
       if(it.unitPrice>it._est*1.1) canSave+=(it.unitPrice-it._est);
     } else if(it.flag==='high'&&it.masterLowestPrice){
-      totalS+=it.masterLowestPrice*(it.qty??1);
-      canSave+=(it.unitPrice-it.masterLowestPrice)*(it.qty??1);
+      // 只把「材料單價」降到主檔價；小計內的工資、管理費維持不變
+      const save=(it.unitPrice-it.masterLowestPrice)*(it.qty??1);
+      totalS+=sub-save;
+      canSave+=save;
     } else totalS+=sub;
   });
   return {totalQ,totalS,canSave};
@@ -1827,15 +2102,19 @@ function setLaborEst(i, val){
 // ─── 編輯儲存格 ───
 function editRpt(i,field,val){
   const it=parsedItems[i]; if(!it) return;
-  const clean=val.replace(/[฿,\s]/g,'').trim();
+  const clean=val.replace(/[฿,\s]/g,'').replace(/(材料單價|工資單價|整包)$/,'').trim();
+  const oldPrice=it.unitPrice, oldQty=it.qty;
   if(field==='unitPrice'||field==='qty'){
     const n=parseFloat(clean); if(!isNaN(n)&&n>=0) it[field]=n;
   } else it[field]=val.trim();
-  // 重算小計
-  const sub=it.qty!=null?it.unitPrice*it.qty:null;
-  it.subtotal=sub;
+  // 重算小計：小計可能含工資／管理費，只調整「單價或數量變動」的差額
+  if(oldQty!=null&&oldPrice!=null&&it.subtotal!=null) it.subtotal+= (it.unitPrice*(it.qty??0))-(oldPrice*oldQty);
+  else it.subtotal=it.qty!=null?it.unitPrice*it.qty:null;
+  const sub=it.subtotal;
+  if(it._basis==='材料單價'){it.materialUnitPrice=it.unitPrice;}
   const subEl=document.getElementById(`sub-${i}`);if(subEl)subEl.textContent=sub!=null?'฿ '+fmt(sub):'—';
-  // 重算燈號
+  // 重算燈號（由程式依主檔價格計算）
+  if(['normal','high','low','pending'].includes(it.flag)&&field!=='spec'&&field!=='unit') it.flag=computeFlag(it);
   const f=getF(it);
   const pillEl=document.getElementById(`pill-${i}`);if(pillEl){pillEl.textContent=f.lbl;pillEl.className='pill '+f.cls;}
   // 重算差異
@@ -1849,7 +2128,7 @@ function editRpt(i,field,val){
 
 // ─── 新增品項 ───
 function addNewRow(){
-  parsedItems.push({spec:'新品項',unit:'EA',qty:1,unitPrice:0,subtotal:0,category:'material',masterSpec:null,masterLowestPrice:null,matchConfidence:'none',flag:'no_basis'});
+  parsedItems.push({spec:'新品項',unit:'EA',qty:1,unitPrice:0,subtotal:0,category:'material',masterSpec:null,masterLowestPrice:null,matchConfidence:'none',flag:'no_basis',page:null,_issues:['手動新增，非原檔內容'],_basis:'材料單價'});
   refreshReport();
 }
 
@@ -1892,8 +2171,6 @@ function refreshReport(){
 // ═══ CORRECTION ═══
 function openCorr(i){
   const it=parsedItems[i]; if(!it)return;
-  // 先保存 AI 原始讀值，避免下面套用修改後 aiRead 記到的是修正後的值
-  const origSpec=it.spec, origPrice=it.unitPrice;
   corrTarget=i;
   document.getElementById('corr-ai').textContent   = `規格: ${it.spec} ／ 單價: ฿${fmt(it.unitPrice)} ／ 數量: ${it.qty??'—'} ／ 單位: ${it.unit||'—'} ／ 比對: ${it.masterSpec||'無'}`;
   // 讓使用者可以直接修改所有欄位
@@ -1911,6 +2188,8 @@ function openCorr(i){
 async function submitCorrection(){
   const i=corrTarget;
   const it=parsedItems[i]; if(!it)return;
+  // 先保存 AI 原始讀值，避免下面套用修改後 aiRead 記到的是修正後的值
+  const origSpec=it.spec, origPrice=it.unitPrice, origQty=it.qty;
   // 1. 套用手動修改到 parsedItems
   const newSpec  = document.getElementById('corr-spec-edit').value.trim();
   const newUnit  = document.getElementById('corr-unit-edit').value.trim();
@@ -1920,7 +2199,10 @@ async function submitCorrection(){
   if(newUnit)  it.unit=newUnit;
   if(!isNaN(newQty))   it.qty=newQty;
   if(!isNaN(newPrice)) it.unitPrice=newPrice;
-  it.subtotal = it.qty!=null ? it.unitPrice*it.qty : null;
+  if(origQty!=null&&origPrice!=null&&it.subtotal!=null) it.subtotal+=(it.unitPrice*(it.qty??0))-(origPrice*origQty);
+  else it.subtotal = it.qty!=null ? it.unitPrice*it.qty : null;
+  if(['normal','high','low','pending'].includes(it.flag)) it.flag=computeFlag(it);
+  it._issues=[]; it._edited=true;
 
   // 2. 儲存修正紀錄（如果有填正確答案）
   const correct=document.getElementById('corr-correct').value.trim();
@@ -2031,7 +2313,7 @@ async function testConn(){
 window.addEventListener('DOMContentLoaded',()=>{
   const tok=sessionStorage.getItem('tok');
   if(tok){authToken=tok;showAdminUI(true);}
-  loadMaster();
+  window._masterReady=loadMaster();
   updSettUI();
 });
 document.getElementById('addM').addEventListener('click',function(e){if(e.target===this)closeAdd()});

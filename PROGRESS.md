@@ -47,16 +47,25 @@ Google Apps Script 後端（quotation-apps-script.gs）
 | 2026-06-26 | `renderM()` 效能 O(n²) → O(n) |
 | 2026-06-26 | Excel 匯出改純前端 SheetJS；PDF 匯出改 html2canvas（中文不亂碼）、jsPDF 動態載入 |
 | 2026-06-28 | ⚠️ 這次 commit 實際上沒有套用 `submitCorrection()` 修正，反而把 HTML 尾端截斷（少了 `</script></body></html>`），網頁從此無法運作 |
-| 2026-10-11 | 修復截斷的 HTML、真正套用 `submitCorrection()` 保存 AI 原始讀值、修 jsPDF 網址錯字 `lihbs`；本機測試頁面、主檔載入（69 筆）、Gemini 呼叫皆正常 |
-
+| 2026-10-11 | 修復截斷的 HTML、修 jsPDF 網址錯字 `lihbs`；本機測試頁面、主檔載入（69 筆）、Gemini 呼叫皆正常 |
 | 2026-10-11 | 100 次 AI 分析測試（2.5 Flash）＋ 36 次對照（3.8 Flash），報告：`docs/2026-10-11_AI報價分析測試報告.md`；主檔 69 → 215 筆（新增 146 筆待採購確認，備份 `master_list_backup_20261011_173149.json`） |
+| 2026-10-11 | 方案 B 上線準備：Claude Haiku 5.5 先讀 → 程式核對（逐列算術、PDF 原文比對、文件總額）→ 不過就 Gemini 3.8 重讀 → 仍不過標示需人工核對；燈號改由程式依主檔計算、只用材料單價比價（含 1 支 = 6 m 換算）；5 頁以上 PDF 分段讀取；AI 呼叫失敗自動重試 1 次；同份報價同品項不同單價列為議價線索；主檔載入失敗自動重試；未登入不再跳出登入視窗；修正 `submitCorrection()` 保存原始讀值（10-11 上午的修正放錯函式）；主檔舊 69 筆補類別，產出 `主檔審核清單_20261011.xlsx` |
 ---
+
+## 部署步驟（方案 B）
+
+1. 打開 Apps Script 專案 → 用 repo 的 `quotation-apps-script.gs` 全部取代程式碼
+2. 「專案設定 → 指令碼屬性」新增 `GEMINI_API_KEY`、`ANTHROPIC_API_KEY`（Key 不寫在程式碼裡）
+3. AI Studio、Anthropic Console 確認都有餘額
+4. 「部署 → 管理部署作業 → 編輯 → 版本：新版本 → 部署」（網址不變）
+5. 再把前端 `quotation-system-v4.html` 推上 main（GitHub Pages 自動更新）
+
+順序不能反：前端呼叫的新動作 `callAI` 要等 GAS 更新後才存在。
 
 ## 待辦
 
-- [ ] GAS 模型改 `gemini-3.8-flash`（備援 3.6 Flash、3.5 Flash-Lite），AI Studio 儲值（2026-10-11 網站因模型與額度問題無法分析）
-- [ ] 燈號改由程式計算；核對文件總額；比價只用材料單價（見測試報告第 8 節）
-- [ ] 採購審核主檔新增 146 筆、6 筆價格差異
+- [ ] 部署方案 B（見下方「部署步驟」）：更新 GAS、設定兩把 Key、AI Studio 儲值，再推前端
+- [ ] 採購審核 `H:\我的雲端硬碟\工作\薛長興\報價評估系統\主檔審核清單_20261011.xlsx`（新增 146 筆、價格差異 6 筆、舊品項類別 69 筆）
 - [ ] 確認系統實際使用狀況（有無 bug、需改進的地方）
 - [ ] 關閉 PR #1（`chaiowei-patch-1`，2026-06-07）：新增 `loan_policy_calculator.html`，與本專案無關
 - [ ] 刪除分支 `claude/pdf-excel-export-errors-7k9a2o`（修正已被 main 以其他方式取代）

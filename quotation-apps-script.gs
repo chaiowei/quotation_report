@@ -22,8 +22,18 @@ const CONFIG = {
   ADMIN_PW:        '123',
   DRIVE_FOLDER_ID: '1XOQ5-lT6skQuzJwwarq2ppWdg0h-8DQK',
   MASTER_FILE_NAME: 'master_list.json',
-  GEMINI_API_KEY:  'YOUR_GEMINI_API_KEY_HERE',  // ★ 只在 script.google.com 裡填入，絕對不要上傳到 GitHub
+  GEMINI_API_KEY:  'YOUR_GEMINI_API_KEY_HERE',  // ★ 建議改放「指令碼屬性」GEMINI_API_KEY，絕對不要上傳到 GitHub
+  // AI 模型（方案 B：Claude Haiku 先跑，前端核對不過再用 Gemini 重跑）
+  CLAUDE_MODEL:    'claude-haiku-5-5',
+  GEMINI_MODELS:   ['gemini-3.8-flash', 'gemini-3.6-flash'],  // 依序嘗試；1.5 / 2.0 / 2.5-lite 已停用或新帳號不可用
 };
+// API Key 優先讀「專案設定 → 指令碼屬性」：GEMINI_API_KEY、ANTHROPIC_API_KEY
+function getKey(name) {
+  const v = PropertiesService.getScriptProperties().getProperty(name);
+  if (v) return v.trim();
+  const c = CONFIG[name];
+  return c && !/^YOUR_/.test(c) ? c : '';
+}
 // ──────────────────────────────────────────────────
  
 /**
@@ -45,6 +55,7 @@ function doPost(e) {
       case 'uploadFile':  return respond(handleUploadFile(body));
       case 'saveReport':  return respond(handleSaveReport(body));
       case 'callGemini':     return respond(handleCallGemini(body));
+      case 'callAI':         return respond(handleCallAI(body));
       case 'generateExcel':    return respond(handleGenerateExcel(body));
       case 'saveCorrection':   return respond(handleSaveCorrection(body));
       case 'loadCorrections':  return respond(handleLoadCorrections(body));
@@ -153,40 +164,37 @@ function handleSaveReport(body) {
   return { ok: true, reportId };
 }
  
-// ── GEMINI API PROXY ──────────────────────────────
-// 前端把 prompt + 檔案 base64 傳來，後端用 CONFIG 裡的 Key 呼叫 Gemini
-// Key 永遠不會傳到前端
+// ── AI PROXY ──────────────────────────────────────
+// 前端把 prompt + 檔案 base64 傳來，後端用指令碼屬性裡的 Key 呼叫 AI；Key 永遠不會傳到前端
+// 不需要驗證 token，任何人都可以使用比價功能
+
+// 舊介面：只呼叫 Gemini（保留給舊版前端）
 function handleCallGemini(body) {
-  const { prompt, base64Data, mimeType } = body;
-  // 不需要驗證 token，任何人都可以使用比價功能
-  const key = CONFIG.GEMINI_API_KEY;
-  if (!key || key === 'YOUR_GEMINI_KEY') {
-    return { ok: false, error: 'Gemini API Key 尚未設定，請在 Apps Script CONFIG.GEMINI_API_KEY 填入' };
-  }
- 
+  return callGeminiModels(body.prompt, body.base64Data, body.mimeType, false);
+}
+
+// 新介面：provider = 'anthropic' | 'gemini'
+function handleCallAI(body) {
+  const { provider, prompt, base64Data, mimeType, jsonMode } = body;
+  if (provider === 'anthropic') return callClaude(prompt, base64Data, mimeType);
+  return callGeminiModels(prompt, base64Data, mimeType, jsonMode !== false);
+}
+
+function callGeminiModels(prompt, base64Data, mimeType, jsonMode) {
+  const key = getKey('GEMINI_API_KEY');
+  if (!key) return { ok: false, error: 'Gemini API Key 尚未設定，請在 Apps Script「專案設定 → 指令碼屬性」新增 GEMINI_API_KEY' };
+
   const parts = (base64Data && mimeType)
     ? [{ text: prompt }, { inline_data: { mime_type: mimeType, data: base64Data } }]
     : [{ text: prompt }];
-
-  const payload = JSON.stringify({ contents: [{ parts }] });
-  const fetchOptions = {
-    method: 'post',
-    contentType: 'application/json',
-    payload: payload,
-    muteHttpExceptions: true
-  };
-
-  // 模型優先順序：2.5 Flash → 1.5 Flash → 2.0 Flash
-  const MODELS = [
-    'gemini-2.5-flash',
-    'gemini-1.5-flash',
-    'gemini-2.0-flash'
-  ];
+  const req = { contents: [{ parts }] };
+  if (jsonMode) req.generationConfig = { responseMimeType: 'application/json', maxOutputTokens: 65536 };
+  const fetchOptions = { method: 'post', contentType: 'application/json', payload: JSON.stringify(req), muteHttpExceptions: true };
 
   let response, code, usedModel;
-  for (let m = 0; m < MODELS.length; m++) {
-    usedModel = MODELS[m];
-    const url = `https://generativelanguage.googleapis.com/v1/models/${usedModel}:generateContent?key=${key}`;
+  for (let m = 0; m < CONFIG.GEMINI_MODELS.length; m++) {
+    usedModel = CONFIG.GEMINI_MODELS[m];
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${usedModel}:generateContent?key=${key}`;
     // 每個模型最多重試 2 次
     for (let attempt = 1; attempt <= 2; attempt++) {
       response = UrlFetchApp.fetch(url, fetchOptions);
@@ -194,37 +202,81 @@ function handleCallGemini(body) {
       if (code !== 429 && code !== 503) break;
       if (attempt < 2) Utilities.sleep(3000);
     }
-    // 200 或 400/401/403（這些不是過載，換模型也沒用）就停止
-    if (code === 200 || code === 400 || code === 401 || code === 403) break;
-    // 仍是 429/503 → 試下一個模型
-    if (m < MODELS.length - 1) Utilities.sleep(2000);
+    // 200 或 400/401/402/403（這些不是過載，換模型也沒用）就停止；404 = 模型不可用 → 試下一個
+    if ([200, 400, 401, 402, 403].includes(code)) break;
+    if (m < CONFIG.GEMINI_MODELS.length - 1) Utilities.sleep(2000);
   }
 
   if (code !== 200) {
     const errText = response.getContentText();
-    if (code === 429) return { ok: false, error: 'Gemini 請求次數超限（429）：免費版每分鐘上限 10 次、每日 250 次。請稍後再試或升級配額。' };
-    if (code === 503) return { ok: false, error: 'Gemini 所有模型目前過載（503），這是 Google 暫時性問題，請等 5 分鐘後重試。' };
-    return { ok: false, error: `Gemini API 錯誤 ${code}: ${errText.slice(0, 200)}` };
+    if (code === 402) return { ok: false, error: 'Gemini 預付額度已用完（402），請到 AI Studio 儲值' };
+    if (code === 429) return { ok: false, error: 'Gemini 請求次數超限（429），請稍後再試或提高配額' };
+    if (code === 503) return { ok: false, error: 'Gemini 所有模型目前過載（503），這是 Google 暫時性問題，請等 5 分鐘後重試' };
+    return { ok: false, error: `Gemini API 錯誤 ${code}（${usedModel}）: ${errText.slice(0, 200)}` };
   }
- 
+
   const result = JSON.parse(response.getContentText());
   const candidate = result.candidates?.[0];
-
-  // 安全過濾或 token 超限
   if (!candidate || !candidate.content) {
     const reason = candidate?.finishReason || 'UNKNOWN';
     if (reason === 'SAFETY') return { ok: false, error: '內容被 Gemini 安全過濾攔截，請確認上傳檔案內容合規' };
-    if (reason === 'MAX_TOKENS') return { ok: false, error: 'Gemini Token 超限，報價單或主檔資料過大，請縮短內容再試' };
+    if (reason === 'MAX_TOKENS') return { ok: false, error: 'Gemini 輸出超過上限，報價單過大' };
     return { ok: false, error: `Gemini 未回傳內容（${reason}），請重試` };
   }
-
-  const text = candidate.content.parts?.[0]?.text || '';
+  // 略過思考內容，只取回答
+  const text = (candidate.content.parts || []).filter(p => !p.thought).map(p => p.text || '').join('');
   if (!text.trim()) return { ok: false, error: 'Gemini 回傳空白內容，請重試' };
-  return { ok: true, text };
+  const u = result.usageMetadata || {};
+  return {
+    ok: true, text, provider: 'gemini', model: usedModel, finish: candidate.finishReason,
+    usage: { input: u.promptTokenCount || 0, output: (u.candidatesTokenCount || 0) + (u.thoughtsTokenCount || 0) }
+  };
 }
- 
- 
- 
+
+// Claude（Anthropic Messages API）。GAS 沒有官方 SDK，直接用 HTTP 呼叫
+function callClaude(prompt, base64Data, mimeType) {
+  const key = getKey('ANTHROPIC_API_KEY');
+  if (!key) return { ok: false, error: 'Anthropic API Key 尚未設定，請在 Apps Script「專案設定 → 指令碼屬性」新增 ANTHROPIC_API_KEY' };
+
+  const content = [];
+  if (base64Data && mimeType === 'application/pdf') {
+    content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64Data } });
+  } else if (base64Data && /^image\/(jpeg|png|gif|webp)$/.test(mimeType)) {
+    content.push({ type: 'image', source: { type: 'base64', media_type: mimeType, data: base64Data } });
+  } else if (base64Data) {
+    return { ok: false, unsupported: true, error: `Claude 不支援 ${mimeType} 檔案，改用 Gemini` };
+  }
+  content.push({ type: 'text', text: prompt });
+
+  const fetchOptions = {
+    method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+    headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01' },
+    payload: JSON.stringify({ model: CONFIG.CLAUDE_MODEL, max_tokens: 64000, messages: [{ role: 'user', content }] })
+  };
+
+  let response, code;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    response = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', fetchOptions);
+    code = response.getResponseCode();
+    if (![429, 500, 503, 529].includes(code)) break;
+    if (attempt < 2) Utilities.sleep(3000);
+  }
+  const data = JSON.parse(response.getContentText() || '{}');
+  if (code !== 200) {
+    const msg = (data.error && data.error.message) || response.getContentText().slice(0, 200);
+    if (code === 401) return { ok: false, error: 'Anthropic API Key 無效（401），請確認指令碼屬性 ANTHROPIC_API_KEY' };
+    if (/credit balance/i.test(msg)) return { ok: false, error: 'Anthropic 額度不足，請到 console.anthropic.com 儲值' };
+    return { ok: false, error: `Claude API 錯誤 ${code}: ${msg}` };
+  }
+  if (data.stop_reason === 'refusal') return { ok: false, error: 'Claude 拒絕處理此檔案（refusal）' };
+  const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+  if (!text.trim()) return { ok: false, error: 'Claude 回傳空白內容' };
+  return {
+    ok: true, text, provider: 'anthropic', model: data.model || CONFIG.CLAUDE_MODEL, finish: data.stop_reason,
+    usage: { input: data.usage?.input_tokens || 0, output: data.usage?.output_tokens || 0 }
+  };
+}
+
 // ── CORRECTIONS ───────────────────────────────────
 function handleSaveCorrection(body) {
   // 不需要管理員 token，任何人都可以回報錯誤
